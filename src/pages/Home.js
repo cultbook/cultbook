@@ -6,6 +6,7 @@ import { foaf } from 'rdf-namespaces'
 
 import { useModel } from "../model"
 import { useDocument } from "../data"
+import LogoutButton from "../components/LogoutButton"
 
 const useStyles = makeStyles(theme => ({
   logo: {
@@ -23,11 +24,14 @@ export default function HomePage(){
   const { profile } = useModel(webId)
   const [ profileDoc ] = useDocument(profile)
   return (
-    <header className="App-header">
-      <h1 className={classes.logo}>cultbook</h1>
+    <>
+      <header className="App-header">
+        <h1 className={classes.logo}>cultbook</h1>
+      </header>
       <h2>
         Welcome, {profileDoc && profileDoc.getSubject(webId).getString(foaf.name)}
       </h2>
-    </header>
+      <LogoutButton/>
+    </>
   )
 }
