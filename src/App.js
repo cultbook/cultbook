@@ -7,10 +7,8 @@ import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { useLoggedIn } from '@solid/react';
 
 import { AuthProvider } from "./context/auth"
-import LoginButton from "./components/LoginButton"
 import LandingPage from "./pages/Landing"
 import HomePage from "./pages/Home"
-import logo from './logo.svg';
 import theme from './theme'
 
 const useStyles = makeStyles(theme => ({

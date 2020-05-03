@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import auth, { Session } from 'solid-auth-client';
+import auth from 'solid-auth-client';
 import { useHistory } from "react-router-dom";
 
 async function logIn() {

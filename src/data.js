@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react"
-import { fetchDocument, describeSubject, describeDocument } from "plandoc"
-
-import { useModel } from "./model"
+import { useState, useEffect } from "react"
+import { fetchDocument } from "plandoc"
 
 export function useDocument(virtualDocument){
   const [document, setDocument] = useState()
@@ -10,7 +8,11 @@ export function useDocument(virtualDocument){
   useEffect(() => {
     async function loadDocument(){
       setLoading(true)
-      setDocument(await fetchDocument(virtualDocument))
+      try {
+        setDocument(await fetchDocument(virtualDocument))
+      } catch (e) {
+        setError(e)
+      }
       setLoading(false)
     }
     if (virtualDocument) loadDocument()
