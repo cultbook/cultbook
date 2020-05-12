@@ -21,8 +21,11 @@ const useStyles = makeStyles(theme => ({
 export default function HomePage(){
   const classes = useStyles();
   const webId = useWebId()
-  const { profile } = useModel(webId)
+  const { profile, privateCult, publicCult } = useModel(webId)
   const [ profileDoc ] = useDocument(profile)
+  const [ privateCultDoc ] = useDocument(privateCult)
+  const [ publicCultDoc ] = useDocument(publicCult)
+
   return (
     <>
       <header className="App-header">
