@@ -6,25 +6,14 @@ import { space, solid, rdf } from "rdf-namespaces";
 const Cult = "https://thecultbook.com/ontology#Cult"
 
 export function useModel(webId){
-  const [profile, setProfile] = useState()
-  const [privateCult, setPrivateCult] = useState()
-  const [publicCult, setPublicCult] = useState()
+  const [profileDocument, setProfileDocument] = useState()
+  const [cultDocument, setCultDocument] = useState()
   useEffect(() => {
     if (webId){
-      const profileDocument = describeDocument().isFoundAt(webId)
+      const profileDoc = describeDocument().isFoundAt(webId)
       const profileSubject = describeSubject().isFoundAt(webId)
       const storage = describeContainer()
             .isFoundOn(profileSubject, space.storage);
-
-      const privateTypeIndex = describeDocument()
-            .isFoundOn(profileSubject, solid.privateTypeIndex)
-      const cultPrivateTypeRegistration = describeSubject()
-            .isEnsuredIn(privateTypeIndex)
-            .withRef(rdf.type, solid.TypeRegistration)
-            .withRef(solid.forClass, Cult)
-      const cultPrivateStorage = describeContainer().experimental_isContainedIn(storage, "private/cultbook")
-      const cultPrivateDocument = describeDocument()
-            .isEnsuredOn(cultPrivateTypeRegistration, solid.instance, cultPrivateStorage)
 
       const publicTypeIndex = describeDocument()
             .isFoundOn(profileSubject, solid.publicTypeIndex)
@@ -32,15 +21,13 @@ export function useModel(webId){
             .isEnsuredIn(publicTypeIndex)
             .withRef(rdf.type, solid.TypeRegistration)
             .withRef(solid.forClass, Cult)
-      const cultPublicStorage = describeContainer().experimental_isContainedIn(storage, "public/cultbook")
-      const cultPublicDocument = describeDocument()
-            .isEnsuredOn(cultPublicTypeRegistration, solid.instance, cultPublicStorage)
+      const cultDoc = describeDocument()
+            .isEnsuredOn(cultPublicTypeRegistration, solid.instance, storage)
 
-      setProfile(profileDocument)
-      setPrivateCult(cultPrivateDocument)
-      setPublicCult(cultPublicDocument)
+      setProfileDocument(profileDoc)
+      setCultDocument(cultDoc)
 
     }
   }, [webId])
-  return { profile, privateCult, publicCult }
+  return { profileDocument, cultDocument }
 }

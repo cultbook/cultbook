@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { fetchDocument } from "plandoc"
 
 export function useDocument(virtualDocument){
@@ -17,5 +17,16 @@ export function useDocument(virtualDocument){
     }
     if (virtualDocument) loadDocument()
   }, [virtualDocument])
-  return [document, loading, error]
+
+  const saveDocument = useCallback(async () => {
+    try {
+      const savedDocument = await document.save()
+      setDocument(savedDocument)
+      return savedDocument
+    } catch (e) {
+      setError(e)
+      return null
+    }
+  }, [document])
+  return [document, saveDocument, loading, error]
 }
