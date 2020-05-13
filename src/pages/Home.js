@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useWebId } from "@solid/react"
-import { foaf } from 'rdf-namespaces'
+import { foaf, vcard } from 'rdf-namespaces'
 import { Form, Formik } from 'formik';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -26,17 +26,18 @@ const useStyles = makeStyles(theme => ({
 export default function HomePage(){
   const classes = useStyles();
   const webId = useWebId()
-  const { profileDocument, cultDocument } = useModel(webId)
+  const { profileDocument, cultDocument, passportDocument } = useModel(webId)
   const [ profileDoc ] = useDocument(profileDocument)
   const [ cultDoc, saveCult ] = useDocument(cultDocument)
+  const [ passportDoc, savePassport ] = useDocument(passportDocument)
   const cult = cultDoc && cultDoc.getSubject(`${cultDoc.asRef()}#cult`)
-  const followers = cult && cult.getAllRefs(foaf.member)
+  const followers = cult && cult.getAllRefs(vcard.hasMember)
   const addFollower = async (follower) => {
-    cult.addRef(foaf.member, follower)
+    cult.addRef(vcard.hasMember, follower)
     await saveCult()
   }
   const removeFollower = async (follower) => {
-    cult.removeRef(foaf.member, follower)
+    cult.removeRef(vcard.hasMember, follower)
     await saveCult()
   }
   return (
@@ -64,7 +65,9 @@ export default function HomePage(){
             {followers.map(follower => (
               <li key={follower}>
                 {follower}
-                <Button onClick={() => removeFollower(follower)}>Delete</Button>
+                <Button onClick={() => removeFollower(follower)}>
+                  Delete
+                </Button>
               </li>
             ))}
           </ul>
