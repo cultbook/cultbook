@@ -4,6 +4,7 @@ export const AddFollowerSchema = Yup.object().shape({
   follower: Yup.string().url()
 })
 
-export const SetCultNameSchema = Yup.object().shape({
-  name: Yup.string().min(1).max(66)
+export const CultSchema = Yup.object().shape({
+  name: Yup.string().min(1).max(66),
+  description: Yup.string().min(1).max(666)
 })

@@ -13,7 +13,7 @@ import { useModel, cb } from "../model"
 import { useDocument } from "../data"
 import LogoutButton from "../components/LogoutButton"
 import { TextField } from "../components/form"
-import { AddFollowerSchema, SetCultNameSchema } from "../validations"
+import { AddFollowerSchema, CultSchema } from "../validations"
 import { inviteFollower, deleteNotification } from "../services"
 
 const useStyles = makeStyles(theme => ({
@@ -92,9 +92,9 @@ function EditableCultName({cult, save}){
   }
   return editing ? (
     <Formik
-      initialValues={{name}}
+      initialValues={{name: name || ""}}
       onSubmit={({name}) => { setName(name) }}
-      validationSchema={SetCultNameSchema}
+      validationSchema={CultSchema}
     >
       <Form>
         <TextField name="name" type="text" placeholder="cult name"/>
@@ -105,6 +105,78 @@ function EditableCultName({cult, save}){
     <h3 onClick={() => setEditing(true)}>
       {name || "Set cult name"}
     </h3>
+  )
+}
+
+function EditableCultDescription({cult, save}){
+  const [editing, setEditing] = useState(false)
+  const description = cult && cult.getString(rdfs.comment)
+  const setDescription = async (newDescription) => {
+    if (description !== newDescription) {
+      cult.setString(rdfs.comment, newDescription)
+      await save()
+    }
+    setEditing(false)
+  }
+  return editing ? (
+    <Formik
+      initialValues={{description: description || ""}}
+      onSubmit={({description}) => { setDescription(description) }}
+      validationSchema={CultSchema}
+    >
+      <Form>
+        <TextField name="description" type="text" placeholder="cult description"/>
+        <Button type="submit">Set</Button>
+      </Form>
+    </Formik>
+  ) : (
+    <h3 onClick={() => setEditing(true)}>
+      {description || "Set cult description"}
+    </h3>
+  )
+}
+
+function Cult({cult, saveCult}){
+  const followers = cult && cult.getAllRefs(vcard.hasMember)
+  const addFollower = async (followerWebId) => {
+    cult.addRef(vcard.hasMember, followerWebId)
+    await saveCult()
+    await inviteFollower(followerWebId, cult.asRef())
+  }
+  const removeFollower = async (follower) => {
+    cult.removeRef(vcard.hasMember, follower)
+    await saveCult()
+  }
+  return (
+    <>
+      <EditableCultName cult={cult} save={saveCult}/>
+      <EditableCultDescription cult={cult} save={saveCult}/>
+      <Formik
+        initialValues={{follower: ""}}
+        onSubmit={({follower}) => {addFollower(follower)}}
+        validationSchema={AddFollowerSchema}
+      >
+        <Form>
+          <TextField name="follower" type="text"/>
+          <Button type="submit">Add a Follower</Button>
+        </Form>
+      </Formik>
+      {followers && (
+        <>
+          <h3>Followers</h3>
+          <ul>
+            {followers.map(follower => (
+              <li key={follower}>
+                {follower}
+                <Button onClick={() => removeFollower(follower)}>
+                  Delete
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </>
   )
 }
 
@@ -124,16 +196,6 @@ export default function HomePage(){
 
   const [ cult, saveCult ] = useCult(cultDocument)
 
-  const followers = cult && cult.getAllRefs(vcard.hasMember)
-  const addFollower = async (followerWebId) => {
-    cult.addRef(vcard.hasMember, followerWebId)
-    await saveCult()
-    await inviteFollower(followerWebId, cult.asRef())
-  }
-  const removeFollower = async (follower) => {
-    cult.removeRef(vcard.hasMember, follower)
-    await saveCult()
-  }
   return (
     <>
       <header className="App-header">
@@ -162,32 +224,7 @@ export default function HomePage(){
       )}
 
       <h2>Your Cult</h2>
-      {cult && <EditableCultName cult={cult} save={saveCult}/>}
-      <Formik
-        initialValues={{follower: ""}}
-        onSubmit={({follower}) => {addFollower(follower)}}
-        validationSchema={AddFollowerSchema}
-      >
-        <Form>
-          <TextField name="follower" type="text"/>
-          <Button type="submit">Add a Follower</Button>
-        </Form>
-      </Formik>
-      {followers && (
-        <>
-          <h3>Followers</h3>
-          <ul>
-            {followers.map(follower => (
-              <li key={follower}>
-                {follower}
-                <Button onClick={() => removeFollower(follower)}>
-                  Delete
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      {cult && <Cult cult={cult} saveCult={saveCult}/>}
       <LogoutButton/>
     </>
   )
