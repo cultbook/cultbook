@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react"
 import { describeSubject, describeDocument, describeContainer} from "plandoc"
-import { space, solid, rdf } from "rdf-namespaces";
+import { space, solid, rdf, ldp } from "rdf-namespaces"
 
-
-const Cult = "https://thecultbook.com/ontology#Cult"
-const Passport = "https://thecultbook.com/ontology#Passport"
+export const cb = {
+  Cult: "https://thecultbook.com/ontology#Cult",
+  Passport: "https://thecultbook.com/ontology#Passport",
+  follows: "https://thecultbook.com/ontology#follows"
+}
 
 export function useModel(webId){
   const [profileDocument, setProfileDocument] = useState()
+  const [inboxContainer, setInboxContainer] = useState()
   const [cultDocument, setCultDocument] = useState()
   const [passportDocument, setPassportDocument] = useState()
   useEffect(() => {
@@ -22,13 +25,17 @@ export function useModel(webId){
       const publicStorage = describeContainer().experimental_isContainedIn(storage, "public")
       const privateStorage = describeContainer().experimental_isContainedIn(storage, "private")
 
+      const inbox = describeContainer().isFoundOn(profileSubject, ldp.inbox)
+      setInboxContainer(inbox)
+
+
       const publicTypeIndex = describeDocument()
             .isFoundOn(profileSubject, solid.publicTypeIndex)
 
       const cultPublicTypeRegistration = describeSubject()
             .isEnsuredIn(publicTypeIndex)
             .withRef(rdf.type, solid.TypeRegistration)
-            .withRef(solid.forClass, Cult)
+            .withRef(solid.forClass, cb.Cult)
       const cultDoc = describeDocument()
             .isEnsuredOn(cultPublicTypeRegistration, solid.instance, publicStorage)
       setCultDocument(cultDoc)
@@ -36,11 +43,11 @@ export function useModel(webId){
       const passportPublicTypeRegistration = describeSubject()
             .isEnsuredIn(publicTypeIndex)
             .withRef(rdf.type, solid.TypeRegistration)
-            .withRef(solid.forClass, Passport)
+            .withRef(solid.forClass, cb.Passport)
       const passportDoc = describeDocument()
             .isEnsuredOn(passportPublicTypeRegistration, solid.instance, publicStorage)
       setPassportDocument(passportDoc)
     }
   }, [webId])
-  return { profileDocument, cultDocument, passportDocument }
+  return { profileDocument, cultDocument, passportDocument, inboxContainer }
 }
