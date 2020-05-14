@@ -136,21 +136,20 @@ function EditableCultDescription({cult, save}){
   )
 }
 
-function Cult({cult, saveCult}){
+function EditableCultFollowers({cult, save}){
   const followers = cult && cult.getAllRefs(vcard.hasMember)
   const addFollower = async (followerWebId) => {
     cult.addRef(vcard.hasMember, followerWebId)
-    await saveCult()
+    await save()
     await inviteFollower(followerWebId, cult.asRef())
   }
   const removeFollower = async (follower) => {
     cult.removeRef(vcard.hasMember, follower)
-    await saveCult()
+    await save()
   }
   return (
     <>
-      <EditableCultName cult={cult} save={saveCult}/>
-      <EditableCultDescription cult={cult} save={saveCult}/>
+      <h3>Followers</h3>
       <Formik
         initialValues={{follower: ""}}
         onSubmit={({follower}) => {addFollower(follower)}}
@@ -162,20 +161,27 @@ function Cult({cult, saveCult}){
         </Form>
       </Formik>
       {followers && (
-        <>
-          <h3>Followers</h3>
-          <ul>
-            {followers.map(follower => (
-              <li key={follower}>
-                {follower}
-                <Button onClick={() => removeFollower(follower)}>
-                  Delete
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </>
+        <ul>
+          {followers.map(follower => (
+            <li key={follower}>
+              {follower}
+              <Button onClick={() => removeFollower(follower)}>
+                Delete
+              </Button>
+            </li>
+          ))}
+        </ul>
       )}
+    </>
+  )
+}
+
+function Cult({cult, saveCult}){
+  return (
+    <>
+      <EditableCultName cult={cult} save={saveCult}/>
+      <EditableCultDescription cult={cult} save={saveCult}/>
+      <EditableCultFollowers cult={cult} save={saveCult}/>
     </>
   )
 }
