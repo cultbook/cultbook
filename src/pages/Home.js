@@ -26,13 +26,53 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+class Cult {
+  constructor(document, save) {
+    this.document = document
+    this.subject = document.getSubject(`${document.asRef()}#cult`)
+    this.save = save
+  }
+
+  get name() {
+    return this.subject.getString(rdfs.label)
+  }
+
+  set name(newName) {
+    this.subject.setString(rdfs.label, newName)
+  }
+
+  get description() {
+    return this.subject.getString(rdfs.comment)
+  }
+
+  set description(newComment) {
+    this.subject.setString(rdfs.comment, newComment)
+  }
+
+  get followers() {
+    return this.subject.getAllRefs(vcard.hasMember)
+  }
+
+  removeFollower(followerWebId) {
+    this.subject.removeRef(vcard.hasMember, followerWebId)
+  }
+
+  addFollower(followerWebId) {
+    this.subject.addRef(vcard.hasMember, followerWebId)
+  }
+
+  asRef() {
+    return this.subject.asRef()
+  }
+}
+
 function useCult(cultDocument){
   const [cultDoc, save, loading, error] = useDocument(cultDocument)
   const cult = useMemo(
-    () => cultDoc && cultDoc.getSubject(`${cultDoc.asRef()}#cult`),
+    () => cultDoc && new Cult(cultDoc, save),
     [cultDoc]
   )
-  return [ cult,  save, loading, error ]
+  return [ cult, loading, error ]
 }
 
 function usePassport(passportDocument){
@@ -82,11 +122,11 @@ function Notification({uri}){
 
 function EditableCultName({cult, save}){
   const [editing, setEditing] = useState(false)
-  const name = cult && cult.getString(rdfs.label)
+  const name = cult && cult.name
   const setName = async (newName) => {
     if (name !== newName) {
-      cult.setString(rdfs.label, newName)
-      await save()
+      cult.name = newName
+      await cult.save()
     }
     setEditing(false)
   }
@@ -108,13 +148,13 @@ function EditableCultName({cult, save}){
   )
 }
 
-function EditableCultDescription({cult, save}){
+function EditableCultDescription({cult}){
   const [editing, setEditing] = useState(false)
-  const description = cult && cult.getString(rdfs.comment)
+  const description = cult && cult.description
   const setDescription = async (newDescription) => {
     if (description !== newDescription) {
-      cult.setString(rdfs.comment, newDescription)
-      await save()
+      cult.description = newDescription
+      await cult.save()
     }
     setEditing(false)
   }
@@ -130,26 +170,26 @@ function EditableCultDescription({cult, save}){
       </Form>
     </Formik>
   ) : (
-    <h3 onClick={() => setEditing(true)}>
+    <p onClick={() => setEditing(true)}>
       {description || "Set cult description"}
-    </h3>
+    </p>
   )
 }
 
-function EditableCultFollowers({cult, save}){
-  const followers = cult && cult.getAllRefs(vcard.hasMember)
+function EditableCultFollowers({cult}){
+  const followers = cult && cult.followers
   const addFollower = async (followerWebId) => {
-    cult.addRef(vcard.hasMember, followerWebId)
-    await save()
+    cult.addFollower(followerWebId)
+    await cult.save()
     await inviteFollower(followerWebId, cult.asRef())
   }
-  const removeFollower = async (follower) => {
-    cult.removeRef(vcard.hasMember, follower)
-    await save()
+  const removeFollower = async (followerWebId) => {
+    cult.removeFollower(followerWebId)
+    await cult.save()
   }
   return (
     <>
-      <h3>Followers</h3>
+      <h4>Followers</h4>
       <Formik
         initialValues={{follower: ""}}
         onSubmit={({follower}) => {addFollower(follower)}}
@@ -176,12 +216,12 @@ function EditableCultFollowers({cult, save}){
   )
 }
 
-function Cult({cult, saveCult}){
+function CultInfo({cult}){
   return (
     <>
-      <EditableCultName cult={cult} save={saveCult}/>
-      <EditableCultDescription cult={cult} save={saveCult}/>
-      <EditableCultFollowers cult={cult} save={saveCult}/>
+      <EditableCultName cult={cult}/>
+      <EditableCultDescription cult={cult}/>
+      <EditableCultFollowers cult={cult}/>
     </>
   )
 }
@@ -200,7 +240,7 @@ export default function HomePage(){
   const [ passport, savePassport ] = usePassport(passportDocument)
   const following = passport && passport.getAllRefs(cb.follows)
 
-  const [ cult, saveCult ] = useCult(cultDocument)
+  const [ cult ] = useCult(cultDocument)
 
   return (
     <>
@@ -230,7 +270,7 @@ export default function HomePage(){
       )}
 
       <h2>Your Cult</h2>
-      {cult && <Cult cult={cult} saveCult={saveCult}/>}
+      {cult && <CultInfo cult={cult} />}
       <LogoutButton/>
     </>
   )
