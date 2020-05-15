@@ -9,6 +9,7 @@ export const cb = {
   Passport: `${prefix}Passport`,
   follows: `${prefix}follows`,
   convening: `${prefix}convening`,
+  demands: `${prefix}demands`
 }
 
 export function useModel(webId){

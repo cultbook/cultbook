@@ -13,7 +13,7 @@ import { useModel, cb } from "../model"
 import { useDocument } from "../data"
 import LogoutButton from "../components/LogoutButton"
 import { TextField } from "../components/form"
-import { AddFollowerSchema, CultSchema, RitualSchema } from "../validations"
+import { AddFollowerSchema, CultSchema, RitualSchema, RuleSchema } from "../validations"
 import { inviteFollower, deleteNotification } from "../services"
 
 const useStyles = makeStyles(theme => ({
@@ -25,6 +25,34 @@ const useStyles = makeStyles(theme => ({
     fontSize: "6.6vw"
   }
 }))
+
+class Rule {
+  constructor(document, subject, save) {
+    this.document = document
+    this.subject = subject
+    this.save = save
+  }
+
+  asRef() {
+    return this.subject.asRef()
+  }
+
+  get name() {
+    return this.subject.getString(rdfs.label)
+  }
+
+  set name(newName) {
+    this.subject.setString(rdfs.label, newName)
+  }
+
+  get description() {
+    return this.subject.getString(rdfs.comment)
+  }
+
+  set description(newComment) {
+    this.subject.setString(rdfs.comment, newComment)
+  }
+}
 
 class Ritual {
   constructor(document, subject, save) {
@@ -111,6 +139,24 @@ class Cult {
     this.subject.addRef(cb.convening, ritual.asRef())
   }
 
+  get rules() {
+    return this.subject.getAllRefs(cb.demands).map(
+      ruleRef => new Rule(this.document, this.document.getSubject(ruleRef), this.save)
+    )
+  }
+
+  removeRule(rule) {
+    this.subject.removeRef(cb.demands, rule.asRef())
+    this.document.removeSubject(rule.asRef())
+  }
+
+  addRule(name, description) {
+    const rule = new Rule(this.document, this.document.addSubject(), this.save)
+    rule.name = name
+    rule.description = description
+    this.subject.addRef(cb.demands, rule.asRef())
+  }
+
   asRef() {
     return this.subject.asRef()
   }
@@ -120,7 +166,7 @@ function useCult(cultDocument){
   const [cultDoc, save, loading, error] = useDocument(cultDocument)
   const cult = useMemo(
     () => cultDoc && new Cult(cultDoc, save),
-    [cultDoc]
+    [cultDoc, save]
   )
   return [ cult, loading, error ]
 }
@@ -187,13 +233,13 @@ function EditableName({entity, schema}){
       validationSchema={schema}
     >
       <Form>
-        <TextField name="name" type="text" placeholder="name"/>
-        <Button type="submit">Set</Button>
+        <TextField name="name" type="text" placeholder="name" autoFocus/>
+        <Button type="submit">save</Button>
       </Form>
     </Formik>
   ) : (
     <h3 onClick={() => setEditing(true)}>
-      {name || "set name"}
+      {name || "click to set name"}
     </h3>
   )
 }
@@ -215,13 +261,13 @@ function EditableDescription({entity, schema}){
       validationSchema={schema}
     >
       <Form>
-        <TextField name="description" type="text" placeholder="cult description"/>
-        <Button type="submit">Set</Button>
+        <TextField name="description" type="text" placeholder="description" autoFocus/>
+        <Button type="submit">save</Button>
       </Form>
     </Formik>
   ) : (
     <p onClick={() => setEditing(true)}>
-      {description || "set description"}
+      {description || "click to set description"}
     </p>
   )
 }
@@ -299,9 +345,54 @@ function EditableCultRituals({cult}){
         <ul>
           {rituals.map(ritual => (
             <li key={ritual.asRef()}>
-              <EditableName entity={ritual}/>
-              <EditableDescription entity={ritual}/>
+              <EditableName entity={ritual} schema={RitualSchema}/>
+              <EditableDescription entity={ritual} schema={RitualSchema}/>
               <Button onClick={() => removeRitual(ritual)}>
+                Delete
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  )
+}
+
+function EditableCultRules({cult}){
+  const rules = cult && cult.rules
+  const addRule = async (name, description) => {
+    cult.addRule(name, description)
+    await cult.save()
+  }
+  const removeRule = async (rule) => {
+    cult.removeRule(rule)
+    await cult.save()
+  }
+  const submitAddRule = async ({name, description}, {resetForm}) => {
+    await addRule(name, description)
+    resetForm()
+  }
+  return (
+    <>
+      <h4>Rules</h4>
+      <Formik
+        initialValues={{name: "", description: ""}}
+        onSubmit={submitAddRule}
+        validationSchema={RuleSchema}
+      >
+        <Form>
+          <TextField name="name" type="text" placeholder="name"/>
+          <TextField name="description" type="text" placeholder="description"/>
+          <Button type="submit">Add a Rule</Button>
+        </Form>
+      </Formik>
+      {rules && (
+        <ul>
+          {rules.map(rule => (
+            <li key={rule.asRef()}>
+              <EditableName entity={rule} schema={RuleSchema}/>
+              <EditableDescription entity={rule} schema={RuleSchema}/>
+              <Button onClick={() => removeRule(rule)}>
                 Delete
               </Button>
             </li>
@@ -315,9 +406,10 @@ function EditableCultRituals({cult}){
 function CultInfo({cult}){
   return (
     <>
-      <EditableName entity={cult}/>
-      <EditableDescription entity={cult}/>
+      <EditableName entity={cult} schema={CultSchema}/>
+      <EditableDescription entity={cult} schema={CultSchema}/>
       <EditableCultRituals cult={cult} />
+      <EditableCultRules cult={cult} />
       <EditableCultFollowers cult={cult}/>
     </>
   )
