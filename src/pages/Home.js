@@ -183,7 +183,7 @@ function usePassport(passportDocument){
 function NotificationCultDetails({cultUri}){
   const cultDocument = useMemo(() => describeDocument().isFoundAt(cultUri), [cultUri])
   const [ cult ] = useCult(cultDocument)
-  const name = cult && cult.getString(rdfs.label)
+  const name = cult && cult.name
 
   return (
     <div>
