@@ -13,7 +13,7 @@ import { useModel, cb } from "../model"
 import { useDocument } from "../data"
 import LogoutButton from "../components/LogoutButton"
 import { TextField } from "../components/form"
-import { AddFollowerSchema, CultSchema } from "../validations"
+import { AddFollowerSchema, CultSchema, RitualSchema } from "../validations"
 import { inviteFollower, deleteNotification } from "../services"
 
 const useStyles = makeStyles(theme => ({
@@ -25,6 +25,34 @@ const useStyles = makeStyles(theme => ({
     fontSize: "6.6vw"
   }
 }))
+
+class Ritual {
+  constructor(document, subject, save) {
+    this.document = document
+    this.subject = subject
+    this.save = save
+  }
+
+  asRef() {
+    return this.subject.asRef()
+  }
+
+  get name() {
+    return this.subject.getString(rdfs.label)
+  }
+
+  set name(newName) {
+    this.subject.setString(rdfs.label, newName)
+  }
+
+  get description() {
+    return this.subject.getString(rdfs.comment)
+  }
+
+  set description(newComment) {
+    this.subject.setString(rdfs.comment, newComment)
+  }
+}
 
 class Cult {
   constructor(document, save) {
@@ -59,6 +87,28 @@ class Cult {
 
   addFollower(followerWebId) {
     this.subject.addRef(vcard.hasMember, followerWebId)
+  }
+
+  get convening() {
+    return this.subject.getAllRefs(cb.convening)
+  }
+
+  get rituals() {
+    return this.subject.getAllRefs(cb.convening).map(
+      ritualRef => new Ritual(this.document, this.document.getSubject(ritualRef), this.save)
+    )
+  }
+
+  removeRitual(ritual) {
+    this.subject.removeRef(cb.convening, ritual.asRef())
+    this.document.removeSubject(ritual.asRef())
+  }
+
+  addRitual(name, description) {
+    const ritual = new Ritual(this.document, this.document.addSubject(), this.save)
+    ritual.name = name
+    ritual.description = description
+    this.subject.addRef(cb.convening, ritual.asRef())
   }
 
   asRef() {
@@ -120,13 +170,13 @@ function Notification({uri}){
   )
 }
 
-function EditableCultName({cult, save}){
+function EditableName({entity, schema}){
   const [editing, setEditing] = useState(false)
-  const name = cult && cult.name
+  const name = entity && entity.name
   const setName = async (newName) => {
     if (name !== newName) {
-      cult.name = newName
-      await cult.save()
+      entity.name = newName
+      await entity.save()
     }
     setEditing(false)
   }
@@ -134,27 +184,27 @@ function EditableCultName({cult, save}){
     <Formik
       initialValues={{name: name || ""}}
       onSubmit={({name}) => { setName(name) }}
-      validationSchema={CultSchema}
+      validationSchema={schema}
     >
       <Form>
-        <TextField name="name" type="text" placeholder="cult name"/>
+        <TextField name="name" type="text" placeholder="name"/>
         <Button type="submit">Set</Button>
       </Form>
     </Formik>
   ) : (
     <h3 onClick={() => setEditing(true)}>
-      {name || "Set cult name"}
+      {name || "set name"}
     </h3>
   )
 }
 
-function EditableCultDescription({cult}){
+function EditableDescription({entity, schema}){
   const [editing, setEditing] = useState(false)
-  const description = cult && cult.description
+  const description = entity && entity.description
   const setDescription = async (newDescription) => {
     if (description !== newDescription) {
-      cult.description = newDescription
-      await cult.save()
+      entity.description = newDescription
+      await entity.save()
     }
     setEditing(false)
   }
@@ -162,7 +212,7 @@ function EditableCultDescription({cult}){
     <Formik
       initialValues={{description: description || ""}}
       onSubmit={({description}) => { setDescription(description) }}
-      validationSchema={CultSchema}
+      validationSchema={schema}
     >
       <Form>
         <TextField name="description" type="text" placeholder="cult description"/>
@@ -171,7 +221,7 @@ function EditableCultDescription({cult}){
     </Formik>
   ) : (
     <p onClick={() => setEditing(true)}>
-      {description || "Set cult description"}
+      {description || "set description"}
     </p>
   )
 }
@@ -196,7 +246,7 @@ function EditableCultFollowers({cult}){
         validationSchema={AddFollowerSchema}
       >
         <Form>
-          <TextField name="follower" type="text"/>
+          <TextField name="follower" type="text" placeholder="webid"/>
           <Button type="submit">Add a Follower</Button>
         </Form>
       </Formik>
@@ -216,11 +266,58 @@ function EditableCultFollowers({cult}){
   )
 }
 
+
+function EditableCultRituals({cult}){
+  const rituals = cult && cult.rituals
+  const addRitual = async (name, description) => {
+    cult.addRitual(name, description)
+    await cult.save()
+  }
+  const removeRitual = async (ritual) => {
+    cult.removeRitual(ritual)
+    await cult.save()
+  }
+  const submitAddRitual = async ({name, description}, {resetForm}) => {
+    await addRitual(name, description)
+    resetForm()
+  }
+  return (
+    <>
+      <h4>Rituals</h4>
+      <Formik
+        initialValues={{name: "", description: ""}}
+        onSubmit={submitAddRitual}
+        validationSchema={RitualSchema}
+      >
+        <Form>
+          <TextField name="name" type="text" placeholder="name"/>
+          <TextField name="description" type="text" placeholder="description"/>
+          <Button type="submit">Add a Ritual</Button>
+        </Form>
+      </Formik>
+      {rituals && (
+        <ul>
+          {rituals.map(ritual => (
+            <li key={ritual.asRef()}>
+              <EditableName entity={ritual}/>
+              <EditableDescription entity={ritual}/>
+              <Button onClick={() => removeRitual(ritual)}>
+                Delete
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  )
+}
+
 function CultInfo({cult}){
   return (
     <>
-      <EditableCultName cult={cult}/>
-      <EditableCultDescription cult={cult}/>
+      <EditableName entity={cult}/>
+      <EditableDescription entity={cult}/>
+      <EditableCultRituals cult={cult} />
       <EditableCultFollowers cult={cult}/>
     </>
   )

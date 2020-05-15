@@ -2,10 +2,13 @@ import { useState, useEffect } from "react"
 import { describeSubject, describeDocument, describeContainer} from "plandoc"
 import { space, solid, rdf, ldp } from "rdf-namespaces"
 
+const prefix = "https://thecultbook.com/ontology#"
+
 export const cb = {
-  Cult: "https://thecultbook.com/ontology#Cult",
-  Passport: "https://thecultbook.com/ontology#Passport",
-  follows: "https://thecultbook.com/ontology#follows"
+  Cult: `${prefix}Cult`,
+  Passport: `${prefix}Passport`,
+  follows: `${prefix}follows`,
+  convening: `${prefix}convening`,
 }
 
 export function useModel(webId){
