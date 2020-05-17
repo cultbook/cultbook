@@ -13,17 +13,11 @@ import { useModel, cb } from "../model"
 import { useDocument } from "../data"
 import LogoutButton from "../components/LogoutButton"
 import { TextField } from "../components/form"
+import DefaultLayout from "../layouts/Default"
 import { AddFollowerSchema, CultSchema, RitualSchema, RuleSchema } from "../validations"
 import { inviteFollower, deleteNotification } from "../services"
 
 const useStyles = makeStyles(theme => ({
-  logo: {
-    fontFamily: "gothicus, serif",
-    color: "#ac5858",
-    marginTop: 0,
-    marginBottom: 0,
-    fontSize: "6.6vw"
-  }
 }))
 
 class Rule {
@@ -432,10 +426,7 @@ export default function HomePage(){
   const [ cult ] = useCult(cultDocument)
 
   return (
-    <>
-      <header className="App-header">
-        <h1 className={classes.logo}>cultbook</h1>
-      </header>
+    <DefaultLayout>
       <h2>
         Welcome, {profileDoc && profileDoc.getSubject(webId).getString(foaf.name)}
       </h2>
@@ -461,6 +452,6 @@ export default function HomePage(){
       <h2>Your Cult</h2>
       {cult && <CultInfo cult={cult} />}
       <LogoutButton/>
-    </>
+    </DefaultLayout>
   )
 }
