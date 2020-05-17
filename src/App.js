@@ -10,6 +10,7 @@ import { AuthProvider } from "./context/auth"
 import LandingPage from "./pages/Landing"
 import HomePage from "./pages/Home"
 import MePage from "./pages/Me"
+import MyCultPage from "./pages/MyCult"
 import CultPage from "./pages/Cult"
 import Loader from "./components/Loader"
 import theme from './theme'
@@ -52,6 +53,7 @@ function App() {
       <CssBaseline/>
       <div className={classes.app}>
         <Switch>
+          <PrivateRoute path="/me/cult" component={MyCultPage}/>
           <PrivateRoute path="/me" component={MePage}/>
           <Route path="/cult/:encodedCultRef" component={CultPage}/>
           <Route path="/" component={RootPage}/>
