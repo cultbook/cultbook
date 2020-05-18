@@ -88,6 +88,10 @@ export class Profile {
   get inbox(){
     return this.subject.getRef(ldp.inbox)
   }
+
+  asRef() {
+    return this.subject.asRef()
+  }
 }
 
 export class Cult {

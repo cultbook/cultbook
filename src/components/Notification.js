@@ -7,7 +7,7 @@ import { describeDocument } from "plandoc"
 import Button from '@material-ui/core/Button';
 
 import { useModel, cb, Cult, Rule, Ritual } from "../model"
-import { useDocument, useCult, usePassport, useNotification } from "../data"
+import { useDocument, useCult, usePassport, useNotification, useProfileByWebId, useCultByRef } from "../data"
 import { as } from "../vocab"
 import { inviteFollower, deleteNotification } from "../services"
 import Loader from "../components/Loader"
@@ -76,9 +76,36 @@ function CreatedNotification({notification}){
   )
 }
 
+function ApplicationNotification({notification}){
+  console.log("FOO", notification && notification.actor)
+  const [ profile ] = useProfileByWebId(notification && notification.actor)
+  console.log(profile)
+
+  const [ cult ] = useCultByRef(notification && notification.object)
+
+  const webId = useWebId()
+  const { passportDocument } = useModel(webId)
+  const [ passport ] = usePassport(passportDocument)
+  const approveApplication = async () => {
+    cult.addMember(profile.asRef())
+    await cult.save()
+    await deleteNotification(notification.asRef())
+  }
+  return (
+    <div>
+      <h4>{notification && notification.name}</h4>
+      <h5>{notification && notification.description}</h5>
+      <h5>Applicant: {profile && profile.name}</h5>
+      <Button onClick={() => approveApplication()}>accept application</Button>
+      <Button onClick={() => deleteNotification(notification.asRef())}>deny application</Button>
+    </div>
+  )
+}
+
 const typesToNotificationComponents = {
   [as.Invite]: InviteNotification,
-  [as.Create]: CreatedNotification
+  [as.Create]: CreatedNotification,
+  [as.Follow]: ApplicationNotification
 }
 
 function notificationComponentForType(type){

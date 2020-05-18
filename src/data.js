@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { fetchDocument, describeDocument } from "plandoc"
 import { useWebId } from "@solid/react"
-import { Cult, Passport, Notification, useModel, wwwCultWebId } from "./model"
+import { Cult, Passport, Notification, Profile, useModel, wwwCultWebId } from "./model"
 
 export function useDocument(virtualDocument){
   const [document, setDocument] = useState()
@@ -77,4 +77,11 @@ export function useNotification(uri){
   const [ notificationDoc, save, loading, error ] = useDocument(notificationDocument)
   const notification = notificationDoc && new Notification(notificationDoc)
   return [notification, loading, error]
+}
+
+export function useProfileByWebId(uri){
+  const profileDocument = useMemo(() => describeDocument().isFoundAt(uri), [uri])
+  const [ profileDoc, save, loading, error ] = useDocument(profileDocument)
+  const profile = profileDoc && new Profile(profileDoc)
+  return [profile, loading, error]
 }
