@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react"
-import { fetchDocument } from "plandoc"
+import { useState, useEffect, useCallback, useMemo } from "react"
+import { fetchDocument, describeDocument } from "plandoc"
+
+import { Cult } from "./model"
 
 export function useDocument(virtualDocument){
   const [document, setDocument] = useState()
@@ -17,5 +19,44 @@ export function useDocument(virtualDocument){
     }
     if (virtualDocument) loadDocument()
   }, [virtualDocument])
-  return [document, loading, error]
+
+  const saveDocument = useCallback(async () => {
+    try {
+      const savedDocument = await document.save()
+      setDocument(savedDocument)
+      return savedDocument
+    } catch (e) {
+      setError(e)
+      return null
+    }
+  }, [document])
+  return [document, saveDocument, loading, error]
+}
+
+export function useCult(cultDocument){
+  const [cultDoc, save, loading, error] = useDocument(cultDocument)
+  const cult = useMemo(
+    () => cultDoc && new Cult(cultDoc, save),
+    [cultDoc, save]
+  )
+  return [ cult, loading, error ]
+}
+
+export function useCultByRef(cultRef) {
+  const [document, setDocument] = useState()
+  useEffect(() => {
+    if (cultRef){
+      setDocument(describeDocument().isFoundAt(cultRef))
+    }
+  }, [cultRef])
+  return useCult(document)
+}
+
+export function usePassport(passportDocument){
+  const [ passportDoc, save, loading, error ] = useDocument(passportDocument)
+  const passport = useMemo(
+    () => passportDoc && passportDoc.getSubject(`${passportDoc.asRef()}#passport`),
+    [passportDoc]
+  )
+  return [ passport, save, loading, error ]
 }
