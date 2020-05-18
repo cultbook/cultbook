@@ -14,6 +14,7 @@ import { useModel, cb, Cult, Rule, Ritual } from "../model"
 import { useDocument, useCult, usePassport } from "../data"
 import LogoutButton from "../components/LogoutButton"
 import Link from "../components/Link"
+import ButtonLink from '../components/ButtonLink'
 import { TextField } from "../components/form"
 import DefaultLayout from "../layouts/Default"
 import { AddFollowerSchema, CultSchema, RitualSchema, RuleSchema } from "../validations"
@@ -44,10 +45,10 @@ export default function HomePage(){
         </h2>
       </Grid>
       <Grid item xs={12}>
-        <Button component={Link} to="/me">Me</Button>
+        <ButtonLink to="/me">Me</ButtonLink>
       </Grid>
       <Grid item xs={12}>
-        <Button component={Link} to="/me/cult">My Cult</Button>
+        <ButtonLink to="/me/cult">My Cult</ButtonLink>
       </Grid>
       <Grid item xs={12}>
         {following && (

@@ -11,7 +11,7 @@ import LandingPage from "./pages/Landing"
 import HomePage from "./pages/Home"
 import MePage from "./pages/Me"
 import MyCultPage from "./pages/MyCult"
-import CultPage from "./pages/Cult"
+import { CultPageByEncodedRef } from "./pages/Cult"
 import Loader from "./components/Loader"
 import theme from './theme'
 
@@ -55,7 +55,7 @@ function App() {
         <Switch>
           <PrivateRoute path="/me/cult" component={MyCultPage}/>
           <PrivateRoute path="/me" component={MePage}/>
-          <Route path="/cult/:encodedCultRef" component={CultPage}/>
+          <Route path="/cult/:encodedCultRef" component={CultPageByEncodedRef}/>
           <Route path="/" component={RootPage}/>
         </Switch>
       </div>

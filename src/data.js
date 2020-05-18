@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
-
-import { fetchDocument } from "plandoc"
+import { fetchDocument, describeDocument } from "plandoc"
 
 import { Cult } from "./model"
 
@@ -41,6 +40,16 @@ export function useCult(cultDocument){
     [cultDoc, save]
   )
   return [ cult, loading, error ]
+}
+
+export function useCultByRef(cultRef) {
+  const [document, setDocument] = useState()
+  useEffect(() => {
+    if (cultRef){
+      setDocument(describeDocument().isFoundAt(cultRef))
+    }
+  }, [cultRef])
+  return useCult(document)
 }
 
 export function usePassport(passportDocument){

@@ -15,6 +15,7 @@ import { as } from "../vocab"
 import { useModel, cb, Cult, Rule, Ritual } from "../model"
 import { useDocument, useCult, usePassport } from "../data"
 import LogoutButton from "../components/LogoutButton"
+import ButtonLink from "../components/ButtonLink"
 import { TextField } from "../components/form"
 import { AddFollowerSchema, CultSchema, RitualSchema, RuleSchema } from "../validations"
 import { inviteFollower, deleteNotification } from "../services"
@@ -241,6 +242,9 @@ export default function MePage(){
     <DefaultLayout>
       <Grid item xs={12}>
         <h2>Your Cult</h2>
+      </Grid>
+      <Grid item xs={12}>
+        <ButtonLink to={cult && `/cult/${encodeURIComponent(cult.asRef())}`}>Public Page</ButtonLink>
       </Grid>
       {cult && <CultInfo cult={cult} />}
     </DefaultLayout>
