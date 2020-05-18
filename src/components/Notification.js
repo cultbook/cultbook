@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 
-import { rdfs, foaf, vcard, ldp } from 'rdf-namespaces'
+import { rdfs } from 'rdf-namespaces'
 import { useWebId } from "@solid/react"
 import { describeDocument } from "plandoc"
 

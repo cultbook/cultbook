@@ -1,8 +1,7 @@
-import React, { useMemo, useState } from 'react'
+import React from 'react'
 
 import { useWebId } from "@solid/react"
-import { rdfs, foaf, vcard, ldp } from 'rdf-namespaces'
-import { Form, Formik } from 'formik';
+import { foaf, ldp } from 'rdf-namespaces'
 import { describeDocument } from "plandoc"
 
 import { makeStyles } from '@material-ui/core/styles';
