@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react"
-import { describeSubject, describeDocument, describeContainer} from "plandoc"
-import { space, solid, rdf, rdfs, ldp, vcard } from "rdf-namespaces"
+import { describeSubject, describeDocument, describeContainer, fetchDocument } from "plandoc"
+import * as td from "tripledoc";
+import { space, solid, rdf, rdfs, ldp, vcard, foaf } from "rdf-namespaces"
+import { as } from "./vocab"
+import { postToInbox } from "./services"
+
 
 const prefix = "https://thecultbook.com/ontology#"
 
@@ -12,6 +16,11 @@ export const cb = {
   demands: `${prefix}demands`,
   knowsAbout: `${prefix}knowsAbout`
 }
+
+//const wwwCultRoot = "https://cultofwww.solid.thecultbook.com"
+const wwwCultRoot = "https://cultofwww.inrupt.net"
+export const wwwCultWebId = `${wwwCultRoot}/profile/card#me`
+export const wwwCultInbox = `${wwwCultRoot}/inbox`
 
 export class Rule {
   constructor(document, subject, save) {
@@ -66,6 +75,18 @@ export class Ritual {
 
   set description(newComment) {
     this.subject.setString(rdfs.comment, newComment)
+  }
+}
+
+export class Profile {
+  constructor(document, save) {
+    this.document = document
+    this.subject = document.getSubject(`${document.asRef()}#me`)
+    this.save = save
+  }
+
+  get inbox(){
+    return this.subject.getRef(ldp.inbox)
   }
 }
 
@@ -148,6 +169,62 @@ export class Cult {
     this.subject.addRef(cb.demands, rule.asRef())
   }
 
+  get ownerWebId(){
+    return this.subject.getRef(foaf.maker)
+  }
+
+  get created(){
+    return !!this.ownerWebId
+  }
+
+  async notifyCultOfWWWOfCreation(creator){
+    const response = await postToInbox(wwwCultInbox, `
+@prefix inv: <>.
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+inv: a as:Create;
+    rdfs:label "Our power grows!";
+    rdfs:comment "Another cult has been formed.";
+    as:actor <${creator}>;
+    as:object <${this.asRef()}>.
+`)
+  }
+
+  async create(creator){
+    this.subject.setRef(foaf.maker, creator)
+    await this.save()
+    await this.notifyCultOfWWWOfCreation(creator)
+  }
+
+  async maybeFetchOwnerProfileDocument() {
+    if (!this._ownerProfileDocument) {
+      this._ownerProfileDocument = await td.fetchDocument(this.ownerWebId)
+    }
+    return this._ownerProfileDocument
+  }
+
+  async getOwner(){
+    return new Profile(await this.maybeFetchOwnerProfileDocument())
+  }
+
+  async applyToJoin(followerWebId){
+    const owner = await this.getOwner()
+    const response = await postToInbox(owner.inbox, `
+@prefix inv: <>.
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+inv: a as:Follow;
+    rdfs:label "IS THERE ROOM FOR ONE MORE?";
+    rdfs:comment "You have a new follower.";
+    as:actor <${followerWebId}>;
+    as:object <${this.asRef()}>.
+`)
+  }
+
   asRef() {
     return this.subject.asRef()
   }
@@ -182,6 +259,38 @@ export class Passport {
 
   removeFollowing(cultRef){
     this.subject.removeRef(cb.follows, cultRef)
+  }
+}
+
+export class Notification {
+  constructor(document, save) {
+    this.document = document
+    this.subject = document.getSubject(document.asRef())
+    this.save = save
+  }
+
+  asRef() {
+    return this.subject.asRef()
+  }
+
+  get name(){
+    return this.subject.getString(rdfs.label)
+  }
+
+  get description(){
+    return this.subject.getString(rdfs.comment)
+  }
+
+  get object(){
+    return this.subject.getRef(as.object)
+  }
+
+  get actor(){
+    return this.subject.getRef(as.actor)
+  }
+
+  get type(){
+    return this.subject.getRef(rdfs.type)
   }
 }
 

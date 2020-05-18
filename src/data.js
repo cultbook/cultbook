@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { fetchDocument, describeDocument } from "plandoc"
 import { useWebId } from "@solid/react"
-import { Cult, Passport, useModel } from "./model"
+import { Cult, Passport, Notification, useModel, wwwCultWebId } from "./model"
 
 export function useDocument(virtualDocument){
   const [document, setDocument] = useState()
@@ -61,8 +61,6 @@ export function usePassport(passportDocument){
   return [ passport, loading, error ]
 }
 
-const wwwCultWebId = "https://cultofwww.solid.thecultbook.com/profile/card#me"
-
 export function useCurrentUserIsWWWCult(){
   const webId = useWebId()
   return webId === undefined ? undefined : (webId === wwwCultWebId)
@@ -72,4 +70,11 @@ export function useKnownCults(){
   const { passportDocument } = useModel(wwwCultWebId)
   const [ passport, loading, error ] = usePassport(passportDocument)
   return [passport && passport.known, loading, error]
+}
+
+export function useNotification(uri){
+  const notificationDocument = useMemo(() => describeDocument().isFoundAt(uri), [uri])
+  const [ notificationDoc, save, loading, error ] = useDocument(notificationDocument)
+  const notification = notificationDoc && new Notification(notificationDoc)
+  return [notification, loading, error]
 }

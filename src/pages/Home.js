@@ -20,6 +20,7 @@ import Loader from "../components/Loader"
 import Link from "../components/Link"
 import ButtonLink from '../components/ButtonLink'
 import { TextField } from "../components/form"
+import MyCultLink from "../components/MyCultLink"
 import DefaultLayout from "../layouts/Default"
 import { AddFollowerSchema, CultSchema, RitualSchema, RuleSchema } from "../validations"
 import { inviteFollower, deleteNotification } from "../services"
@@ -27,8 +28,14 @@ import { inviteFollower, deleteNotification } from "../services"
 const useStyles = makeStyles(theme => ({
 }))
 
-function CultListItem({cultRef, follows, leave}) {
+function CultListItem({cultRef, follows, leave, passport}) {
+  const webId = useWebId()
   const [cult, loading] = useCultByRef(cultRef)
+  const apply = async () => {
+    passport.addFollowing(cult.asRef())
+    await passport.save()
+    await cult.applyToJoin(webId)
+  }
   return (
     <ListItem>
       <ListItemText>
@@ -36,7 +43,7 @@ function CultListItem({cultRef, follows, leave}) {
         {follows ? (
           <Link to={urls.cultByRef(cultRef)}>Enter Lair</Link>
         ) : (
-          <Button>Apply</Button>
+          <Button onClick={apply}>Apply</Button>
         )}
         {follows && <Button onClick={() => leave()}>Leave</Button>
         }
@@ -67,7 +74,9 @@ function KnownCults(){
         {cultRefs && cultRefs.map(cultRef => (
           <CultListItem key={cultRef} cultRef={cultRef}
                         follows={following.has(cultRef)}
-                        leave={() => leaveCult(cultRef)}/>
+                        leave={() => leaveCult(cultRef)}
+                        passport={passport}
+          />
         ))}
       </List>
     </>
@@ -85,6 +94,7 @@ export default function HomePage(){
 
   const inbox = inboxContainerDoc && inboxContainerDoc.getSubject(inboxContainerDoc.asRef())
   const notifications = inbox && inbox.getAllRefs(ldp.contains)
+  const [ cult ] = useCult(cultDocument)
 
   return (
     <DefaultLayout>
@@ -97,7 +107,7 @@ export default function HomePage(){
         <ButtonLink to="/me">Me</ButtonLink>
       </Grid>
       <Grid item xs={12}>
-        <ButtonLink to="/me/cult">My Cult</ButtonLink>
+        <MyCultLink cult={cult}/>
       </Grid>
       <Grid item xs={12}>
         <KnownCults/>
