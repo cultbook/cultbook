@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { fetchDocument, describeDocument } from "plandoc"
-
-import { Cult } from "./model"
+import { useWebId } from "@solid/react"
+import { Cult, Passport, useModel } from "./model"
 
 export function useDocument(virtualDocument){
   const [document, setDocument] = useState()
@@ -55,8 +55,21 @@ export function useCultByRef(cultRef) {
 export function usePassport(passportDocument){
   const [ passportDoc, save, loading, error ] = useDocument(passportDocument)
   const passport = useMemo(
-    () => passportDoc && passportDoc.getSubject(`${passportDoc.asRef()}#passport`),
+    () => passportDoc && new Passport(passportDoc, save),
     [passportDoc]
   )
-  return [ passport, save, loading, error ]
+  return [ passport, loading, error ]
+}
+
+const wwwCultWebId = "https://cultofwww.solid.thecultbook.com/profile/card#me"
+
+export function useCurrentUserIsWWWCult(){
+  const webId = useWebId()
+  return webId === undefined ? undefined : (webId === wwwCultWebId)
+}
+
+export function useKnownCults(){
+  const { passportDocument } = useModel(wwwCultWebId)
+  const [ passport, loading, error ] = usePassport(passportDocument)
+  return [passport && passport.known, loading, error]
 }

@@ -31,7 +31,6 @@ export default function DefaultLayout({children}) {
 
   const inbox = inboxContainerDoc && inboxContainerDoc.getSubject(inboxContainerDoc.asRef())
   const notifications = inbox && inbox.getAllRefs(ldp.contains)
-
   return (
     <Grid container className={classes.root} spacing={2}>
       <Grid item xs={12}>
@@ -44,7 +43,7 @@ export default function DefaultLayout({children}) {
           <>
             <h3>Notifications</h3>
             {notifications.map(notification => (
-              <Notification uri={notification}/>
+              <Notification uri={notification} key={notification}/>
             ))}
           </>
         )}

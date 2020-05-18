@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 
 import { as } from "../vocab"
 import { useModel, cb, Cult, Rule, Ritual } from "../model"
-import { useDocument, useCult, usePassport } from "../data"
+import { useDocument, useCult } from "../data"
 import LogoutButton from "../components/LogoutButton"
 import { TextField } from "../components/form"
 import { AddFollowerSchema, CultSchema, RitualSchema, RuleSchema } from "../validations"

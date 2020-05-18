@@ -1,7 +1,7 @@
 import * as Yup from "yup"
 
-export const AddFollowerSchema = Yup.object().shape({
-  follower: Yup.string().url()
+export const AddMemberSchema = Yup.object().shape({
+  member: Yup.string().url()
 })
 
 export const CultSchema = Yup.object().shape({

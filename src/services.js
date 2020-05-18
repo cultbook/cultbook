@@ -19,9 +19,9 @@ export const deleteDocument = async (uri) =>
 
 export const deleteNotification = async (uri) => deleteDocument(uri)
 
-export const inviteFollower = async (followerWebId, cultUri) => {
-  const profileDoc = await fetchDocument(followerWebId)
-  const profile = profileDoc && profileDoc.getSubject(followerWebId)
+export const inviteMember = async (memberWebId, cultUri) => {
+  const profileDoc = await fetchDocument(memberWebId)
+  const profile = profileDoc && profileDoc.getSubject(memberWebId)
   const inboxUri = profile && profile.getRef(ldp.inbox)
 
   const response = await postToInbox(inboxUri, `

@@ -9,7 +9,8 @@ export const cb = {
   Passport: `${prefix}Passport`,
   follows: `${prefix}follows`,
   convening: `${prefix}convening`,
-  demands: `${prefix}demands`
+  demands: `${prefix}demands`,
+  knowsAbout: `${prefix}knowsAbout`
 }
 
 export class Rule {
@@ -91,15 +92,19 @@ export class Cult {
     this.subject.setString(rdfs.comment, newComment)
   }
 
-  get followers() {
+  get members() {
     return this.subject.getAllRefs(vcard.hasMember)
   }
 
-  removeFollower(followerWebId) {
+  hasMember(followerWebId){
+    new Set(this.followers).has(followerWebId)
+  }
+
+  removeMember(followerWebId) {
     this.subject.removeRef(vcard.hasMember, followerWebId)
   }
 
-  addFollower(followerWebId) {
+  addMember(followerWebId) {
     this.subject.addRef(vcard.hasMember, followerWebId)
   }
 
@@ -145,6 +150,38 @@ export class Cult {
 
   asRef() {
     return this.subject.asRef()
+  }
+}
+
+export class Passport {
+  constructor(document, save) {
+    this.document = document
+    this.subject = document.getSubject(`${document.asRef()}#passport`)
+    this.save = save
+  }
+
+  asRef() {
+    return this.subject.asRef()
+  }
+
+  get known() {
+    return this.subject.getAllRefs(cb.knowsAbout)
+  }
+
+  addKnown(cultRef) {
+    this.subject.addRef(cb.knowsAbout, cultRef)
+  }
+
+  get following(){
+    return this.subject.getAllRefs(cb.follows)
+  }
+
+  addFollowing(cultRef){
+    this.subject.addRef(cb.follows, cultRef)
+  }
+
+  removeFollowing(cultRef){
+    this.subject.removeRef(cb.follows, cultRef)
   }
 }
 

@@ -1,20 +1,19 @@
 import React, {useState} from 'react'
 
-import { makeStyles } from '@material-ui/core/styles';
-
-import DefaultLayout from "../layouts/Default"
-
 import { useWebId } from "@solid/react"
 import { Form, Formik } from 'formik';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
 
+import DefaultLayout from "../layouts/Default"
 import { useModel } from "../model"
 import { useCult } from "../data"
+import * as urls from "../urls"
 import ButtonLink from "../components/ButtonLink"
 import { TextField } from "../components/form"
-import { AddFollowerSchema, CultSchema, RitualSchema, RuleSchema } from "../validations"
-import { inviteFollower } from "../services"
+import { AddMemberSchema, CultSchema, RitualSchema, RuleSchema } from "../validations"
+import { inviteMember } from "../services"
 
 
 const useStyles = makeStyles(theme => ({
@@ -76,36 +75,36 @@ function EditableDescription({entity, schema}){
   )
 }
 
-function EditableCultFollowers({cult}){
-  const followers = cult && cult.followers
-  const addFollower = async (followerWebId) => {
-    cult.addFollower(followerWebId)
+function EditableCultMembers({cult}){
+  const members = cult && cult.members
+  const addMember = async (memberWebId) => {
+    cult.addMember(memberWebId)
     await cult.save()
-    await inviteFollower(followerWebId, cult.asRef())
+    await inviteMember(memberWebId, cult.asRef())
   }
-  const removeFollower = async (followerWebId) => {
-    cult.removeFollower(followerWebId)
+  const removeMember = async (memberWebId) => {
+    cult.removeMember(memberWebId)
     await cult.save()
   }
   return (
     <>
-      <h4>Followers</h4>
+      <h4>Members</h4>
       <Formik
-        initialValues={{follower: ""}}
-        onSubmit={({follower}) => {addFollower(follower)}}
-        validationSchema={AddFollowerSchema}
+        initialValues={{member: ""}}
+        onSubmit={({member}) => {addMember(member)}}
+        validationSchema={AddMemberSchema}
       >
         <Form>
-          <TextField name="follower" type="text" placeholder="webid"/>
-          <Button type="submit">Add a Follower</Button>
+          <TextField name="member" type="text" placeholder="webid"/>
+          <Button type="submit">Add a Member</Button>
         </Form>
       </Formik>
-      {followers && (
+      {members && (
         <ul>
-          {followers.map(follower => (
-            <li key={follower}>
-              {follower}
-              <Button onClick={() => removeFollower(follower)}>
+          {members.map(member => (
+            <li key={member}>
+              {member}
+              <Button onClick={() => removeMember(member)}>
                 Delete
               </Button>
             </li>
@@ -223,7 +222,7 @@ function CultInfo({cult}){
         <EditableCultRules cult={cult} />
       </Grid>
       <Grid item xs={12}>
-        <EditableCultFollowers cult={cult}/>
+        <EditableCultMembers cult={cult}/>
       </Grid>
     </>
   )
@@ -240,7 +239,7 @@ export default function MePage(){
         <h2>Your Cult</h2>
       </Grid>
       <Grid item xs={12}>
-        <ButtonLink to={cult && `/cult/${encodeURIComponent(cult.asRef())}`}>Public Page</ButtonLink>
+        <ButtonLink to={urls.cult(cult)}>Public Page</ButtonLink>
       </Grid>
       {cult && <CultInfo cult={cult} />}
     </DefaultLayout>

@@ -31,10 +31,10 @@ export default function Notification({uri}){
 
   const webId = useWebId()
   const { passportDocument } = useModel(webId)
-  const [ passport, savePassport ] = usePassport(passportDocument)
+  const [ passport ] = usePassport(passportDocument)
   const acceptInvitation = () => {
-    passport.addRef(cb.follows, cultUri)
-    savePassport()
+    passport.addFollowing(cultUri)
+    passport.save()
   }
   return (
     <div>
