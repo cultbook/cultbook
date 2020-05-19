@@ -77,10 +77,7 @@ function CreatedNotification({notification}){
 }
 
 function ApplicationNotification({notification}){
-  console.log("FOO", notification && notification.actor)
   const [ profile ] = useProfileByWebId(notification && notification.actor)
-  console.log(profile)
-
   const [ cult ] = useCultByRef(notification && notification.object)
 
   const webId = useWebId()
