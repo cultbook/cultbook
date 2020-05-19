@@ -97,14 +97,14 @@ function KnownCults(){
 export default function HomePage(){
   const classes = useStyles();
   const webId = useWebId()
-  const { inboxContainer, profileDocument, cultDocument, passportDocument } = useModel(webId)
+  const { inboxContainer, profileDocument, cultDocument, cultPrivateDocument, passportDocument } = useModel(webId)
 
   const [ profileDoc ] = useDocument(profileDocument)
   const [ inboxContainerDoc ] = useDocument(inboxContainer)
 
   const inbox = inboxContainerDoc && inboxContainerDoc.getSubject(inboxContainerDoc.asRef())
   const notifications = inbox && inbox.getAllRefs(ldp.contains)
-  const [ cult ] = useCult(cultDocument)
+  const [ cult ] = useCult(cultDocument, cultPrivateDocument)
 
   return (
     <DefaultLayout>

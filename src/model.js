@@ -95,9 +95,11 @@ export class Profile {
 }
 
 export class Cult {
-  constructor(document, save) {
+  constructor(document, privateDocument, save) {
     this.document = document
     this.subject = document.getSubject(`${document.asRef()}#cult`)
+    this.privateDocument = privateDocument
+    this.privateSubject = privateDocument.getSubject(`${privateDocument.asRef()}#cult`)
     this.save = save
   }
 
@@ -118,59 +120,59 @@ export class Cult {
   }
 
   get members() {
-    return this.subject.getAllRefs(vcard.hasMember)
+    return this.privateSubject.getAllRefs(vcard.hasMember)
   }
 
-  hasMember(followerWebId){
-    new Set(this.followers).has(followerWebId)
+  hasMember(webId){
+    new Set(this.members).has(webId)
   }
 
-  removeMember(followerWebId) {
-    this.subject.removeRef(vcard.hasMember, followerWebId)
+  removeMember(memberWebId) {
+    this.privateSubject.removeRef(vcard.hasMember, memberWebId)
   }
 
-  addMember(followerWebId) {
-    this.subject.addRef(vcard.hasMember, followerWebId)
+  addMember(webId) {
+    this.privateSubject.addRef(vcard.hasMember, webId)
   }
 
   get convening() {
-    return this.subject.getAllRefs(cb.convening)
+    return this.privateSubject.getAllRefs(cb.convening)
   }
 
   get rituals() {
-    return this.subject.getAllRefs(cb.convening).map(
-      ritualRef => new Ritual(this.document, this.document.getSubject(ritualRef), this.save)
+    return this.privateSubject.getAllRefs(cb.convening).map(
+      ritualRef => new Ritual(this.privateDocument, this.privateDocument.getSubject(ritualRef), this.save)
     )
   }
 
   removeRitual(ritual) {
-    this.subject.removeRef(cb.convening, ritual.asRef())
-    this.document.removeSubject(ritual.asRef())
+    this.privateSubject.removeRef(cb.convening, ritual.asRef())
+    this.privateDocument.removeSubject(ritual.asRef())
   }
 
   addRitual(name, description) {
-    const ritual = new Ritual(this.document, this.document.addSubject(), this.save)
+    const ritual = new Ritual(this.privateDocument, this.privateDocument.addSubject(), this.save)
     ritual.name = name
     ritual.description = description
-    this.subject.addRef(cb.convening, ritual.asRef())
+    this.privateSubject.addRef(cb.convening, ritual.asRef())
   }
 
   get rules() {
-    return this.subject.getAllRefs(cb.demands).map(
-      ruleRef => new Rule(this.document, this.document.getSubject(ruleRef), this.save)
+    return this.privateSubject.getAllRefs(cb.demands).map(
+      ruleRef => new Rule(this.privateDocument, this.privateDocument.getSubject(ruleRef), this.save)
     )
   }
 
   removeRule(rule) {
-    this.subject.removeRef(cb.demands, rule.asRef())
-    this.document.removeSubject(rule.asRef())
+    this.privateSubject.removeRef(cb.demands, rule.asRef())
+    this.privateDocument.removeSubject(rule.asRef())
   }
 
   addRule(name, description) {
-    const rule = new Rule(this.document, this.document.addSubject(), this.save)
+    const rule = new Rule(this.privateDocument, this.privateDocument.addSubject(), this.save)
     rule.name = name
     rule.description = description
-    this.subject.addRef(cb.demands, rule.asRef())
+    this.privateSubject.addRef(cb.demands, rule.asRef())
   }
 
   get ownerWebId(){
@@ -298,10 +300,19 @@ export class Notification {
   }
 }
 
+export function privateCultDocument(publicCultVirtualDocument){
+  const cultPrivateDocRegistration = describeSubject()
+        .isFoundIn(publicCultVirtualDocument)
+        .withRef(rdf.type, solid.TypeRegistration)
+        .withRef(solid.forClass, cb.Cult)
+  return describeDocument().isFoundOn(cultPrivateDocRegistration, rdfs.seeAlso)
+}
+
 export function useModel(webId){
   const [profileDocument, setProfileDocument] = useState()
   const [inboxContainer, setInboxContainer] = useState()
   const [cultDocument, setCultDocument] = useState()
+  const [cultPrivateDocument, setCultPrivateDocument] = useState()
   const [passportDocument, setPassportDocument] = useState()
   useEffect(() => {
     if (webId){
@@ -321,6 +332,8 @@ export function useModel(webId){
 
       const publicTypeIndex = describeDocument()
             .isFoundOn(profileSubject, solid.publicTypeIndex)
+      const privateTypeIndex = describeDocument()
+            .isFoundOn(profileSubject, solid.privateTypeIndex)
 
       const cultPublicTypeRegistration = describeSubject()
             .isEnsuredIn(publicTypeIndex)
@@ -329,6 +342,14 @@ export function useModel(webId){
       const cultDoc = describeDocument()
             .isEnsuredOn(cultPublicTypeRegistration, solid.instance, publicStorage)
       setCultDocument(cultDoc)
+
+      const cultPrivateDocRegistration = describeSubject()
+            .isEnsuredIn(cultDoc)
+            .withRef(rdf.type, solid.TypeRegistration)
+            .withRef(solid.forClass, cb.Cult)
+      const cultPrivateDoc = describeDocument()
+            .isEnsuredOn(cultPrivateDocRegistration, rdfs.seeAlso, privateStorage)
+      setCultPrivateDocument(cultPrivateDoc)
 
       const passportPublicTypeRegistration = describeSubject()
             .isEnsuredIn(publicTypeIndex)
@@ -339,5 +360,5 @@ export function useModel(webId){
       setPassportDocument(passportDoc)
     }
   }, [webId])
-  return { profileDocument, cultDocument, passportDocument, inboxContainer }
+  return { profileDocument, cultDocument, cultPrivateDocument, passportDocument, inboxContainer }
 }

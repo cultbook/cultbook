@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { fetchDocument, describeDocument } from "plandoc"
 import { useWebId } from "@solid/react"
-import { Cult, Passport, Notification, Profile, useModel, wwwCultWebId } from "./model"
+import { rdfs } from "rdf-namespaces"
+
+import { Cult, Passport, Notification, Profile, useModel, wwwCultWebId, privateCultDocument } from "./model"
 import useLatestUpdate from "./hooks/useLatestUpdate"
 
 export function useDocument(virtualDocument){
@@ -46,10 +48,15 @@ export function useDocument(virtualDocument){
   return [document, saveDocument, loading, error]
 }
 
-export function useCult(cultDocument){
-  const [cultDoc, save, loading, error] = useDocument(cultDocument)
+export function useCult(cultVirtualDoc, cultPrivateVirtualDoc){
+  const [cultDoc, savePublic, loading, error] = useDocument(cultVirtualDoc)
+  const [privateCultDoc, savePrivate, loadingPrivate, errorPrivate] = useDocument(cultPrivateVirtualDoc)
+  const save = useCallback(
+    () => Promise.all([savePublic(), savePrivate()]),
+    [savePublic, savePrivate]
+  )
   const cult = useMemo(
-    () => cultDoc && new Cult(cultDoc, save),
+    () => cultDoc && privateCultDoc && new Cult(cultDoc, privateCultDoc, save),
     [cultDoc, save]
   )
   return [ cult, loading, error ]
@@ -57,12 +64,16 @@ export function useCult(cultDocument){
 
 export function useCultByRef(cultRef) {
   const [document, setDocument] = useState()
+  const [privateDocument, setPrivateDocument] = useState()
   useEffect(() => {
     if (cultRef){
-      setDocument(describeDocument().isFoundAt(cultRef))
+      const virtualDocument = describeDocument().isFoundAt(cultRef)
+      const virtualPrivateDocument = privateCultDocument(virtualDocument)
+      setDocument(virtualDocument)
+      setPrivateDocument(virtualPrivateDocument)
     }
   }, [cultRef])
-  return useCult(document)
+  return useCult(document, privateDocument)
 }
 
 export function usePassport(passportDocument){

@@ -28,8 +28,8 @@ const useStyles = makeStyles(theme => ({
 export default function MePage(){
   const classes = useStyles();
   const webId = useWebId()
-  const { inboxContainer, profileDocument, cultDocument, passportDocument } = useModel(webId)
-  const [ cult ] = useCult(cultDocument)
+  const { cultDocument, cultPrivateDocument } = useModel(webId)
+  const [ cult ] = useCult(cultDocument, cultPrivateDocument)
   return (
     <DefaultLayout>
       <MyCultLink cult={cult}/>

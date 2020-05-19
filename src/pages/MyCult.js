@@ -231,8 +231,8 @@ function CultInfo({cult}){
 export default function MePage(){
   const classes = useStyles();
   const webId = useWebId()
-  const { cultDocument } = useModel(webId)
-  const [ cult ] = useCult(cultDocument)
+  const { cultDocument, cultPrivateDocument } = useModel(webId)
+  const [ cult ] = useCult(cultDocument, cultPrivateDocument)
   return (
     <DefaultLayout>
       <Grid item xs={12}>

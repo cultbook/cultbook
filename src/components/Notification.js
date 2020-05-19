@@ -13,8 +13,7 @@ import { inviteFollower, deleteNotification } from "../services"
 import Loader from "../components/Loader"
 
 function NotificationCultDetails({cultUri}){
-  const cultDocument = useMemo(() => describeDocument().isFoundAt(cultUri), [cultUri])
-  const [ cult ] = useCult(cultDocument)
+  const [ cult ] = useCultByRef(cultUri)
   const name = cult && cult.name
 
   return (
