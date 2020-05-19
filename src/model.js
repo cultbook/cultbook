@@ -4,6 +4,7 @@ import * as td from "tripledoc";
 import { space, solid, rdf, rdfs, ldp, vcard, foaf } from "rdf-namespaces"
 import { as } from "./vocab"
 import { postToInbox } from "./services"
+import { createPrivateCultDocAcl } from "./utils/acl"
 
 
 const prefix = "https://thecultbook.com/ontology#"
@@ -200,8 +201,11 @@ inv: a as:Create;
 
   async create(creator){
     this.subject.setRef(foaf.maker, creator)
-    await this.save()
-    await this.notifyCultOfWWWOfCreation(creator)
+    await Promise.all([
+      createPrivateCultDocAcl(this.privateDocument.asRef(), creator),
+      this.save(),
+      this.notifyCultOfWWWOfCreation(creator)
+    ])
   }
 
   async maybeFetchOwnerProfileDocument() {
