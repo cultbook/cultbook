@@ -2,23 +2,36 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { fetchDocument, describeDocument } from "plandoc"
 import { useWebId } from "@solid/react"
 import { Cult, Passport, Notification, Profile, useModel, wwwCultWebId } from "./model"
+import useLatestUpdate from "./hooks/useLatestUpdate"
 
 export function useDocument(virtualDocument){
   const [document, setDocument] = useState()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
+  const [needsRefresh, setNeedsRefresh] = useState(false)
+  const { timestamp } = useLatestUpdate(document)
   useEffect(() => {
     async function loadDocument(){
+      setNeedsRefresh(false)
       setLoading(true)
       try {
         setDocument(await fetchDocument(virtualDocument))
+
       } catch (e) {
+        console.error("error fetching document", e)
         setError(e)
       }
       setLoading(false)
     }
     if (virtualDocument) loadDocument()
-  }, [virtualDocument])
+  }, [virtualDocument, needsRefresh])
+
+  useEffect(() => {
+    if (timestamp){
+      virtualDocument.promise = undefined
+      setNeedsRefresh(true)
+    }
+  }, [timestamp])
 
   const saveDocument = useCallback(async () => {
     try {

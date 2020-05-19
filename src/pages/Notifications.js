@@ -29,9 +29,9 @@ export default function Notifications({children}) {
   return (
     <DefaultLayout>
       <Grid item xs={12}>
+        <h3>Notifications</h3>
         {notifications && (
           <>
-            <h3>Notifications</h3>
             {notifications.map(notification => (
               <Notification uri={notification} key={notification}/>
             ))}
