@@ -10,7 +10,7 @@ export default function LoginButton(){
   }
   return (
     <Button onClick={login}>
-      Join Us
+      pick up the book
     </Button>
   )
 }

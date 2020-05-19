@@ -10,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
 
 import { as } from "../vocab"
 import { useModel, cb, Cult, Rule, Ritual } from "../model"
@@ -28,6 +29,10 @@ import { inviteFollower, deleteNotification } from "../services"
 const useStyles = makeStyles(theme => ({
   cultListItem: {
     textAlign: "center"
+  },
+  scene: {
+    maxWidth: "66vw",
+    margin: "auto"
   }
 }))
 
@@ -104,9 +109,9 @@ export default function HomePage(){
   return (
     <DefaultLayout>
       <Grid item xs={12}>
-        <p>
-
-        </p>
+        <Typography variant="body1" className={classes.scene}>
+          You seem to find yourself in a vast ancient chamber. You remain unsure of whether you are really here or whether your perceptions have been fully captured by some unknown power. You see a large mirror and a large message board that seems to shift and change as you look at it. You feel an odd compulsion to start a cult, but do not fully understand what that means...
+        </Typography>
       </Grid>
       <Grid item xs={12}>
         <ButtonLink to="/me">Look in the Mirror</ButtonLink>
