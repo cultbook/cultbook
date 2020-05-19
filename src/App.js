@@ -11,6 +11,7 @@ import LandingPage from "./pages/Landing"
 import HomePage from "./pages/Home"
 import MePage from "./pages/Me"
 import MyCultPage from "./pages/MyCult"
+import NotificationsPage from "./pages/Notifications"
 import { CultPageByEncodedRef } from "./pages/Cult"
 import Loader from "./components/Loader"
 import theme from './theme'
@@ -42,7 +43,11 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
 function RootPage() {
   const loggedIn = useLoggedIn()
-  return loggedIn ? <HomePage/> : <LandingPage/>
+  return (loggedIn === undefined) ? (
+    <Loader/>
+  ) : (
+    loggedIn ? <HomePage/> : <LandingPage/>
+  )
 }
 
 function App() {
@@ -55,6 +60,7 @@ function App() {
         <Switch>
           <PrivateRoute path="/me/cult" component={MyCultPage}/>
           <PrivateRoute path="/me" component={MePage}/>
+          <PrivateRoute path="/notifications" component={NotificationsPage}/>
           <Route path="/cult/:encodedCultRef" component={CultPageByEncodedRef}/>
           <Route path="/" component={RootPage}/>
         </Switch>

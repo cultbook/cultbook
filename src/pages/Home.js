@@ -26,9 +26,12 @@ import { AddFollowerSchema, CultSchema, RitualSchema, RuleSchema } from "../vali
 import { inviteFollower, deleteNotification } from "../services"
 
 const useStyles = makeStyles(theme => ({
+  cultListItem: {
+    textAlign: "center"
+  }
 }))
 
-function CultListItem({cultRef, follows, leave, passport}) {
+function CultListItem({cultRef, follows, leave, passport, ...props}) {
   const webId = useWebId()
   const [cult, loading] = useCultByRef(cultRef)
   const apply = async () => {
@@ -37,7 +40,7 @@ function CultListItem({cultRef, follows, leave, passport}) {
     await cult.applyToJoin(webId)
   }
   return (
-    <ListItem>
+    <ListItem {...props}>
       <ListItemText>
         <h4>{loading ? <Loader/> : cult ? cult.name : "could not load cult..."}</h4>
         {follows ? (
@@ -45,7 +48,7 @@ function CultListItem({cultRef, follows, leave, passport}) {
         ) : (
           <Button onClick={apply}>Apply</Button>
         )}
-        {follows && <Button onClick={() => leave()}>Leave</Button>
+        {follows && <Button onClick={() => leave()}>Disavow</Button>
         }
       </ListItemText>
     </ListItem>
@@ -53,6 +56,7 @@ function CultListItem({cultRef, follows, leave, passport}) {
 }
 
 function KnownCults(){
+  const classes = useStyles();
   const [cultRefs] = useKnownCults()
   const webId = useWebId()
   const { passportDocument } = useModel(webId)
@@ -76,6 +80,7 @@ function KnownCults(){
                         follows={following.has(cultRef)}
                         leave={() => leaveCult(cultRef)}
                         passport={passport}
+                        className={classes.cultListItem}
           />
         ))}
       </List>
@@ -99,21 +104,18 @@ export default function HomePage(){
   return (
     <DefaultLayout>
       <Grid item xs={12}>
-        <h2>
-          Welcome, {profileDoc && profileDoc.getSubject(webId).getString(foaf.name)}
-        </h2>
+        <p>
+
+        </p>
       </Grid>
       <Grid item xs={12}>
-        <ButtonLink to="/me">Me</ButtonLink>
+        <ButtonLink to="/me">Look in the Mirror</ButtonLink>
       </Grid>
       <Grid item xs={12}>
         <MyCultLink cult={cult}/>
       </Grid>
       <Grid item xs={12}>
         <KnownCults/>
-      </Grid>
-      <Grid item xs={12}>
-        <LogoutButton/>
       </Grid>
     </DefaultLayout>
   )
