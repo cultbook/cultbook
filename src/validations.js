@@ -18,3 +18,8 @@ export const RuleSchema = Yup.object().shape({
   name: Yup.string().min(1).max(66),
   description: Yup.string().min(1).max(666)
 })
+
+export const GatheringSchema = Yup.object().shape({
+  name: Yup.string().min(1).max(66),
+  description: Yup.string().min(1).max(666)
+})

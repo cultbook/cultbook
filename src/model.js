@@ -15,6 +15,7 @@ export const cb = {
   follows: `${prefix}follows`,
   convening: `${prefix}convening`,
   demands: `${prefix}demands`,
+  prescribes: `${prefix}prescribes`,
   knowsAbout: `${prefix}knowsAbout`
 }
 
@@ -52,6 +53,34 @@ export class Rule {
 }
 
 export class Ritual {
+  constructor(document, subject, save) {
+    this.document = document
+    this.subject = subject
+    this.save = save
+  }
+
+  asRef() {
+    return this.subject.asRef()
+  }
+
+  get name() {
+    return this.subject.getString(rdfs.label)
+  }
+
+  set name(newName) {
+    this.subject.setString(rdfs.label, newName)
+  }
+
+  get description() {
+    return this.subject.getString(rdfs.comment)
+  }
+
+  set description(newComment) {
+    this.subject.setString(rdfs.comment, newComment)
+  }
+}
+
+export class Gathering {
   constructor(document, subject, save) {
     this.document = document
     this.subject = subject
@@ -136,19 +165,19 @@ export class Cult {
     this.privateSubject && this.privateSubject.addRef(vcard.hasMember, webId)
   }
 
-  get convening() {
-    return this.privateSubject && this.privateSubject.getAllRefs(cb.convening)
+  get prescribes() {
+    return this.privateSubject && this.privateSubject.getAllRefs(cb.prescribes)
   }
 
   get rituals() {
-    return this.privateSubject && this.privateSubject.getAllRefs(cb.convening).map(
+    return this.prescribes && this.prescribes.map(
       ritualRef => new Ritual(this.privateDocument, this.privateDocument.getSubject(ritualRef), this.save)
     )
   }
 
   removeRitual(ritual) {
     if (this.privateDocument){
-      this.privateSubject.removeRef(cb.convening, ritual.asRef())
+      this.privateSubject.removeRef(cb.prescribes, ritual.asRef())
       this.privateDocument.removeSubject(ritual.asRef())
     }
   }
@@ -158,7 +187,33 @@ export class Cult {
       const ritual = new Ritual(this.privateDocument, this.privateDocument.addSubject(), this.save)
       ritual.name = name
       ritual.description = description
-      this.privateSubject.addRef(cb.convening, ritual.asRef())
+      this.privateSubject.addRef(cb.prescribes, ritual.asRef())
+    }
+  }
+
+  get convening() {
+    return this.privateSubject && this.privateSubject.getAllRefs(cb.convening)
+  }
+
+  get gatherings() {
+    return this.convening && this.convening.map(
+      gatheringRef => new Gathering(this.privateDocument, this.privateDocument.getSubject(gatheringRef), this.save)
+    )
+  }
+
+  removeGathering(gathering) {
+    if (this.privateDocument){
+      this.privateSubject.removeRef(cb.convening, gathering.asRef())
+      this.privateDocument.removeSubject(gathering.asRef())
+    }
+  }
+
+  addGathering(name, description) {
+    if (this.privateDocument){
+      const gathering = new Gathering(this.privateDocument, this.privateDocument.addSubject(), this.save)
+      gathering.name = name
+      gathering.description = description
+      this.privateSubject.addRef(cb.convening, gathering.asRef())
     }
   }
 

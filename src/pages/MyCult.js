@@ -13,14 +13,14 @@ import { useCult } from "../data"
 import * as urls from "../urls"
 import ButtonLink from "../components/ButtonLink"
 import { TextField } from "../components/form"
-import { AddMemberSchema, CultSchema, RitualSchema, RuleSchema } from "../validations"
+import { AddMemberSchema, CultSchema, RitualSchema, RuleSchema, GatheringSchema } from "../validations"
 import { inviteMember } from "../services"
 
 
 const useStyles = makeStyles(theme => ({
 }))
 
-function EditableName({entity, schema}){
+function EditableName({entity, schema, variant}){
   const [editing, setEditing] = useState(false)
   const name = entity && entity.name
   const setName = async (newName) => {
@@ -42,9 +42,9 @@ function EditableName({entity, schema}){
       </Form>
     </Formik>
   ) : (
-    <h3 onClick={() => setEditing(true)}>
+    <Typography variant={variant || "h5"} onClick={() => setEditing(true)}>
       {name || "click to set name"}
-    </h3>
+    </Typography>
   )
 }
 
@@ -70,9 +70,9 @@ function EditableDescription({entity, schema}){
       </Form>
     </Formik>
   ) : (
-    <p onClick={() => setEditing(true)}>
+    <Typography variant="body1" onClick={() => setEditing(true)}>
       {description || "click to set description"}
-    </p>
+    </Typography>
   )
 }
 
@@ -207,11 +207,56 @@ function EditableCultRules({cult}){
   )
 }
 
+function EditableCultGatherings({cult}){
+  const gatherings = cult && cult.gatherings
+  const addGathering = async (name, description) => {
+    cult.addGathering(name, description)
+    await cult.save()
+  }
+  const removeGathering = async (gathering) => {
+    cult.removeGathering(gathering)
+    await cult.save()
+  }
+  const submitAddGathering = async ({name, description}, {resetForm}) => {
+    await addGathering(name, description)
+    resetForm()
+  }
+  return (
+    <>
+      <Typography variant="h4">Gatherings</Typography>
+      <Formik
+        initialValues={{name: "", description: ""}}
+        onSubmit={submitAddGathering}
+        validationSchema={GatheringSchema}
+      >
+        <Form>
+          <TextField name="name" type="text" placeholder="name"/>
+          <TextField name="description" type="text" placeholder="description"/>
+          <Button type="submit">Add a Gathering</Button>
+        </Form>
+      </Formik>
+      {gatherings && (
+        <ul>
+          {gatherings.map(gathering => (
+            <li key={gathering.asRef()}>
+              <EditableName entity={gathering} schema={GatheringSchema}/>
+              <EditableDescription entity={gathering} schema={GatheringSchema}/>
+              <Button onClick={() => removeGathering(gathering)}>
+                Delete
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  )
+}
+
 function CultInfo({cult}){
   return (
     <>
       <Grid item xs={12}>
-        <EditableName entity={cult} schema={CultSchema}/>
+        <EditableName entity={cult} schema={CultSchema} variant="h1"/>
       </Grid>
       <Grid item xs={12}>
         <EditableDescription entity={cult} schema={CultSchema}/>
@@ -223,7 +268,13 @@ function CultInfo({cult}){
         <EditableCultRules cult={cult} />
       </Grid>
       <Grid item xs={12}>
+        <EditableCultGatherings cult={cult} />
+      </Grid>
+      <Grid item xs={12}>
         <EditableCultMembers cult={cult}/>
+      </Grid>
+      <Grid item xs={12}>
+        <ButtonLink to={urls.cult(cult)}>Public Page</ButtonLink>
       </Grid>
     </>
   )
@@ -236,12 +287,6 @@ export default function MePage(){
   const [ cult ] = useCult(cultDocument, cultPrivateDocument)
   return (
     <DefaultLayout>
-      <Grid item xs={12}>
-        <Typography variant="h2">Your Cult</Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <ButtonLink to={urls.cult(cult)}>Public Page</ButtonLink>
-      </Grid>
       {cult && <CultInfo cult={cult} />}
     </DefaultLayout>
   )
