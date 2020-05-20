@@ -52,7 +52,6 @@ function RootPage() {
 
 function App() {
   const classes = useStyles();
-  const loggedIn = useLoggedIn()
   return (
     <>
       <CssBaseline/>

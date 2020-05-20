@@ -1,8 +1,6 @@
 import React, {useMemo} from 'react'
 
 import { useWebId } from "@solid/react"
-import { foaf, ldp } from 'rdf-namespaces'
-import { describeDocument } from "plandoc"
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -12,19 +10,14 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
-import { as } from "../vocab"
-import { useModel, cb, Cult, Rule, Ritual } from "../model"
-import { useDocument, useCult, useCultByRef, usePassport, useKnownCults } from "../data"
+import { useModel } from "../model"
+import { useCult, useCultByRef, usePassport, useKnownCults } from "../data"
 import * as urls from "../urls"
-import LogoutButton from "../components/LogoutButton"
 import Loader from "../components/Loader"
 import Link from "../components/Link"
 import ButtonLink from '../components/ButtonLink'
-import { TextField } from "../components/form"
 import MyCultLink from "../components/MyCultLink"
 import DefaultLayout from "../layouts/Default"
-import { AddFollowerSchema, CultSchema, RitualSchema, RuleSchema } from "../validations"
-import { inviteFollower, deleteNotification } from "../services"
 
 const useStyles = makeStyles(theme => ({
   cultListItem: {
@@ -97,13 +90,7 @@ function KnownCults(){
 export default function HomePage(){
   const classes = useStyles();
   const webId = useWebId()
-  const { inboxContainer, profileDocument, cultDocument, cultPrivateDocument, passportDocument } = useModel(webId)
-
-  const [ profileDoc ] = useDocument(profileDocument)
-  const [ inboxContainerDoc ] = useDocument(inboxContainer)
-
-  const inbox = inboxContainerDoc && inboxContainerDoc.getSubject(inboxContainerDoc.asRef())
-  const notifications = inbox && inbox.getAllRefs(ldp.contains)
+  const { cultDocument, cultPrivateDocument } = useModel(webId)
   const [ cult ] = useCult(cultDocument, cultPrivateDocument)
 
   return (

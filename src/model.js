@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { describeSubject, describeDocument, describeContainer, fetchDocument } from "plandoc"
+import { describeSubject, describeDocument, describeContainer } from "plandoc"
 import * as td from "tripledoc";
 import { space, solid, rdf, rdfs, ldp, vcard, foaf } from "rdf-namespaces"
 import { as } from "./vocab"
@@ -193,7 +193,7 @@ export class Cult {
   }
 
   async notifyCultOfWWWOfCreation(creator){
-    const response = await postToInbox(wwwCultInbox, `
+    await postToInbox(wwwCultInbox, `
 @prefix inv: <>.
 @prefix as: <https://www.w3.org/ns/activitystreams#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
@@ -229,7 +229,7 @@ inv: a as:Create;
 
   async applyToJoin(followerWebId){
     const owner = await this.getOwner()
-    const response = await postToInbox(owner.inbox, `
+    await postToInbox(owner.inbox, `
 @prefix inv: <>.
 @prefix as: <https://www.w3.org/ns/activitystreams#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
@@ -344,8 +344,6 @@ export function useModel(webId){
 
       const publicTypeIndex = describeDocument()
             .isFoundOn(profileSubject, solid.publicTypeIndex)
-      const privateTypeIndex = describeDocument()
-            .isFoundOn(profileSubject, solid.privateTypeIndex)
 
       const cultPublicTypeRegistration = describeSubject()
             .isEnsuredIn(publicTypeIndex)

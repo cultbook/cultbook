@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { fetchDocument, describeDocument } from "plandoc"
 import { useWebId } from "@solid/react"
-import { rdfs } from "rdf-namespaces"
 
 import { Cult, Passport, Notification, Profile, useModel, wwwCultWebId, privateCultDocument } from "./model"
 import useLatestUpdate from "./hooks/useLatestUpdate"
@@ -14,7 +13,6 @@ export function useDocument(virtualDocument){
   const { timestamp } = useLatestUpdate(document)
   useEffect(() => {
     async function loadDocument(){
-      setNeedsRefresh(false)
       setLoading(true)
       try {
         setDocument(await fetchDocument(virtualDocument))
@@ -25,12 +23,15 @@ export function useDocument(virtualDocument){
       }
       setLoading(false)
     }
+    if (needsRefresh) {
+      virtualDocument.promise = undefined
+      setNeedsRefresh(false)
+    }
     if (virtualDocument) loadDocument()
   }, [virtualDocument, needsRefresh])
 
   useEffect(() => {
     if (timestamp){
-      virtualDocument.promise = undefined
       setNeedsRefresh(true)
     }
   }, [timestamp])
@@ -60,7 +61,7 @@ export function useCult(cultVirtualDoc, cultPrivateVirtualDoc){
     () => cultDoc && (privateCultDoc || errorPrivate) && new Cult(cultDoc, privateCultDoc, save),
     [cultDoc, privateCultDoc, errorPrivate, save]
   )
-  return [ cult, loading, error ]
+  return [ cult, loading || loadingPrivate, [error, errorPrivate]]
 }
 
 export function useCultByRef(cultRef) {
@@ -81,7 +82,7 @@ export function usePassport(passportDocument){
   const [ passportDoc, save, loading, error ] = useDocument(passportDocument)
   const passport = useMemo(
     () => passportDoc && new Passport(passportDoc, save),
-    [passportDoc]
+    [passportDoc, save]
   )
   return [ passport, loading, error ]
 }
@@ -100,13 +101,13 @@ export function useKnownCults(){
 export function useNotification(uri){
   const notificationDocument = useMemo(() => describeDocument().isFoundAt(uri), [uri])
   const [ notificationDoc, save, loading, error ] = useDocument(notificationDocument)
-  const notification = notificationDoc && new Notification(notificationDoc)
+  const notification = notificationDoc && new Notification(notificationDoc, save)
   return [notification, loading, error]
 }
 
 export function useProfileByWebId(uri){
   const profileDocument = useMemo(() => describeDocument().isFoundAt(uri), [uri])
   const [ profileDoc, save, loading, error ] = useDocument(profileDocument)
-  const profile = profileDoc && new Profile(profileDoc)
+  const profile = profileDoc && new Profile(profileDoc, save)
   return [profile, loading, error]
 }

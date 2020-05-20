@@ -24,7 +24,7 @@ export const inviteMember = async (memberWebId, cultUri) => {
   const profile = profileDoc && profileDoc.getSubject(memberWebId)
   const inboxUri = profile && profile.getRef(ldp.inbox)
 
-  const response = await postToInbox(inboxUri, `
+  await postToInbox(inboxUri, `
 @prefix inv: <>.
 @prefix as: <https://www.w3.org/ns/activitystreams#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.

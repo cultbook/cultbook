@@ -3,12 +3,11 @@ import React from 'react'
 import { useWebId } from "@solid/react"
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import { rdfs, foaf, vcard, ldp } from 'rdf-namespaces'
+import { ldp } from 'rdf-namespaces'
 
-import { useDocument, usePassport } from "../data"
-import { useModel, cb, Cult, Rule, Ritual } from "../model"
+import { useDocument } from "../data"
+import { useModel } from "../model"
 import Notification from "../components/Notification"
-import AppBar from "../components/AppBar"
 import DefaultLayout from "../layouts/Default"
 
 

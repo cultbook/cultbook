@@ -1,15 +1,14 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
-import { rdfs } from 'rdf-namespaces'
 import { useWebId } from "@solid/react"
-import { describeDocument } from "plandoc"
 
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
-import { useModel, cb, Cult, Rule, Ritual } from "../model"
-import { useDocument, useCult, usePassport, useNotification, useProfileByWebId, useCultByRef } from "../data"
+import { useModel } from "../model"
+import { usePassport, useNotification, useProfileByWebId, useCultByRef } from "../data"
 import { as } from "../vocab"
-import { inviteFollower, deleteNotification } from "../services"
+import { deleteNotification } from "../services"
 import Loader from "../components/Loader"
 
 function NotificationCultDetails({cultUri}){
@@ -28,8 +27,8 @@ function NotificationCultDetails({cultUri}){
 function GenericNotification({notification}){
   return (
     <div>
-      <h4>{notification && notification.name}</h4>
-      <h5>{notification && notification.description}</h5>
+      <Typography variant="h4">{notification && notification.name}</Typography>
+      <Typography variant="h5">{notification && notification.description}</Typography>
     </div>
   )
 }
@@ -45,8 +44,8 @@ function InviteNotification({notification}){
   }
   return (
     <div>
-      <h4>{notification && notification.name}</h4>
-      <h5>{notification && notification.description}</h5>
+      <Typography variant="h4">{notification && notification.name}</Typography>
+      <Typography variant="h5">{notification && notification.description}</Typography>
       <NotificationCultDetails cultUri={cultUri}/>
       <Button onClick={() => acceptInvitation()}>accept invitation</Button>
       <Button onClick={() => deleteNotification(notification.asRef())}>delete invitation</Button>
@@ -79,9 +78,6 @@ function ApplicationNotification({notification}){
   const [ profile ] = useProfileByWebId(notification && notification.actor)
   const [ cult ] = useCultByRef(notification && notification.object)
 
-  const webId = useWebId()
-  const { passportDocument } = useModel(webId)
-  const [ passport ] = usePassport(passportDocument)
   const approveApplication = async () => {
     cult.addMember(profile.asRef())
     await cult.save()

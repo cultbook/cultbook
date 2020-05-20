@@ -4,6 +4,7 @@ import { useWebId } from "@solid/react"
 import { Form, Formik } from 'formik';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import DefaultLayout from "../layouts/Default"
@@ -88,7 +89,7 @@ function EditableCultMembers({cult}){
   }
   return (
     <>
-      <h4>Members</h4>
+      <Typography variant="h4">Members</Typography>
       <Formik
         initialValues={{member: ""}}
         onSubmit={({member}) => {addMember(member)}}
@@ -132,7 +133,7 @@ function EditableCultRituals({cult}){
   }
   return (
     <>
-      <h4>Rituals</h4>
+      <Typography variant="h4">Rituals</Typography>
       <Formik
         initialValues={{name: "", description: ""}}
         onSubmit={submitAddRitual}
@@ -177,7 +178,7 @@ function EditableCultRules({cult}){
   }
   return (
     <>
-      <h4>Rules</h4>
+      <Typography variant="h4">Rules</Typography>
       <Formik
         initialValues={{name: "", description: ""}}
         onSubmit={submitAddRule}
@@ -236,7 +237,7 @@ export default function MePage(){
   return (
     <DefaultLayout>
       <Grid item xs={12}>
-        <h2>Your Cult</h2>
+        <Typography variant="h2">Your Cult</Typography>
       </Grid>
       <Grid item xs={12}>
         <ButtonLink to={urls.cult(cult)}>Public Page</ButtonLink>
