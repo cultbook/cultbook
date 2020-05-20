@@ -99,14 +99,14 @@ export function useKnownCults(){
 }
 
 export function useNotification(uri){
-  const notificationDocument = useMemo(() => describeDocument().isFoundAt(uri), [uri])
+  const notificationDocument = useMemo(() => uri && describeDocument().isFoundAt(uri), [uri])
   const [ notificationDoc, save, loading, error ] = useDocument(notificationDocument)
   const notification = notificationDoc && new Notification(notificationDoc, save)
   return [notification, loading, error]
 }
 
 export function useProfileByWebId(uri){
-  const profileDocument = useMemo(() => describeDocument().isFoundAt(uri), [uri])
+  const profileDocument = useMemo(() => uri && describeDocument().isFoundAt(uri), [uri])
   const [ profileDoc, save, loading, error ] = useDocument(profileDocument)
   const profile = profileDoc && new Profile(profileDoc, save)
   return [profile, loading, error]

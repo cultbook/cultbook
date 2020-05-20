@@ -115,6 +115,15 @@ export class Profile {
     this.save = save
   }
 
+  get name() {
+    return this.subject.getString(vcard.fn)
+  }
+
+  set name(newName) {
+    this.subject.setString(vcard.fn, newName)
+    this.subject.setString(foaf.name, newName)
+  }
+
   get inbox(){
     return this.subject.getRef(ldp.inbox)
   }

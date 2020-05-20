@@ -12,14 +12,10 @@ export default function MyCultLink({cult}){
   }
   return (
     <>
-      {cult && (
-        <>
-          {cult.created ? (
-            <Link to="/me/cult">My Cult</Link>
-          ) : (
-            <Button onClick={startCult}>Start a Cult</Button>
-          )}
-        </>
+      {cult && cult.created ? (
+        <Link to="/me/cult">My Cult</Link>
+      ) : (
+        <Button onClick={startCult}>Start a Cult</Button>
       )}
     </>
   )
