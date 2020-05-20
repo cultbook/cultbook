@@ -112,7 +112,11 @@ export default function CultPage({cultRef}){
                       secondary={gathering.description}
                     />
                     <ListItemText>
+                      we will convene at&nbsp;
                       <Linkify>{gathering.location}</Linkify>
+                    </ListItemText>
+                    <ListItemText>
+                      at {gathering.time && gathering.time.toLocaleString()}
                     </ListItemText>
                   </Box>
                 </ListItem>
