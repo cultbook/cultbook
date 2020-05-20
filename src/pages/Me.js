@@ -10,6 +10,8 @@ import { useCult, useProfileByWebId } from "../data"
 import MyCultLink from "../components/MyCultLink"
 import { EditableName } from "../components/Editable"
 import { ProfileSchema } from "../validations"
+import Scene from "../components/Scene"
+import ButtonLink from "../components/ButtonLink"
 
 const useStyles = makeStyles(theme => ({
 }))
@@ -23,10 +25,18 @@ export default function MePage(){
   return (
     <DefaultLayout>
       <Grid item xs={12}>
+        <Scene>
+          You look into a ancient mirror and gaze upon the visage of
+        </Scene>
+      </Grid>
+      <Grid item xs={12}>
         {profile && <EditableName entity={profile} schema={ProfileSchema} variant="h1"/>}
       </Grid>
       <Grid item xs={12}>
-        <MyCultLink cult={cult}/>
+        <ButtonLink to="/">Direct your attention elsewhere</ButtonLink>
+      </Grid>
+      <Grid item xs={12}>
+        {cult && <MyCultLink cult={cult}/>}
       </Grid>
     </DefaultLayout>
   )
