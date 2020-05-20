@@ -13,6 +13,7 @@ import { useCult } from "../data"
 import * as urls from "../urls"
 import ButtonLink from "../components/ButtonLink"
 import Linkify from "../components/Linkify"
+import Datepicker from "../components/Datepicker"
 import { TextField } from "../components/form"
 import { EditableName } from "../components/Editable"
 import { AddMemberSchema, CultSchema, RitualSchema, RuleSchema, GatheringSchema } from "../validations"
@@ -73,7 +74,38 @@ function EditableLocation({entity, schema}){
     </Formik>
   ) : (
     <Typography variant="body1" onClick={() => setEditing(true)}>
-      {location ? (<Linkify>{location}</Linkify>) : "click to set location"}
+      {location ? <>we will convene at {<Linkify>{location}</Linkify>}</> : "click to set location"}
+    </Typography>
+  )
+}
+
+function EditableTime({entity, schema}){
+  const classes = useStyles()
+  const [editing, setEditing] = useState(false)
+  const time = entity && entity.time
+  const setTime = async (newTime) => {
+    if (time !== newTime) {
+      entity.time = newTime
+      await entity.save()
+    }
+    setEditing(false)
+  }
+  return editing ? (
+    <Formik
+      initialValues={{time: time || ""}}
+      onSubmit={({time}) => { setTime(time) }}
+      validationSchema={schema}
+    >
+      <Form>
+        <Datepicker name="time" autoFocus showTimeSelect inline
+                    openToDate={new Date()}
+        />
+        <Button type="submit">save</Button>
+      </Form>
+    </Formik>
+  ) : (
+    <Typography variant="body1" onClick={() => setEditing(true)}>
+      {time ? `at ${time.toLocaleString()}` : "click to set time"}
     </Typography>
   )
 }
@@ -244,6 +276,7 @@ function EditableCultGatherings({cult}){
               <EditableName entity={gathering} schema={GatheringSchema}/>
               <EditableDescription entity={gathering} schema={GatheringSchema}/>
               <EditableLocation entity={gathering} schema={GatheringSchema}/>
+              <EditableTime entity={gathering} schema={GatheringSchema}/>
               <Button onClick={() => removeGathering(gathering)}>
                 Delete
               </Button>

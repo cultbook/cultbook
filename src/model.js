@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { describeSubject, describeDocument, describeContainer } from "plandoc"
 import * as td from "tripledoc";
-import { space, solid, rdf, rdfs, ldp, vcard, foaf, schema } from "rdf-namespaces"
+import { space, solid, rdf, rdfs, ldp, vcard, foaf, schema, cal } from "rdf-namespaces"
 import { as } from "./vocab"
 import { postToInbox } from "./services"
 import { createPrivateCultDocAcl } from "./utils/acl"
@@ -112,6 +112,14 @@ export class Gathering {
 
   set location(newLocation) {
     this.subject.setString(schema.location, newLocation)
+  }
+
+  get time() {
+    return this.subject.getDateTime(cal.dtstart)
+  }
+
+  set time(newTime) {
+    this.subject.setDateTime(cal.dtstart, newTime)
   }
 }
 
