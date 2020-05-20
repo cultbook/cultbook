@@ -100,7 +100,7 @@ export class Cult {
     this.document = document
     this.subject = document.getSubject(`${document.asRef()}#cult`)
     this.privateDocument = privateDocument
-    this.privateSubject = privateDocument.getSubject(`${privateDocument.asRef()}#cult`)
+    this.privateSubject = privateDocument && privateDocument.getSubject(`${privateDocument.asRef()}#cult`)
     this.save = save
   }
 
@@ -121,7 +121,7 @@ export class Cult {
   }
 
   get members() {
-    return this.privateSubject.getAllRefs(vcard.hasMember)
+    return this.privateSubject && this.privateSubject.getAllRefs(vcard.hasMember)
   }
 
   hasMember(webId){
@@ -129,51 +129,59 @@ export class Cult {
   }
 
   removeMember(memberWebId) {
-    this.privateSubject.removeRef(vcard.hasMember, memberWebId)
+    this.privateSubject && this.privateSubject.removeRef(vcard.hasMember, memberWebId)
   }
 
   addMember(webId) {
-    this.privateSubject.addRef(vcard.hasMember, webId)
+    this.privateSubject && this.privateSubject.addRef(vcard.hasMember, webId)
   }
 
   get convening() {
-    return this.privateSubject.getAllRefs(cb.convening)
+    return this.privateSubject && this.privateSubject.getAllRefs(cb.convening)
   }
 
   get rituals() {
-    return this.privateSubject.getAllRefs(cb.convening).map(
+    return this.privateSubject && this.privateSubject.getAllRefs(cb.convening).map(
       ritualRef => new Ritual(this.privateDocument, this.privateDocument.getSubject(ritualRef), this.save)
     )
   }
 
   removeRitual(ritual) {
-    this.privateSubject.removeRef(cb.convening, ritual.asRef())
-    this.privateDocument.removeSubject(ritual.asRef())
+    if (this.privateDocument){
+      this.privateSubject.removeRef(cb.convening, ritual.asRef())
+      this.privateDocument.removeSubject(ritual.asRef())
+    }
   }
 
   addRitual(name, description) {
-    const ritual = new Ritual(this.privateDocument, this.privateDocument.addSubject(), this.save)
-    ritual.name = name
-    ritual.description = description
-    this.privateSubject.addRef(cb.convening, ritual.asRef())
+    if (this.privateDocument){
+      const ritual = new Ritual(this.privateDocument, this.privateDocument.addSubject(), this.save)
+      ritual.name = name
+      ritual.description = description
+      this.privateSubject.addRef(cb.convening, ritual.asRef())
+    }
   }
 
   get rules() {
-    return this.privateSubject.getAllRefs(cb.demands).map(
+    return this.privateSubject && this.privateSubject.getAllRefs(cb.demands).map(
       ruleRef => new Rule(this.privateDocument, this.privateDocument.getSubject(ruleRef), this.save)
     )
   }
 
   removeRule(rule) {
-    this.privateSubject.removeRef(cb.demands, rule.asRef())
-    this.privateDocument.removeSubject(rule.asRef())
+    if (this.privateDocument) {
+      this.privateSubject.removeRef(cb.demands, rule.asRef())
+      this.privateDocument.removeSubject(rule.asRef())
+    }
   }
 
   addRule(name, description) {
-    const rule = new Rule(this.privateDocument, this.privateDocument.addSubject(), this.save)
-    rule.name = name
-    rule.description = description
-    this.privateSubject.addRef(cb.demands, rule.asRef())
+    if (this.privateDocument){
+      const rule = new Rule(this.privateDocument, this.privateDocument.addSubject(), this.save)
+      rule.name = name
+      rule.description = description
+      this.privateSubject.addRef(cb.demands, rule.asRef())
+    }
   }
 
   get ownerWebId(){

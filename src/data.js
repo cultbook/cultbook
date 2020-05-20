@@ -56,8 +56,9 @@ export function useCult(cultVirtualDoc, cultPrivateVirtualDoc){
     [savePublic, savePrivate]
   )
   const cult = useMemo(
-    () => cultDoc && privateCultDoc && new Cult(cultDoc, privateCultDoc, save),
-    [cultDoc, save]
+    // if we get errors loading the private doc, just load it up with the public doc
+    () => cultDoc && (privateCultDoc || errorPrivate) && new Cult(cultDoc, privateCultDoc, save),
+    [cultDoc, privateCultDoc, errorPrivate, save]
   )
   return [ cult, loading, error ]
 }
