@@ -267,6 +267,10 @@ export class Cult {
     return this.subject.getRef(foaf.maker)
   }
 
+  set ownerWebId(webId){
+    return this.subject.setRef(foaf.maker, webId)
+  }
+
   get created(){
     return !!this.ownerWebId
   }
@@ -286,11 +290,12 @@ inv: a as:Create;
 `)
   }
 
-  async create(creator){
-    this.subject.setRef(foaf.maker, creator)
+  async create(creator, name){
+    this.ownerWebId = creator
+    this.name = name
     await Promise.all([
-      createPrivateCultDocAcl(this.privateDocument.asRef(), creator),
       this.save(),
+      createPrivateCultDocAcl(this.privateDocument.asRef(), creator),
       this.notifyCultOfWWWOfCreation(creator)
     ])
   }
