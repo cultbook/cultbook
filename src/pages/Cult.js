@@ -7,19 +7,22 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { useWebId } from "@solid/react"
 
 import DefaultLayout from "../layouts/Default"
 import { useCultByRef, useCurrentUserIsWWWCult, usePassport } from "../data"
 import { useModel } from "../model"
+import Linkify from "../components/Linkify"
 
 const useStyles = makeStyles(theme => ({
   ritual: {
     textAlign: "center"
   },
   gathering: {
-    textAlign: "center"
+    textAlign: "center",
+    margin: "auto"
   },
   rule: {
     textAlign: "center"
@@ -102,12 +105,16 @@ export default function CultPage({cultRef}){
             <Typography variant="h2">Gatherings</Typography>
             <List>
               {gatherings.map(gathering => (
-                <ListItem key={gathering.asRef()} className={classes.gathering}>
-                  <ListItemText
-                    primary={gathering.name}
-                    secondary={gathering.description}
-                  >
-                  </ListItemText>
+                <ListItem key={gathering.asRef()} className={classes.gatheringListItem}>
+                  <Box display="flex" flexDirection="column" className={classes.gathering}>
+                    <ListItemText
+                      primary={gathering.name}
+                      secondary={gathering.description}
+                    />
+                    <ListItemText>
+                      <Linkify>{gathering.location}</Linkify>
+                    </ListItemText>
+                  </Box>
                 </ListItem>
               ))}
             </List>

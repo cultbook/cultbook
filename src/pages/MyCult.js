@@ -12,6 +12,7 @@ import { useModel } from "../model"
 import { useCult } from "../data"
 import * as urls from "../urls"
 import ButtonLink from "../components/ButtonLink"
+import Linkify from "../components/Linkify"
 import { TextField } from "../components/form"
 import { EditableName } from "../components/Editable"
 import { AddMemberSchema, CultSchema, RitualSchema, RuleSchema, GatheringSchema } from "../validations"
@@ -45,6 +46,34 @@ function EditableDescription({entity, schema}){
   ) : (
     <Typography variant="body1" onClick={() => setEditing(true)}>
       {description || "click to set description"}
+    </Typography>
+  )
+}
+
+function EditableLocation({entity, schema}){
+  const [editing, setEditing] = useState(false)
+  const location = entity && entity.location
+  const setLocation = async (newLocation) => {
+    if (location !== newLocation) {
+      entity.location = newLocation
+      await entity.save()
+    }
+    setEditing(false)
+  }
+  return editing ? (
+    <Formik
+      initialValues={{location: location || ""}}
+      onSubmit={({location}) => { setLocation(location) }}
+      validationSchema={schema}
+    >
+      <Form>
+        <TextField name="location" type="text" placeholder="location" autoFocus/>
+        <Button type="submit">save</Button>
+      </Form>
+    </Formik>
+  ) : (
+    <Typography variant="body1" onClick={() => setEditing(true)}>
+      {location ? (<Linkify>{location}</Linkify>) : "click to set location"}
     </Typography>
   )
 }
@@ -214,6 +243,7 @@ function EditableCultGatherings({cult}){
             <li key={gathering.asRef()}>
               <EditableName entity={gathering} schema={GatheringSchema}/>
               <EditableDescription entity={gathering} schema={GatheringSchema}/>
+              <EditableLocation entity={gathering} schema={GatheringSchema}/>
               <Button onClick={() => removeGathering(gathering)}>
                 Delete
               </Button>
