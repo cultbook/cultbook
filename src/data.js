@@ -105,9 +105,13 @@ export function useNotification(uri){
   return [notification, loading, error]
 }
 
-export function useProfileByWebId(uri){
-  const profileDocument = useMemo(() => uri && describeDocument().isFoundAt(uri), [uri])
+export function useProfile(profileDocument) {
   const [ profileDoc, save, loading, error ] = useDocument(profileDocument)
   const profile = profileDoc && new Profile(profileDoc, save)
   return [profile, loading, error]
+}
+
+export function useProfileByWebId(uri){
+  const profileDocument = useMemo(() => uri && describeDocument().isFoundAt(uri), [uri])
+  return useProfile(profileDocument)
 }

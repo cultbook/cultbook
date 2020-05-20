@@ -11,13 +11,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
 import { useModel } from "../model"
-import { useCult, useCultByRef, usePassport, useKnownCults } from "../data"
+import { useCult, useCultByRef, useProfile, usePassport, useKnownCults } from "../data"
 import * as urls from "../urls"
 import Loader from "../components/Loader"
 import Link from "../components/Link"
 import ButtonLink from '../components/ButtonLink'
 import MyCultLink from "../components/MyCultLink"
 import Scene from "../components/Scene"
+import NamePrompt from "../components/NamePrompt"
 import DefaultLayout from "../layouts/Default"
 
 const useStyles = makeStyles(theme => ({
@@ -88,14 +89,12 @@ function KnownCults(){
 
 }
 
-export default function HomePage(){
+function IdentifiedHomePage({cultDocument, cultPrivateDocument}){
   const classes = useStyles();
-  const webId = useWebId()
-  const { cultDocument, cultPrivateDocument } = useModel(webId)
   const [ cult ] = useCult(cultDocument, cultPrivateDocument)
 
   return (
-    <DefaultLayout>
+    <>
       <Grid item xs={12}>
         <Scene>
           You seem to find yourself in a vast ancient chamber. You remain unsure of whether you are really here or whether your perceptions have been fully captured by some unknown power. You see a large mirror and a large message board that seems to shift and change as you look at it. You feel an odd compulsion to start a cult, but do not fully understand what that means...
@@ -110,6 +109,47 @@ export default function HomePage(){
       <Grid item xs={12}>
         <KnownCults/>
       </Grid>
+    </>
+  )
+}
+
+function UnidentifiedHomePage({profile}){
+  const setName = async (name) => {
+    profile.name = name
+    await profile.save()
+  }
+  return (
+    <>
+      <Grid item xs={12}>
+        <Scene>
+          You sense a presence in the darkness. You feel an urge to identify yourself, but know somehow that this name, like all names, is impermanent.
+        </Scene>
+        <NamePrompt openPrompt="choose a name"
+                    title="what shall we call you?"
+                    prompt="you can change this later"
+                    onSubmit={setName}/>
+
+      </Grid>
+    </>
+  )
+}
+
+export default function HomePage(){
+  const webId = useWebId()
+  const { profileDocument, cultDocument, cultPrivateDocument } = useModel(webId)
+
+  const [profile, profileLoading] = useProfile(profileDocument)
+  return (
+    <DefaultLayout>
+      {profileLoading ? (
+        <Loader/>
+      ) : (
+        (profile && profile.name) ? (
+          <IdentifiedHomePage cultDocument={cultDocument} cultPrivateDocument={cultPrivateDocument} />
+        ) : (
+          <UnidentifiedHomePage profile={profile}/>
+        )
+      )}
     </DefaultLayout>
   )
 }
