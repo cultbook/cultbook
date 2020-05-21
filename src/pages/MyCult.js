@@ -154,12 +154,10 @@ function EditableCultMembers({cult}){
 function EditableCultRituals({cult}){
   const rituals = cult && cult.rituals
   const addRitual = async (name, description) => {
-    cult.addRitual(name, description)
-    await cult.save()
+    await cult.addRitual(name, description)
   }
   const removeRitual = async (ritual) => {
-    cult.removeRitual(ritual)
-    await cult.save()
+    await cult.removeRitual(ritual)
   }
   const submitAddRitual = async ({name, description}, {resetForm}) => {
     await addRitual(name, description)
