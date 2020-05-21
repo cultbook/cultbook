@@ -2,8 +2,12 @@ import React, {useState} from 'react'
 
 import { useWebId } from "@solid/react"
 import { Form, Formik } from 'formik';
+import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -21,6 +25,11 @@ import { inviteMember } from "../services"
 
 
 const useStyles = makeStyles(theme => ({
+  quadrant: {
+    border: "3px solid rgba(220, 20, 60, 0.25)",
+    borderStyle: "outset",
+    marginTop: "20px",
+  },
 }))
 
 function EditableDescription({entity, schema}){
@@ -110,48 +119,9 @@ function EditableTime({entity, schema}){
   )
 }
 
-function EditableCultMembers({cult}){
-  const members = cult && cult.members
-  const addMember = async (memberWebId) => {
-    cult.addMember(memberWebId)
-    await cult.save()
-    await inviteMember(memberWebId, cult.asRef())
-  }
-  const removeMember = async (memberWebId) => {
-    cult.removeMember(memberWebId)
-    await cult.save()
-  }
-  return (
-    <>
-      <Typography variant="h4">Members</Typography>
-      <Formik
-        initialValues={{member: ""}}
-        onSubmit={({member}) => {addMember(member)}}
-        validationSchema={AddMemberSchema}
-      >
-        <Form>
-          <TextField name="member" type="text" placeholder="webid"/>
-          <Button type="submit">Add a Member</Button>
-        </Form>
-      </Formik>
-      {members && (
-        <ul>
-          {members.map(member => (
-            <li key={member}>
-              {member}
-              <Button onClick={() => removeMember(member)}>
-                Delete
-              </Button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </>
-  )
-}
-
 
 function EditableCultRituals({cult}){
+  const classes = useStyles();
   const rituals = cult && cult.rituals
   const addRitual = async (name, description) => {
     cult.addRitual(name, description)
@@ -180,17 +150,27 @@ function EditableCultRituals({cult}){
         </Form>
       </Formik>
       {rituals && (
-        <ul>
+        <List>
           {rituals.map(ritual => (
-            <li key={ritual.asRef()}>
-              <EditableName entity={ritual} schema={RitualSchema}/>
-              <EditableDescription entity={ritual} schema={RitualSchema}/>
-              <Button onClick={() => removeRitual(ritual)}>
-                Delete
-              </Button>
-            </li>
+            <ListItem key={ritual.asRef()}>
+              <Grid container alignItems="center">
+                <Grid item xs={9}>
+                  <Box>
+                    <EditableName entity={ritual} schema={RitualSchema}/>
+                  </Box>
+                  <Box>
+                    <EditableDescription entity={ritual} schema={RitualSchema}/>
+                  </Box>
+                </Grid>
+                <Grid item xs>
+                  <Button onClick={() => removeRitual(ritual)}>
+                    Delete
+                  </Button>
+                </Grid>
+              </Grid>
+            </ListItem>
           ))}
-        </ul>
+        </List>
       )}
     </>
   )
@@ -225,17 +205,27 @@ function EditableCultRules({cult}){
         </Form>
       </Formik>
       {rules && (
-        <ul>
+        <List>
           {rules.map(rule => (
-            <li key={rule.asRef()}>
-              <EditableName entity={rule} schema={RuleSchema}/>
-              <EditableDescription entity={rule} schema={RuleSchema}/>
-              <Button onClick={() => removeRule(rule)}>
-                Delete
-              </Button>
-            </li>
+            <ListItem key={rule.asRef()}>
+              <Grid container alignItems="center">
+                <Grid item xs={9}>
+                  <Box>
+                    <EditableName entity={rule} schema={RuleSchema}/>
+                  </Box>
+                  <Box>
+                    <EditableDescription entity={rule} schema={RuleSchema}/>
+                  </Box>
+                </Grid>
+                <Grid item xs>
+                  <Button onClick={() => removeRule(rule)}>
+                    Delete
+                  </Button>
+                </Grid>
+              </Grid>
+            </ListItem>
           ))}
-        </ul>
+        </List>
       )}
     </>
   )
@@ -270,25 +260,87 @@ function EditableCultGatherings({cult}){
         </Form>
       </Formik>
       {gatherings && (
-        <ul>
+        <List>
           {gatherings.map(gathering => (
-            <li key={gathering.asRef()}>
-              <EditableName entity={gathering} schema={GatheringSchema}/>
-              <EditableDescription entity={gathering} schema={GatheringSchema}/>
-              <EditableLocation entity={gathering} schema={GatheringSchema}/>
-              <EditableTime entity={gathering} schema={GatheringSchema}/>
-              <Button onClick={() => removeGathering(gathering)}>
-                Delete
-              </Button>
-            </li>
+            <ListItem key={gathering.asRef()}>
+              <Grid container alignItems="center">
+                <Grid item xs={9}>
+                  <Box>
+                    <EditableName entity={gathering} schema={GatheringSchema}/>
+                  </Box>
+                  <Box>
+                    <EditableDescription entity={gathering} schema={GatheringSchema}/>
+                  </Box>
+                  <Box>
+                    <EditableLocation entity={gathering} schema={GatheringSchema}/>
+                  </Box>
+                  <Box>
+                    <EditableTime entity={gathering} schema={GatheringSchema}/>
+                  </Box>
+                </Grid>
+                <Grid item xs>
+                  <Button onClick={() => removeGathering(gathering)}>
+                    Delete
+                  </Button>
+                </Grid>
+              </Grid>
+            </ListItem>
           ))}
-        </ul>
+        </List>
       )}
     </>
   )
 }
 
+function EditableCultMembers({cult}){
+  const members = cult && cult.members
+  const addMember = async (memberWebId) => {
+    cult.addMember(memberWebId)
+    await cult.save()
+    await inviteMember(memberWebId, cult.asRef())
+  }
+  const removeMember = async (memberWebId) => {
+    cult.removeMember(memberWebId)
+    await cult.save()
+  }
+  return (
+    <>
+      <Typography variant="h4">Members</Typography>
+      <Formik
+        initialValues={{member: ""}}
+        onSubmit={({member}) => {addMember(member)}}
+        validationSchema={AddMemberSchema}
+      >
+        <Form>
+          <TextField name="member" type="text" placeholder="webid"/>
+          <Button type="submit">Add a Member</Button>
+        </Form>
+      </Formik>
+      {members && (
+        <List>
+          {members.map(member => (
+            <ListItem key={member}>
+              <Grid container alignItems="center">
+                <Grid item xs={9}>
+                  {member}
+                </Grid>
+                <Grid item xs>
+                  <Button onClick={() => removeMember(member)}>
+                    Delete
+                  </Button>
+                </Grid>
+              </Grid>
+            </ListItem>
+          ))}
+        </List>
+      )}
+    </>
+  )
+}
+
+
 function CultInfo({cult}){
+  const classes = useStyles();
   return (
     <>
       <Grid item xs={12}>
@@ -297,16 +349,16 @@ function CultInfo({cult}){
       <Grid item xs={12}>
         <EditableDescription entity={cult} schema={CultSchema}/>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item className={classes.quadrant} xs={5}>
         <EditableCultRituals cult={cult} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item className={classes.quadrant} xs={5}>
         <EditableCultRules cult={cult} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item className={classes.quadrant} xs={5}>
         <EditableCultGatherings cult={cult} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item className={classes.quadrant} xs={5}>
         <EditableCultMembers cult={cult}/>
       </Grid>
       <Grid item xs={12}>
