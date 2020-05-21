@@ -3,6 +3,7 @@ import React from 'react'
 import { useWebId } from "@solid/react"
 
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 
 import { useModel } from "../model"
@@ -65,8 +66,8 @@ function CreatedNotification({notification}){
   }
   return (
     <div>
-      <h4>{notification && notification.name}</h4>
-      <h5>{notification && notification.description}</h5>
+      <Typography variant="h4">{notification && notification.name}</Typography>
+      <Typography variant="h5">{notification && notification.description}</Typography>
       <NotificationCultDetails cultUri={cultUri}/>
       <Button onClick={() => recordCult()}>take note</Button>
       <Button onClick={() => deleteNotification(notification.asRef())}>forget about it</Button>
@@ -74,7 +75,7 @@ function CreatedNotification({notification}){
   )
 }
 
-function ApplicationNotification({notification}){
+function ApplicationNotification({notification, ...props}){
   const [ profile ] = useProfileByWebId(notification && notification.actor)
   const [ cult ] = useCultByRef(notification && notification.object)
 
@@ -85,9 +86,9 @@ function ApplicationNotification({notification}){
   }
   return (
     <div>
-      <h4>{notification && notification.name}</h4>
-      <h5>{notification && notification.description}</h5>
-      <h5>Applicant: {profile && profile.name}</h5>
+      <Typography variant="h4">{notification && notification.name}</Typography>
+      <Typography variant="h5">{notification && notification.description}</Typography>
+      <Typography variant="h5">Applicant: {profile && profile.name}</Typography>
       <Button onClick={() => approveApplication()}>accept application</Button>
       <Button onClick={() => deleteNotification(notification.asRef())}>deny application</Button>
     </div>
@@ -109,7 +110,11 @@ export default function Notification({uri}){
   const [notification] = useNotification(uri)
   if (notification){
     const NotificationComponent = notificationComponentForType(notification.type)
-    return <NotificationComponent notification={notification}/>
+    return (
+      <Box marginBottom={6}>
+        <NotificationComponent notification={notification}/>
+      </Box>
+    )
   } else {
     return <Loader/>
   }

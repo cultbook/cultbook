@@ -2,6 +2,7 @@ import React from 'react'
 
 import { useWebId } from "@solid/react"
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { ldp } from 'rdf-namespaces'
 
@@ -28,7 +29,7 @@ export default function Notifications({children}) {
   return (
     <DefaultLayout>
       <Grid item xs={12}>
-        <h3>Notifications</h3>
+        <Typography variant="h1">Notifications</Typography>
         {notifications && (
           <>
             {notifications.map(notification => (

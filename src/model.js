@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { describeSubject, describeDocument, describeContainer } from "plandoc"
 import * as td from "tripledoc";
-import { space, solid, rdf, rdfs, ldp, vcard, foaf, schema, cal } from "rdf-namespaces"
+import { space, solid, rdf, rdfs, ldp, vcard, foaf, schema, cal, acl } from "rdf-namespaces"
 import { as } from "./vocab"
 import { postToInbox } from "./services"
 import { createPrivateCultDocAcl } from "./utils/acl"
@@ -15,7 +15,8 @@ export const cb = {
   convening: `${prefix}convening`,
   demands: `${prefix}demands`,
   prescribes: `${prefix}prescribes`,
-  knowsAbout: `${prefix}knowsAbout`
+  knowsAbout: `${prefix}knowsAbout`,
+  veilRemoved: `${prefix}veilRemoved`
 }
 
 //const wwwCultRoot = "https://cultofwww.solid.thecultbook.com"
@@ -141,6 +142,19 @@ export class Profile {
 
   get inbox(){
     return this.subject.getRef(ldp.inbox)
+  }
+
+  get permissions(){
+    const {protocol, hostname, port} = window.location
+    const origin = `${protocol}//${hostname}${port ? `:${port}` : ""}`
+    const trustedApps = this.subject.getAllLocalSubjects(acl.trustedApp)
+    const thisAppPermissions = trustedApps.find(p => (p.getRef(acl.origin) === origin))
+    return thisAppPermissions && thisAppPermissions.getAllRefs(acl.mode)
+  }
+
+  get hasControlPermission(){
+    const perms = this.permissions
+    return !!(perms && perms.find(p => (p === acl.Control)))
   }
 
   asRef() {
@@ -293,7 +307,7 @@ inv: a as:Create;
   async create(creator, name){
     this.ownerWebId = creator
     this.name = name
-    await Promise.all([
+    const cultCreateResults = await Promise.all([
       this.save(),
       createPrivateCultDocAcl(this.privateDocument.asRef(), creator),
       this.notifyCultOfWWWOfCreation(creator)
@@ -341,6 +355,14 @@ export class Passport {
 
   asRef() {
     return this.subject.asRef()
+  }
+
+  get veilRemoved(){
+    return (this.subject.getInteger(cb.veilRemoved) === 1)
+  }
+
+  set veilRemoved(bool){
+    this.subject.setInteger(cb.veilRemoved, bool ? 1 : 0)
   }
 
   get known() {

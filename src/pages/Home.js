@@ -22,76 +22,14 @@ import NamePrompt from "../components/NamePrompt"
 import DefaultLayout from "../layouts/Default"
 
 const useStyles = makeStyles(theme => ({
-  cultListItem: {
-    textAlign: "center"
-  },
   scene: {
     maxWidth: "66vw",
     margin: "auto"
   }
 }))
 
-function CultListItem({cultRef, follows, leave, passport, ...props}) {
-  const webId = useWebId()
-  const [cult, loading] = useCultByRef(cultRef)
-  const apply = async () => {
-    passport.addFollowing(cult.asRef())
-    await passport.save()
-    await cult.applyToJoin(webId)
-  }
-  return (
-    <ListItem {...props}>
-      <ListItemText>
-        <h4>{loading ? <Loader/> : cult ? cult.name : "could not load cult..."}</h4>
-        {follows ? (
-          <Link to={urls.cultByRef(cultRef)}>Enter Lair</Link>
-        ) : (
-          <Button onClick={apply}>Apply to Join</Button>
-        )}
-        {follows && <Button onClick={() => leave()}>Disavow</Button>
-        }
-      </ListItemText>
-    </ListItem>
-  )
-}
-
-function KnownCults(){
+function IdentifiedHomePage({cult, passport, profile}){
   const classes = useStyles();
-  const [cultRefs] = useKnownCults()
-  const webId = useWebId()
-  const { passportDocument } = useModel(webId)
-  const [ passport ] = usePassport(passportDocument)
-
-  const following = useMemo(
-    () => new Set(passport && passport.following),
-    [passport]
-  )
-  const leaveCult = (cultUri) => {
-    passport.removeFollowing(cultUri)
-    passport.save()
-  }
-
-  return (
-    <>
-      <h3>Known Cults</h3>
-      <List>
-        {cultRefs && cultRefs.map(cultRef => (
-          <CultListItem key={cultRef} cultRef={cultRef}
-                        follows={following.has(cultRef)}
-                        leave={() => leaveCult(cultRef)}
-                        passport={passport}
-                        className={classes.cultListItem}
-          />
-        ))}
-      </List>
-    </>
-  )
-
-}
-
-function IdentifiedHomePage({cultDocument, cultPrivateDocument}){
-  const classes = useStyles();
-  const [ cult ] = useCult(cultDocument, cultPrivateDocument)
 
   return (
     <>
@@ -106,8 +44,16 @@ function IdentifiedHomePage({cultDocument, cultPrivateDocument}){
       <Grid item xs={12}>
         {cult && <MyCultLink cult={cult}/>}
       </Grid>
+      {passport && passport.veilRemoved && (
+        <Grid item xs={12}>
+          {cult && <Link href={cult.asRef()} target="_blank">View the source of {cult.name}</Link>}
+        </Grid>
+      )}
       <Grid item xs={12}>
-        <KnownCults/>
+        <ButtonLink to="/cults">Look at the Message Board</ButtonLink>
+      </Grid>
+      <Grid item xs={12}>
+        {(!profile.hasControlPermission) && "YOU DID NOT GIVE US ENOUGH CONTROL: YOUR EXPERIENCE MAY BE SUBOPTIMAL. CONSULT THE CULT OF WWW FOR GUIDANCE!"}
       </Grid>
     </>
   )
@@ -136,7 +82,9 @@ function UnidentifiedHomePage({profile}){
 
 export default function HomePage(){
   const webId = useWebId()
-  const { profileDocument, cultDocument, cultPrivateDocument } = useModel(webId)
+  const { profileDocument, cultDocument, cultPrivateDocument, passportDocument } = useModel(webId)
+  const [ cult ] = useCult(cultDocument, cultPrivateDocument)
+  const [ passport ] = usePassport(passportDocument)
 
   const [profile, profileLoading] = useProfile(profileDocument)
   return (
@@ -145,7 +93,7 @@ export default function HomePage(){
         <Loader/>
       ) : (
         (profile && profile.name) ? (
-          <IdentifiedHomePage cultDocument={cultDocument} cultPrivateDocument={cultPrivateDocument} />
+          <IdentifiedHomePage cult={cult} passport={passport} profile={profile} />
         ) : (
           <UnidentifiedHomePage profile={profile}/>
         )

@@ -11,6 +11,7 @@ import LandingPage from "./pages/Landing"
 import HomePage from "./pages/Home"
 import MePage from "./pages/Me"
 import MyCultPage from "./pages/MyCult"
+import CultsPage from "./pages/Cults"
 import NotificationsPage from "./pages/Notifications"
 import { CultPageByEncodedRef } from "./pages/Cult"
 import Loader from "./components/Loader"
@@ -57,6 +58,7 @@ function App() {
       <CssBaseline/>
       <div className={classes.app}>
         <Switch>
+          <PrivateRoute path="/cults" component={CultsPage}/>
           <PrivateRoute path="/me/cult" component={MyCultPage}/>
           <PrivateRoute path="/me" component={MePage}/>
           <PrivateRoute path="/notifications" component={NotificationsPage}/>
