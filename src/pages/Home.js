@@ -1,18 +1,12 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 
 import { useWebId } from "@solid/react"
 
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
 
 import { useModel } from "../model"
-import { useCult, useCultByRef, useProfile, usePassport, useKnownCults } from "../data"
-import * as urls from "../urls"
+import { useCult, useProfile, usePassport } from "../data"
 import Loader from "../components/Loader"
 import Link from "../components/Link"
 import ButtonLink from '../components/ButtonLink'

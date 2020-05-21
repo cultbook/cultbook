@@ -11,14 +11,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
 import { useModel } from "../model"
-import { useCult, useCultByRef, useProfile, usePassport, useKnownCults } from "../data"
+import { useCultByRef, usePassport, useKnownCults } from "../data"
 import * as urls from "../urls"
 import Loader from "../components/Loader"
 import Link from "../components/Link"
-import ButtonLink from '../components/ButtonLink'
-import MyCultLink from "../components/MyCultLink"
 import Scene from "../components/Scene"
-import NamePrompt from "../components/NamePrompt"
 import DefaultLayout from "../layouts/Default"
 
 const useStyles = makeStyles(theme => ({
@@ -60,7 +57,6 @@ function CultListItem({cultRef, follows, leave, passport, ...props}) {
 function KnownCults({passport}){
   const classes = useStyles();
   const [cultRefs] = useKnownCults()
-  const webId = useWebId()
 
   const following = useMemo(
     () => new Set(passport && passport.following),
@@ -87,11 +83,9 @@ function KnownCults({passport}){
 
 export default function HomePage(){
   const webId = useWebId()
-  const { profileDocument, cultDocument, cultPrivateDocument, passportDocument } = useModel(webId)
-  const [ cult ] = useCult(cultDocument, cultPrivateDocument)
+  const { passportDocument } = useModel(webId)
   const [ passport ] = usePassport(passportDocument)
 
-  const [profile, profileLoading] = useProfile(profileDocument)
   return (
     <DefaultLayout>
       <Grid item xs={12}>
