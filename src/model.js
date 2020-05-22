@@ -513,6 +513,34 @@ export class Passport {
     ) : []
   }
 
+  isAttending(gathering) {
+    const ref = gathering.asRef()
+    return !!this.subject.getAllRefs(cb.attending).find(g => (g === ref))
+  }
+
+  attend(gathering) {
+    this.subject.addRef(cb.attending, gathering.asRef())
+  }
+
+  cancelPlans(gathering) {
+    this.subject.removeRef(cb.attending, gathering.asRef())
+  }
+
+  get rsvps(){
+    return this.subject.getAllRefs(cb.attending)
+  }
+
+  async getGatherings(){
+    return this.rsvps ? (
+      Promise.all(
+        this.rsvps.map(async (gatheringRef) => {
+          const doc = await td.fetchDocument(gatheringRef)
+          return new Gathering(doc, doc.getSubject(gatheringRef), doc.save)
+        })
+      )
+    ) : []
+  }
+
   addPerformance(performanceRef){
     this.subject.addRef(cb.performed, performanceRef)
   }

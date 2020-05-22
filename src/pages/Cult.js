@@ -72,6 +72,16 @@ export default function CultPage({cultRef}){
     passport.save()
   }
 
+  const rsvp = (gathering) => {
+    passport.attend(gathering)
+    passport.save()
+  }
+
+  const cancelPlans = (gathering) => {
+    passport.cancelPlans(gathering)
+    passport.save()
+  }
+
   const currentUserIsWWWCult = useCurrentUserIsWWWCult()
   return (
     <DefaultLayout>
@@ -155,8 +165,22 @@ export default function CultPage({cultRef}){
                     <ListItemText>
                       at {gathering.time && gathering.time.toLocaleString()}
                     </ListItemText>
+                    {passport && (
+                      <ListItemText>
+                        {passport.isAttending(gathering) ? (
+                          <Button onClick={() => cancelPlans(gathering)}>
+                            Cancel plans
+                          </Button>
+                        ) : (
+                          <Button onClick={() => rsvp(gathering)}>
+                            RSVP
+                          </Button>
+                        )}
+                      </ListItemText>
+                    )}
+
                   </Box>
-p                </ListItem>
+                </ListItem>
               ))}
             </List>
           </>
