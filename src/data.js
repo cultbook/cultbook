@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { fetchDocument, describeDocument } from "plandoc"
 import { useWebId } from "@solid/react"
+import { ldp } from 'rdf-namespaces'
+import * as td from "tripledoc"
 
 import { Ritual, Cult, Passport, Performance, Notification, Profile, useModel, wwwCultWebId, privateCultDocument } from "./model"
 import useLatestUpdate from "./hooks/useLatestUpdate"
+import { documentExists } from "./services"
 
 export function useDocument(virtualDocument){
   const [document, setDocument] = useState()
@@ -15,17 +18,16 @@ export function useDocument(virtualDocument){
     async function loadDocument(){
       setLoading(true)
       try {
+        if (needsRefresh){
+          virtualDocument.promise = td.fetchDocument(document.asRef())
+          setNeedsRefresh(false)
+        }
         setDocument(await fetchDocument(virtualDocument))
-
       } catch (e) {
         console.error("error fetching document", e)
         setError(e)
       }
       setLoading(false)
-    }
-    if (needsRefresh) {
-      virtualDocument.promise = undefined
-      setNeedsRefresh(false)
     }
     if (virtualDocument) loadDocument()
   }, [virtualDocument, needsRefresh])
@@ -141,4 +143,25 @@ export function useProfile(profileDocument) {
 export function useProfileByWebId(uri){
   const profileDocument = useMemo(() => uri && describeDocument().isFoundAt(uri), [uri])
   return useProfile(profileDocument)
+}
+
+export function useDocumentExists(uri){
+  const [exists, setExists] = useState()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState()
+  async function checkExists(){
+    try {
+      setLoading(true)
+      setExists(await documentExists(uri))
+      setLoading(false)
+    } catch (e) {
+      setError(e)
+    }
+  }
+  useEffect(() => {
+    if (uri){
+      checkExists()
+    }
+  }, [uri])
+  return [exists, loading, error, checkExists]
 }

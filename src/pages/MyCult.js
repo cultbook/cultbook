@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 import { useWebId } from "@solid/react"
 import { Form, Formik } from 'formik';
@@ -12,7 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import DefaultLayout from "../layouts/Default"
 import { useModel } from "../model"
-import { useCult } from "../data"
+import { useCult, useDocumentExists } from "../data"
 import * as urls from "../urls"
 import ButtonLink from "../components/ButtonLink"
 import Linkify from "../components/Linkify"
@@ -324,7 +324,7 @@ function EditableCultMembers({cult}){
                 </Grid>
                 <Grid item xs>
                   <Button onClick={() => removeMember(member)}>
-                    Delete
+                    Banish
                   </Button>
                 </Grid>
               </Grid>
@@ -337,8 +337,14 @@ function EditableCultMembers({cult}){
 }
 
 
+
 function CultInfo({cult}){
   const classes = useStyles();
+  const [aclCreated, checkingAcl, error, refresh] = useDocumentExists(cult.aclRef)
+  async function fixAcl(){
+    await cult.ensureAcl()
+    refresh()
+  }
   return (
     <>
       <Grid item xs={12}>
@@ -362,6 +368,16 @@ function CultInfo({cult}){
       <Grid item xs={12}>
         <ButtonLink to={urls.cult(cult)}>Public Page</ButtonLink>
       </Grid>
+      {cult && !checkingAcl && !aclCreated && (
+        <Grid item xs={12}>
+          <Typography variant="body1">
+            Your cult is not configured properly. You may need to summon the Cult of WWW for assistance.
+          </Typography>
+          <Button onClick={fixAcl}>
+            Try to fix it
+          </Button>
+        </Grid>
+      )}
     </>
   )
 }

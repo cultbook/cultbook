@@ -5,7 +5,7 @@ import { space, solid, rdf, rdfs, ldp, vcard, foaf, schema, cal, acl, dct } from
 import { v4 as uuid } from 'uuid';
 
 import { as } from "./vocab"
-import { postToInbox } from "./services"
+import { postToInbox, documentExists } from "./services"
 import { createPrivateCultDocAcl, createRitualUploadFolderAcl } from "./utils/acl"
 
 
@@ -363,6 +363,18 @@ export class Cult {
     return !!this.ownerWebId
   }
 
+  get aclRef(){
+    return this.privateDocument && `${this.privateDocument.asRef()}.acl`
+  }
+
+  async isAclInPlace(){
+    return documentExists(this.aclRef)
+  }
+
+  async ensureAcl(){
+    return createPrivateCultDocAcl(this.privateDocument.asRef(), this.ownerWebId)
+  }
+
   async notifyCultOfWWWOfCreation(creator){
     await postToInbox(wwwCultInbox, `
 @prefix inv: <>.
@@ -383,7 +395,7 @@ inv: a as:Create;
     this.name = name
     await Promise.all([
       this.save(),
-      createPrivateCultDocAcl(this.privateDocument.asRef(), creator),
+      this.ensureAcl(),
       this.notifyCultOfWWWOfCreation(creator)
     ])
   }
@@ -565,55 +577,58 @@ export function privateCultDocument(publicCultVirtualDocument){
   return describeDocument().isFoundOn(cultPrivateDocRegistration, rdfs.seeAlso)
 }
 
+const modelCache = {
+
+}
+
 export function useModel(webId){
-  const [profileDocument, setProfileDocument] = useState()
-  const [inboxContainer, setInboxContainer] = useState()
-  const [cultDocument, setCultDocument] = useState()
-  const [cultPrivateDocument, setCultPrivateDocument] = useState()
-  const [passportDocument, setPassportDocument] = useState()
+  const [model, setModel] = useState({})
   useEffect(() => {
     if (webId){
-      const profileDoc = describeDocument().isFoundAt(webId)
-      setProfileDocument(profileDoc)
+      if (modelCache[webId]){
+        setModel(modelCache[webId])
+      } else {
+        console.log("CREATING NEW MODEL")
+        const profileDocument = describeDocument().isFoundAt(webId)
 
-      const profileSubject = describeSubject().isFoundAt(webId)
+        const profileSubject = describeSubject().isFoundAt(webId)
 
-      const storage = describeContainer()
-            .isFoundOn(profileSubject, space.storage);
-      const publicStorage = describeContainer().experimental_isContainedIn(storage, "public")
-      const privateStorage = describeContainer().experimental_isContainedIn(storage, "private")
+        const storage = describeContainer()
+              .isFoundOn(profileSubject, space.storage);
+        const publicStorage = describeContainer().experimental_isContainedIn(storage, "public")
+        const privateStorage = describeContainer().experimental_isContainedIn(storage, "private")
 
-      const inbox = describeContainer().isFoundOn(profileSubject, ldp.inbox)
-      setInboxContainer(inbox)
+        const inboxContainer = describeContainer().isFoundOn(profileSubject, ldp.inbox)
 
+        const publicTypeIndex = describeDocument()
+              .isFoundOn(profileSubject, solid.publicTypeIndex)
 
-      const publicTypeIndex = describeDocument()
-            .isFoundOn(profileSubject, solid.publicTypeIndex)
+        const cultPublicTypeRegistration = describeSubject()
+              .isEnsuredIn(publicTypeIndex)
+              .withRef(rdf.type, solid.TypeRegistration)
+              .withRef(solid.forClass, cb.Cult)
+        const cultDocument = describeDocument()
+              .isEnsuredOn(cultPublicTypeRegistration, solid.instance, publicStorage)
 
-      const cultPublicTypeRegistration = describeSubject()
-            .isEnsuredIn(publicTypeIndex)
-            .withRef(rdf.type, solid.TypeRegistration)
-            .withRef(solid.forClass, cb.Cult)
-      const cultDoc = describeDocument()
-            .isEnsuredOn(cultPublicTypeRegistration, solid.instance, publicStorage)
-      setCultDocument(cultDoc)
+        const cultPrivateDocRegistration = describeSubject()
+              .isEnsuredIn(cultDocument)
+              .withRef(rdf.type, solid.TypeRegistration)
+              .withRef(solid.forClass, cb.Cult)
+        const cultPrivateDocument = describeDocument()
+              .isEnsuredOn(cultPrivateDocRegistration, rdfs.seeAlso, privateStorage)
 
-      const cultPrivateDocRegistration = describeSubject()
-            .isEnsuredIn(cultDoc)
-            .withRef(rdf.type, solid.TypeRegistration)
-            .withRef(solid.forClass, cb.Cult)
-      const cultPrivateDoc = describeDocument()
-            .isEnsuredOn(cultPrivateDocRegistration, rdfs.seeAlso, privateStorage)
-      setCultPrivateDocument(cultPrivateDoc)
+        const passportPublicTypeRegistration = describeSubject()
+              .isEnsuredIn(publicTypeIndex)
+              .withRef(rdf.type, solid.TypeRegistration)
+              .withRef(solid.forClass, cb.Passport)
+        const passportDocument = describeDocument()
+              .isEnsuredOn(passportPublicTypeRegistration, solid.instance, publicStorage)
 
-      const passportPublicTypeRegistration = describeSubject()
-            .isEnsuredIn(publicTypeIndex)
-            .withRef(rdf.type, solid.TypeRegistration)
-            .withRef(solid.forClass, cb.Passport)
-      const passportDoc = describeDocument()
-            .isEnsuredOn(passportPublicTypeRegistration, solid.instance, publicStorage)
-      setPassportDocument(passportDoc)
+        const newModel = { profileDocument, cultDocument, cultPrivateDocument, passportDocument, inboxContainer }
+        modelCache[webId] = newModel
+        setModel(newModel)
+      }
     }
   }, [webId])
-  return { profileDocument, cultDocument, cultPrivateDocument, passportDocument, inboxContainer }
+  return model
 }
