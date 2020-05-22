@@ -17,6 +17,8 @@ export const cb = {
   follows: `${prefix}follows`,
   convening: `${prefix}convening`,
   demands: `${prefix}demands`,
+  swornTo: `${prefix}swornTo`,
+  attending: `${prefix}attending`,
   prescribes: `${prefix}prescribes`,
   knowsAbout: `${prefix}knowsAbout`,
   veilRemoved: `${prefix}veilRemoved`,
@@ -415,6 +417,20 @@ export class Passport {
   removeFollowing(cultRef){
     this.subject.removeRef(cb.follows, cultRef)
   }
+
+  isSwornTo(rule) {
+    const ref = rule.asRef()
+    return !!this.subject.getAllRefs(cb.swornTo).find(rule => (rule === ref))
+  }
+
+  swearTo(rule) {
+    this.subject.addRef(cb.swornTo, rule.asRef())
+  }
+
+  breakOath(rule) {
+    this.subject.removeRef(cb.swornTo, rule.asRef())
+  }
+
 }
 
 export class Notification {

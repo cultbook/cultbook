@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     margin: "auto"
   },
   rule: {
-    textAlign: "center"
+    textAlign: "left"
   }
 }))
 
@@ -50,11 +50,25 @@ function CultBookmarker({cult}){
 
 
 export default function CultPage({cultRef}){
+  const webId = useWebId()
+  const { passportDocument } = useModel(webId)
   const classes = useStyles();
   const [cult] = useCultByRef(cultRef)
   const rituals = cult && cult.rituals
   const gatherings = cult && cult.gatherings
   const rules = cult && cult.rules
+
+  const [ passport ] = usePassport(passportDocument)
+
+  const swearTo = (rule) => {
+    passport.swearTo(rule)
+    passport.save()
+  }
+
+  const breakOath = (rule) => {
+    passport.breakOath(rule)
+    passport.save()
+  }
 
   const currentUserIsWWWCult = useCurrentUserIsWWWCult()
   return (
@@ -81,7 +95,8 @@ export default function CultPage({cultRef}){
           </>
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={3}/>
+      <Grid item xs={6}>
         {rules && (
           <>
             <Typography variant="h2">Rules</Typography>
@@ -91,14 +106,27 @@ export default function CultPage({cultRef}){
                   <ListItemText
                     primary={rule.name}
                     secondary={rule.description}
-                  >
-                  </ListItemText>
+                  />
+                  {passport && (
+                    <ListItemText>
+                      {passport.isSwornTo(rule) ? (
+                        <Button onClick={() => breakOath(rule)}>
+                          Break Your Oath
+                        </Button>
+                      ) : (
+                        <Button onClick={() => swearTo(rule)}>
+                          Swear to Obey
+                        </Button>
+                      )}
+                    </ListItemText>
+                  )}
                 </ListItem>
               ))}
             </List>
           </>
         )}
       </Grid>
+      <Grid item xs={3}/>
       <Grid item xs={12}>
         {gatherings && (
           <>
