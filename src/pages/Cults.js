@@ -93,7 +93,7 @@ export default function HomePage(){
       </Grid>
       <Grid item xs={12}>
         <Scene>
-          You gaze at vast message board, the surface of which seems to shift under your gaze. The board is covered in the names of existing cults. The writing beckons you to reach out and touch it...
+          You pick up Thecultbook and start browsing. The words seem to shift under your eyes. The book seems to be interactive, with some words calling out to you to touch them...
         </Scene>
       </Grid>
       <Grid item xs={3}>
