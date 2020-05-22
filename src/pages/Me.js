@@ -12,6 +12,8 @@ import { EditableName } from "../components/Editable"
 import { ProfileSchema } from "../validations"
 import Scene from "../components/Scene"
 import ButtonLink from "../components/ButtonLink"
+import Link from "../components/Link"
+import * as urls from "../urls"
 
 const useStyles = makeStyles(theme => ({
 }))
@@ -31,6 +33,9 @@ export default function MePage(){
       </Grid>
       <Grid item xs={12}>
         {profile && <EditableName entity={profile} schema={ProfileSchema} variant="h1"/>}
+      </Grid>
+      <Grid item xs={12}>
+        {profile && <ButtonLink to={urls.profileByRef(profile.asRef())}>Public Profile</ButtonLink>}
       </Grid>
       <Grid item xs={12}>
         <ButtonLink to="/">Direct your attention elsewhere</ButtonLink>

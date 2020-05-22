@@ -22,6 +22,7 @@ export const cb = {
   demandedBy: `${prefix}demandedBy`,
   prescribes: `${prefix}prescribes`,
   prescribedBy: `${prefix}prescribedBy`,
+  performed: `${prefix}performed`,
   swornTo: `${prefix}swornTo`,
   attending: `${prefix}attending`,
   knowsAbout: `${prefix}knowsAbout`,
@@ -469,6 +470,29 @@ export class Passport {
 
   breakOath(rule) {
     this.subject.removeRef(cb.swornTo, rule.asRef())
+  }
+
+  get rules(){
+    return this.subject.getAllRefs(cb.swornTo)
+  }
+
+  async getRules(){
+    return this.rules ? (
+      Promise.all(
+        this.rules.map(async (ruleRef) => {
+          const doc = await td.fetchDocument(ruleRef)
+          return new Rule(doc, doc.getSubject(ruleRef), doc.save)
+        })
+      )
+    ) : []
+  }
+
+  addPerformance(performanceRef){
+    this.subject.addRef(cb.performed, performanceRef)
+  }
+
+  get performances(){
+    return this.subject.getAllRefs(cb.performed)
   }
 
 }

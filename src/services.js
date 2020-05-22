@@ -16,6 +16,13 @@ export const deleteDocument = async (uri) =>
     method: 'DELETE'
   });
 
+export const documentExists = async (uri) => {
+  const response = await auth.fetch(uri, {
+    method: 'HEAD'
+  });
+  return (response.status === 200)
+}
+
 
 export const deleteNotification = async (uri) => deleteDocument(uri)
 

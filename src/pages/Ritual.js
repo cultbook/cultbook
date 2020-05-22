@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { useWebId } from "@solid/react"
 
@@ -16,13 +16,15 @@ import Typography from '@material-ui/core/Typography';
 import { ldp } from 'rdf-namespaces'
 
 import DefaultLayout from "../layouts/Default"
-import { useDocument, useProfile, useRitualByRef, useCurrentUserIsWWWRitual, usePassport, usePerformance } from "../data"
+import { useDocument, useProfile, useRitualByRef, useCurrentUserIsWWWRitual, usePassport, usePerformance, useProfileByWebId } from "../data"
 import { useModel } from "../model"
 import Linkify from "../components/Linkify"
 import Link from "../components/Link"
 import ImageUploader from "../components/ImageUploader"
 import Loader from "../components/Loader"
+import ProfileLink from "../components/ProfileLink"
 import { createPrivateCultResourceAcl } from "../utils/acl"
+import { deleteDocument, documentExists } from "../services"
 
 const useStyles = makeStyles(theme => ({
 }))
@@ -36,19 +38,44 @@ export function RitualPageByEncodedRef() {
 }
 
 function Performance({uri}){
+  const webId = useWebId()
   const [performance] = usePerformance(uri)
-  return performance ? (
-    <img src={performance.object} alt={performance.title}/>
+  const [exists, setExists] = useState()
+  useEffect(() => {
+    if (uri && performance){
+      async function checkExists(){
+        setExists(await documentExists(performance.object))
+      }
+      checkExists()
+    }
+  }, [performance, uri])
+  const retract = () => {
+    deleteDocument(performance.object)
+    setExists(false)
+  }
+  return (exists === true) ? (
+    performance ? (
+      <>
+        <img src={performance.object} alt={performance.title}/>
+        <Typography variant="caption">
+          performed by <ProfileLink webId={performance.actor}/>
+        </Typography>
+        {(webId === performance.actor) && <Button onClick={retract}>Delete</Button>}
+      </>
+    ) : (
+      <Loader/>
+    )
   ) : (
-    <Loader/>
+    <></>
   )
 }
 
 export default function RitualPage({ritualRef}){
   const classes = useStyles();
   const webId = useWebId()
-  const { profileDocument } = useModel(webId)
+  const { profileDocument, passportDocument } = useModel(webId)
   const [ profile ] = useProfile(profileDocument)
+  const [ passport ] = usePassport(passportDocument)
   const [imageUploaderOpen, setImageUploaderOpen] = useState(false)
   const [ritual] = useRitualByRef(ritualRef)
   const [ uploadsContainer ] = useDocument(ritual && ritual.uploadFolderVirtualDocument)
@@ -56,7 +83,10 @@ export default function RitualPage({ritualRef}){
   const onUpload = async (response, altText, type) => {
     const fileUrl = new URL(response.headers.get("location"), response.url).toString()
     await createPrivateCultResourceAcl(fileUrl, ritual.cultRef, webId)
-    await ritual.addPerformance(webId, fileUrl, altText, type)
+    const addResponse = await ritual.addPerformance(webId, fileUrl, altText, type)
+    const performanceUrl = new URL(addResponse.headers.get("location"), addResponse.url).toString()
+    passport.addPerformance(performanceUrl)
+    await passport.save()
   }
   return (
     <DefaultLayout>
@@ -77,13 +107,11 @@ export default function RitualPage({ritualRef}){
       </Grid>
       <Grid item xs={12}>
         {uploads && (uploads.length > 0) && (
-          <GridList cellHeight={160} className={classes.gridList} cols={3}>
+          <>
             {uploads.map(url => (
-              <GridListTile key={url} cols={1}>
                 <Performance uri={url} key={url}/>
-              </GridListTile>
             ))}
-          </GridList>
+          </>
         )}
       </Grid>
     </DefaultLayout>

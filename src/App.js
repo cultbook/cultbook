@@ -15,6 +15,7 @@ import CultsPage from "./pages/Cults"
 import NotificationsPage from "./pages/Notifications"
 import { CultPageByEncodedRef } from "./pages/Cult"
 import { RitualPageByEncodedRef } from "./pages/Ritual"
+import { EntityPageByEncodedRef } from "./pages/Entity"
 import Loader from "./components/Loader"
 import theme from './theme'
 
@@ -64,6 +65,7 @@ function App() {
           <PrivateRoute path="/me" component={MePage}/>
           <PrivateRoute path="/notifications" component={NotificationsPage}/>
           <PrivateRoute path="/ritual/:encodedRef" component={RitualPageByEncodedRef}/>
+          <PrivateRoute path="/entity/:encodedRef" component={EntityPageByEncodedRef}/>
           <Route path="/cult/:encodedCultRef" component={CultPageByEncodedRef}/>
           <Route path="/" component={RootPage}/>
         </Switch>
