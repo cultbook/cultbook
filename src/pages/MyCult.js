@@ -183,6 +183,9 @@ function EditableCultRituals({cult}){
             <li key={ritual.asRef()}>
               <EditableName entity={ritual} schema={RitualSchema}/>
               <EditableDescription entity={ritual} schema={RitualSchema}/>
+              <ButtonLink to={urls.ritual(ritual)}>
+                Perform
+              </ButtonLink>
               <Button onClick={() => removeRitual(ritual)}>
                 Delete
               </Button>

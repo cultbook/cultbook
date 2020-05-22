@@ -98,6 +98,13 @@ export class Ritual {
   set uploadFolder(uploadFolderRef){
     this.subject.setRef(cb.uploadFolder, uploadFolderRef)
   }
+
+  get uploadFolderVirtualDocument(){
+    if (!this._uploadFolderVirtualDocument){
+      this._uploadFolderVirtualDocument = describeDocument().isFoundAt(this.uploadFolder)
+    }
+    return this._uploadFolderVirtualDocument
+  }
 }
 
 export class Gathering {

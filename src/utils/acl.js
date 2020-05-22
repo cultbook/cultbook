@@ -34,13 +34,15 @@ const ritualUploadFolderAcl = (cultDocRef, uploadFolderRef, ownerWebId) => `
     acl:mode      acl:Read,
                   acl:Write,
                   acl:Control;
-    acl:agent     <${ownerWebId}>.
+    acl:agent     <${ownerWebId}>;
+    acl:default   <${uploadFolderRef}>.
 <#authorization2>
     a               acl:Authorization;
     acl:accessTo    <${uploadFolderRef}>;
     acl:mode        acl:Append,
                     acl:Read;
-    acl:agentGroup  <${cultDocRef}#cult>.`
+    acl:agentGroup  <${cultDocRef}#cult>;
+    acl:default     <${uploadFolderRef}>.`
 
 export const createRitualUploadFolderAcl = (cultDocRef, uploadFolderRef, owner) =>
   createAcl(uploadFolderRef, ritualUploadFolderAcl(cultDocRef, uploadFolderRef, owner))
