@@ -15,10 +15,12 @@ import DefaultLayout from "../layouts/Default"
 import { useCultByRef, useCurrentUserIsWWWCult, usePassport } from "../data"
 import { useModel } from "../model"
 import Linkify from "../components/Linkify"
+import * as urls from "../urls"
+import ButtonLink from "../components/ButtonLink"
 
 const useStyles = makeStyles(theme => ({
   ritual: {
-    textAlign: "center"
+    textAlign: "left"
   },
   gathering: {
     textAlign: "center",
@@ -77,7 +79,8 @@ export default function CultPage({cultRef}){
         <Typography variant="h1">{cult && cult.name}</Typography>
         {currentUserIsWWWCult && <CultBookmarker cult={cult}/>}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={3}/>
+      <Grid item xs={6}>
         {rituals && (
           <>
             <Typography variant="h2">Rituals</Typography>
@@ -89,12 +92,18 @@ export default function CultPage({cultRef}){
                     secondary={ritual.description}
                   >
                   </ListItemText>
+                  <ListItemText>
+                    <ButtonLink to={urls.ritual(ritual)}>
+                      Perform
+                    </ButtonLink>
+                  </ListItemText>
                 </ListItem>
               ))}
             </List>
           </>
         )}
       </Grid>
+      <Grid item xs={3}/>
       <Grid item xs={3}/>
       <Grid item xs={6}>
         {rules && (
@@ -147,7 +156,7 @@ export default function CultPage({cultRef}){
                       at {gathering.time && gathering.time.toLocaleString()}
                     </ListItemText>
                   </Box>
-                </ListItem>
+p                </ListItem>
               ))}
             </List>
           </>

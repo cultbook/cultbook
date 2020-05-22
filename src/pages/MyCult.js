@@ -161,9 +161,6 @@ function EditableCultRituals({cult}){
                   </Box>
                 </Grid>
                 <Grid item xs>
-                  <ButtonLink to={urls.ritual(ritual)}>
-                    Perform
-                  </ButtonLink>
                   <Button onClick={() => removeRitual(ritual)}>
                     Delete
                   </Button>
