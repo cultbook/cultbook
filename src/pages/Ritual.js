@@ -5,20 +5,13 @@ import { useWebId } from "@solid/react"
 import { useParams } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { ldp } from 'rdf-namespaces'
 
 import DefaultLayout from "../layouts/Default"
-import { useDocument, useProfile, useRitualByRef, useCurrentUserIsWWWRitual, usePassport, usePerformance, useProfileByWebId } from "../data"
+import { useDocument, useProfile, useRitualByRef, usePassport, usePerformance } from "../data"
 import { useModel } from "../model"
-import Linkify from "../components/Linkify"
 import Link from "../components/Link"
 import ImageUploader from "../components/ImageUploader"
 import Loader from "../components/Loader"

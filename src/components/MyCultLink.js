@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Button from '@material-ui/core/Button';
 import { useWebId } from "@solid/react"
 
 import ButtonLink from "./ButtonLink"

@@ -1,10 +1,6 @@
 import React from 'react'
 
-import Button from '@material-ui/core/Button';
-import { useWebId } from "@solid/react"
-
 import Link from "./Link"
-import NamePrompt from "./NamePrompt"
 import Loader from "./Loader"
 import { useProfileByWebId } from "../data"
 import * as urls  from "../urls"

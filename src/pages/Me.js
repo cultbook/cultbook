@@ -12,7 +12,6 @@ import { EditableName } from "../components/Editable"
 import { ProfileSchema } from "../validations"
 import Scene from "../components/Scene"
 import ButtonLink from "../components/ButtonLink"
-import Link from "../components/Link"
 import * as urls from "../urls"
 
 const useStyles = makeStyles(theme => ({

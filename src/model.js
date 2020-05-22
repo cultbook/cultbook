@@ -381,7 +381,7 @@ inv: a as:Create;
   async create(creator, name){
     this.ownerWebId = creator
     this.name = name
-    const cultCreateResults = await Promise.all([
+    await Promise.all([
       this.save(),
       createPrivateCultDocAcl(this.privateDocument.asRef(), creator),
       this.notifyCultOfWWWOfCreation(creator)

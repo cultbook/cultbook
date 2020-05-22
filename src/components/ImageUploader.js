@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
-import { v4 as uuid } from 'uuid';
 import auth from 'solid-auth-client';
 
 import { makeStyles } from '@material-ui/core/styles';
