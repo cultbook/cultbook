@@ -17,6 +17,7 @@ import * as urls from "../urls"
 import ButtonLink from "../components/ButtonLink"
 import Linkify from "../components/Linkify"
 import Datepicker from "../components/Datepicker"
+import ProfileLink from "../components/ProfileLink"
 import { TextField } from "../components/form"
 import { EditableName } from "../components/Editable"
 import { AddMemberSchema, CultSchema, RitualSchema, RuleSchema, GatheringSchema } from "../validations"
@@ -319,7 +320,7 @@ function EditableCultMembers({cult}){
             <ListItem key={member}>
               <Grid container alignItems="center">
                 <Grid item xs={9}>
-                  {member}
+                  <ProfileLink webId={member}/>
                 </Grid>
                 <Grid item xs>
                   <Button onClick={() => removeMember(member)}>

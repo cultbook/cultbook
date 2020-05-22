@@ -58,7 +58,7 @@ export default function EntityPage({entityWebId}){
   return (
     <DefaultLayout>
       <Grid item xs={12}>
-        <Typography variant="h1">{entity && entity.name}</Typography>
+        <Typography variant="h1">{entity && (entity.name || "an unnamed soul")}</Typography>
         <Link href={entity && entity.asRef()} target="_blank">Look behind the veil</Link>
       </Grid>
       <Grid item xs={12}>

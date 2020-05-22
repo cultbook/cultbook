@@ -9,7 +9,7 @@ export default function ProfileLink({webId}){
   const [profile] = useProfileByWebId(webId)
 
   return profile ? (
-    <Link to={urls.profileByRef(profile.asRef())}>{profile.name}</Link>
+    <Link to={urls.profileByRef(profile.asRef())}>{profile.name || "an unnamed soul"}</Link>
   ) : (
     <Loader/>
   )
