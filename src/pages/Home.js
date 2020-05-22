@@ -29,26 +29,36 @@ function IdentifiedHomePage({cult, passport, profile}){
     <>
       <Grid item xs={12}>
         <Scene>
-          You seem to find yourself in a vast ancient chamber. You remain unsure of whether you are really here or whether your perceptions have been fully captured by some unknown power. You see a large mirror and a large message board that seems to shift and change as you look at it. You feel an odd compulsion to start a cult, but do not fully understand what that means...
+          You seem to find yourself in a vast ancient chamber. You remain unsure of whether you are really here or whether your perceptions have been fully captured by some unknown power. You see a large mirror and a table covered with darkly iridescent cloth.
+        </Scene>
+        <Scene>
+          On the table is an ornately decorated book titled "Thecultbook"
         </Scene>
       </Grid>
+      {cult && !cult.created && (
+        <Grid item xs={12}>
+          <Scene>
+            You feel an odd compulsion to start a cult, but do not fully understand what that means...
+          </Scene>
+        </Grid>
+      )}
       <Grid item xs={12}>
         <ButtonLink to="/me">Look in the Mirror</ButtonLink>
       </Grid>
       <Grid item xs={12}>
+        <ButtonLink to="/cults">Read Thecultbook</ButtonLink>
+      </Grid>
+      <Grid item xs={12}>
         {cult && <MyCultLink cult={cult}/>}
+      </Grid>
+      <Grid item xs={12}>
+        {(!profile.hasControlPermission) && "YOU DID NOT GIVE US ENOUGH CONTROL: YOUR EXPERIENCE MAY BE SUBOPTIMAL. CONSULT THE CULT OF WWW FOR GUIDANCE!"}
       </Grid>
       {passport && passport.veilRemoved && (
         <Grid item xs={12}>
           {cult && <Link href={cult.asRef()} target="_blank">View the source of {cult.name}</Link>}
         </Grid>
       )}
-      <Grid item xs={12}>
-        <ButtonLink to="/cults">Look at the Message Board</ButtonLink>
-      </Grid>
-      <Grid item xs={12}>
-        {(!profile.hasControlPermission) && "YOU DID NOT GIVE US ENOUGH CONTROL: YOUR EXPERIENCE MAY BE SUBOPTIMAL. CONSULT THE CULT OF WWW FOR GUIDANCE!"}
-      </Grid>
     </>
   )
 }

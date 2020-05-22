@@ -89,7 +89,7 @@ export default function HomePage(){
   return (
     <DefaultLayout>
       <Grid item xs={12}>
-        <Typography variant="h1">Known Cults</Typography>
+        <Typography variant="h1">Thecultbook</Typography>
       </Grid>
       <Grid item xs={12}>
         <Scene>
