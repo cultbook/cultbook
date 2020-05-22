@@ -124,12 +124,10 @@ function EditableCultRituals({cult}){
   const classes = useStyles();
   const rituals = cult && cult.rituals
   const addRitual = async (name, description) => {
-    cult.addRitual(name, description)
-    await cult.save()
+    await cult.addRitual(name, description)
   }
   const removeRitual = async (ritual) => {
-    cult.removeRitual(ritual)
-    await cult.save()
+    await cult.removeRitual(ritual)
   }
   const submitAddRitual = async ({name, description}, {resetForm}) => {
     await addRitual(name, description)
@@ -163,6 +161,9 @@ function EditableCultRituals({cult}){
                   </Box>
                 </Grid>
                 <Grid item xs>
+                  <ButtonLink to={urls.ritual(ritual)}>
+                    Perform
+                  </ButtonLink>
                   <Button onClick={() => removeRitual(ritual)}>
                     Delete
                   </Button>

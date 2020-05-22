@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { fetchDocument, describeDocument } from "plandoc"
 import { useWebId } from "@solid/react"
 
-import { Cult, Passport, Notification, Profile, useModel, wwwCultWebId, privateCultDocument } from "./model"
+import { Ritual, Cult, Passport, Notification, Profile, useModel, wwwCultWebId, privateCultDocument } from "./model"
 import useLatestUpdate from "./hooks/useLatestUpdate"
 
 export function useDocument(virtualDocument){
@@ -76,6 +76,26 @@ export function useCultByRef(cultRef) {
     }
   }, [cultRef])
   return useCult(document, privateDocument)
+}
+
+export function useRitual(virtualRitualDocument, ritualRef){
+  const [ritualDocument, save, loading, error] = useDocument(virtualRitualDocument)
+  const ritual = useMemo(
+    () => ritualDocument && new Ritual(ritualDocument, ritualDocument.getSubject(ritualRef), save),
+    [ritualDocument, ritualRef, save]
+  )
+  return [ritual, loading, error]
+}
+
+export function useRitualByRef(ritualRef) {
+  const [document, setDocument] = useState()
+  useEffect(() => {
+    if (ritualRef){
+      const virtualDocument = describeDocument().isFoundAt(ritualRef)
+      setDocument(virtualDocument)
+    }
+  }, [ritualRef])
+  return useRitual(document, ritualRef)
 }
 
 export function usePassport(passportDocument){

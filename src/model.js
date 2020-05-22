@@ -2,9 +2,12 @@ import { useState, useEffect } from "react"
 import { describeSubject, describeDocument, describeContainer } from "plandoc"
 import * as td from "tripledoc";
 import { space, solid, rdf, rdfs, ldp, vcard, foaf, schema, cal, acl } from "rdf-namespaces"
+import { v4 as uuid } from 'uuid';
+
 import { as } from "./vocab"
 import { postToInbox } from "./services"
-import { createPrivateCultDocAcl } from "./utils/acl"
+import { createPrivateCultDocAcl, createRitualUploadFolderAcl } from "./utils/acl"
+
 
 const prefix = "https://thecultbook.com/ontology#"
 
@@ -16,7 +19,8 @@ export const cb = {
   demands: `${prefix}demands`,
   prescribes: `${prefix}prescribes`,
   knowsAbout: `${prefix}knowsAbout`,
-  veilRemoved: `${prefix}veilRemoved`
+  veilRemoved: `${prefix}veilRemoved`,
+  uploadFolder: `${prefix}uploadFolder`
 }
 
 //const wwwCultRoot = "https://cultofwww.solid.thecultbook.com"
@@ -77,6 +81,29 @@ export class Ritual {
 
   set description(newComment) {
     this.subject.setString(rdfs.comment, newComment)
+  }
+
+  async ensureUploadFolder(ownerWebId){
+    if (!this.uploadFolder){
+      const newFolderName = `${this.document.asRef().split("/").slice(0, -1).join("/")}/${uuid()}/`
+      await createRitualUploadFolderAcl(this.document.asRef(), newFolderName, ownerWebId)
+      this.uploadFolder = newFolderName
+    }
+  }
+
+  get uploadFolder(){
+    return this.subject.getRef(cb.uploadFolder)
+  }
+
+  set uploadFolder(uploadFolderRef){
+    this.subject.setRef(cb.uploadFolder, uploadFolderRef)
+  }
+
+  get uploadFolderVirtualDocument(){
+    if (!this._uploadFolderVirtualDocument){
+      this._uploadFolderVirtualDocument = describeDocument().isFoundAt(this.uploadFolder)
+    }
+    return this._uploadFolderVirtualDocument
   }
 }
 
@@ -213,19 +240,23 @@ export class Cult {
     )
   }
 
-  removeRitual(ritual) {
+  async removeRitual(ritual) {
     if (this.privateDocument){
       this.privateSubject.removeRef(cb.prescribes, ritual.asRef())
       this.privateDocument.removeSubject(ritual.asRef())
+      return await this.save()
     }
   }
 
-  addRitual(name, description) {
+  async addRitual(name, description) {
     if (this.privateDocument){
       const ritual = new Ritual(this.privateDocument, this.privateDocument.addSubject(), this.save)
       ritual.name = name
       ritual.description = description
       this.privateSubject.addRef(cb.prescribes, ritual.asRef())
+      await ritual.ensureUploadFolder(this.ownerWebId)
+      await this.save()
+      return ritual
     }
   }
 
