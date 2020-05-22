@@ -127,7 +127,7 @@ export function ImageEditor({element, onClose, onSave, ...props}) {
   )
 }
 
-export default ({onClose, uploadDirectory, ...props}) => {
+export default ({onClose, onUpload, uploadDirectory, ...props}) => {
   const classes = useStyles()
   const inputRef = useRef()
   const [file, setFile] = useState()
@@ -139,7 +139,8 @@ export default ({onClose, uploadDirectory, ...props}) => {
 
   const insert = async () => {
     const response = await uploadFromCanvas(croppedCanvas, uploadDirectory, file.type)
-    onClose()
+    onUpload && onUpload(response, altText, file.type)
+    onClose && onClose()
   }
 
   useEffect(() => {
@@ -170,9 +171,9 @@ export default ({onClose, uploadDirectory, ...props}) => {
         {previewSrc && (
           <>
             <img src={previewSrc} className={classes.previewImage} alt={altText}/>
-            {/*<TextField value={altText} label="alt text" variant="filled" size="small"
+            <TextField value={altText} label="alt text" variant="filled" size="small"
                        className={classes.altTextField}
-                       onChange={(e) => setAltText(e.target.value)}/>*/}
+                       onChange={(e) => setAltText(e.target.value)}/>
           </>
         )}
       </DialogContent>

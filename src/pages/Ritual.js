@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 
+import { useWebId } from "@solid/react"
+
 import { useParams } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -11,15 +13,16 @@ import GridListTile from '@material-ui/core/GridListTile';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { useWebId } from "@solid/react"
 import { ldp } from 'rdf-namespaces'
 
 import DefaultLayout from "../layouts/Default"
-import { useDocument, useRitualByRef, useCurrentUserIsWWWRitual, usePassport } from "../data"
+import { useDocument, useProfile, useRitualByRef, useCurrentUserIsWWWRitual, usePassport, usePerformance } from "../data"
 import { useModel } from "../model"
 import Linkify from "../components/Linkify"
 import Link from "../components/Link"
 import ImageUploader from "../components/ImageUploader"
+import Loader from "../components/Loader"
+import { createPrivateCultResourceAcl } from "../utils/acl"
 
 const useStyles = makeStyles(theme => ({
 }))
@@ -32,13 +35,29 @@ export function RitualPageByEncodedRef() {
   )
 }
 
+function Performance({uri}){
+  const [performance] = usePerformance(uri)
+  return performance ? (
+    <img src={performance.object} alt={performance.title}/>
+  ) : (
+    <Loader/>
+  )
+}
 
 export default function RitualPage({ritualRef}){
   const classes = useStyles();
+  const webId = useWebId()
+  const { profileDocument } = useModel(webId)
+  const [ profile ] = useProfile(profileDocument)
   const [imageUploaderOpen, setImageUploaderOpen] = useState(false)
   const [ritual] = useRitualByRef(ritualRef)
   const [ uploadsContainer ] = useDocument(ritual && ritual.uploadFolderVirtualDocument)
   const uploads = uploadsContainer && uploadsContainer.getSubject(ritual.uploadFolder).getAllRefs(ldp.contains)
+  const onUpload = async (response, altText, type) => {
+    const fileUrl = new URL(response.headers.get("location"), response.url).toString()
+    await createPrivateCultResourceAcl(fileUrl, ritual.cultRef, webId)
+    await ritual.addPerformance(webId, fileUrl, altText, type)
+  }
   return (
     <DefaultLayout>
       <Grid item xs={12}>
@@ -51,7 +70,8 @@ export default function RitualPage({ritualRef}){
         <ImageUploader
           open={imageUploaderOpen}
           onClose={() => setImageUploaderOpen(false)}
-          uploadDirectory={ritual && ritual.uploadFolder}
+          onUpload={onUpload}
+          uploadDirectory={profile && profile.privateStorage}
 
         />
       </Grid>
@@ -60,7 +80,7 @@ export default function RitualPage({ritualRef}){
           <GridList cellHeight={160} className={classes.gridList} cols={3}>
             {uploads.map(url => (
               <GridListTile key={url} cols={1}>
-                <img src={url} key={url}/>
+                <Performance uri={url} key={url}/>
               </GridListTile>
             ))}
           </GridList>

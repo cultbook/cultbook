@@ -26,6 +26,24 @@ const privateCultDocAcl = (docRef, ownerWebId) => `
 export const createPrivateCultDocAcl = (docRef, owner) =>
   createAcl(docRef, privateCultDocAcl(docRef, owner))
 
+const privateCultResourceAcl = (resourceRef, cultRef, ownerWebId) => `
+@prefix  acl:  <http://www.w3.org/ns/auth/acl#>.
+<#ownerAuthorization>
+    a             acl:Authorization;
+    acl:accessTo  <${resourceRef}>;
+    acl:mode      acl:Read,
+                  acl:Write,
+                  acl:Control;
+    acl:agent     <${ownerWebId}>.
+<#cultAuthorization>
+    a               acl:Authorization;
+    acl:accessTo    <${resourceRef}>;
+    acl:mode        acl:Read;
+    acl:agentGroup  <${cultRef}>.`
+
+export const createPrivateCultResourceAcl = (resourceRef, cultRef, owner) =>
+  createAcl(resourceRef, privateCultResourceAcl(resourceRef, cultRef, owner))
+
 const ritualUploadFolderAcl = (cultDocRef, uploadFolderRef, ownerWebId) => `
 @prefix  acl:  <http://www.w3.org/ns/auth/acl#>.
 <#authorization1>

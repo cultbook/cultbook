@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { describeSubject, describeDocument, describeContainer } from "plandoc"
 import * as td from "tripledoc";
-import { space, solid, rdf, rdfs, ldp, vcard, foaf, schema, cal, acl } from "rdf-namespaces"
+import { space, solid, rdf, rdfs, ldp, vcard, foaf, schema, cal, acl, dct } from "rdf-namespaces"
 import { v4 as uuid } from 'uuid';
 
 import { as } from "./vocab"
@@ -14,12 +14,16 @@ const prefix = "https://thecultbook.com/ontology#"
 export const cb = {
   Cult: `${prefix}Cult`,
   Passport: `${prefix}Passport`,
+  Performance: `${prefix}Performance`,
   follows: `${prefix}follows`,
   convening: `${prefix}convening`,
+  convenedBy: `${prefix}convenedBy`,
   demands: `${prefix}demands`,
+  demandedBy: `${prefix}demandedBy`,
+  prescribes: `${prefix}prescribes`,
+  prescribedBy: `${prefix}prescribedBy`,
   swornTo: `${prefix}swornTo`,
   attending: `${prefix}attending`,
-  prescribes: `${prefix}prescribes`,
   knowsAbout: `${prefix}knowsAbout`,
   veilRemoved: `${prefix}veilRemoved`,
   uploadFolder: `${prefix}uploadFolder`
@@ -85,6 +89,14 @@ export class Ritual {
     this.subject.setString(rdfs.comment, newComment)
   }
 
+  get cultRef() {
+    return this.subject.getRef(cb.prescribedBy)
+  }
+
+  set cult(cult){
+    this.subject.setRef(cb.prescribedBy, cult.asRef())
+  }
+
   async ensureUploadFolder(ownerWebId){
     if (!this.uploadFolder){
       const newFolderName = `${this.document.asRef().split("/").slice(0, -1).join("/")}/${uuid()}/`
@@ -106,6 +118,21 @@ export class Ritual {
       this._uploadFolderVirtualDocument = describeDocument().isFoundAt(this.uploadFolder)
     }
     return this._uploadFolderVirtualDocument
+  }
+
+  async addPerformance(performerWebId, performanceArtifactRef, performanceName, type){
+    return postToInbox(this.uploadFolder, `
+@prefix inv: <>.
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix cb: <https://thecultbook.com/ontology#>.
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+
+inv: a cb:Performance;
+    dct:title "${performanceName}";
+    dct:format "${type}";
+    as:actor <${performerWebId}>;
+    as:object <${performanceArtifactRef}>.
+`)
   }
 }
 
@@ -171,6 +198,18 @@ export class Profile {
 
   get inbox(){
     return this.subject.getRef(ldp.inbox)
+  }
+
+  get storage(){
+    return this.subject.getRef(space.storage)
+  }
+
+  get publicStorage(){
+    return this.storage && `${this.storage}public`
+  }
+
+  get privateStorage(){
+    return this.storage && `${this.storage}private`
   }
 
   get permissions(){
@@ -255,9 +294,10 @@ export class Cult {
       const ritual = new Ritual(this.privateDocument, this.privateDocument.addSubject(), this.save)
       ritual.name = name
       ritual.description = description
+      ritual.cult = this
       this.privateSubject.addRef(cb.prescribes, ritual.asRef())
       await ritual.ensureUploadFolder(this.ownerWebId)
-      await this.save()
+      await ritual.save()
       return ritual
     }
   }
@@ -462,6 +502,34 @@ export class Notification {
 
   get type(){
     return this.subject.getRef(rdfs.type)
+  }
+}
+
+export class Performance {
+  constructor(document, save) {
+    this.document = document
+    this.subject = document.getSubject(document.asRef())
+    this.save = save
+  }
+
+  asRef() {
+    return this.subject.asRef()
+  }
+
+  get title(){
+    return this.subject.getString(dct.title)
+  }
+
+  get object(){
+    return this.subject.getRef(as.object)
+  }
+
+  get actor(){
+    return this.subject.getRef(as.actor)
+  }
+
+  get type(){
+    return this.subject.getRef(dct.format)
   }
 }
 

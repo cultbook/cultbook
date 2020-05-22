@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { fetchDocument, describeDocument } from "plandoc"
 import { useWebId } from "@solid/react"
 
-import { Ritual, Cult, Passport, Notification, Profile, useModel, wwwCultWebId, privateCultDocument } from "./model"
+import { Ritual, Cult, Passport, Performance, Notification, Profile, useModel, wwwCultWebId, privateCultDocument } from "./model"
 import useLatestUpdate from "./hooks/useLatestUpdate"
 
 export function useDocument(virtualDocument){
@@ -123,6 +123,13 @@ export function useNotification(uri){
   const [ notificationDoc, save, loading, error ] = useDocument(notificationDocument)
   const notification = notificationDoc && new Notification(notificationDoc, save)
   return [notification, loading, error]
+}
+
+export function usePerformance(uri){
+  const performanceDocument = useMemo(() => uri && describeDocument().isFoundAt(uri), [uri])
+  const [ performanceDoc, save, loading, error ] = useDocument(performanceDocument)
+  const performance = performanceDoc && new Performance(performanceDoc, save)
+  return [performance, loading, error]
 }
 
 export function useProfile(profileDocument) {
