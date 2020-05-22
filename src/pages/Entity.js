@@ -4,9 +4,12 @@ import { useParams } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import { useWebId } from "@solid/react"
 
+import * as urls from "../urls"
 import DefaultLayout from "../layouts/Default"
-import { useProfile, usePassport, usePerformance } from "../data"
+import { useProfile, usePassport, usePerformance, useCultByWebId } from "../data"
 import { useModel } from "../model"
 import Link from "../components/Link"
 import Loader from "../components/Loader"
@@ -43,6 +46,7 @@ function Rule({rule}){
 
 export default function EntityPage({entityWebId}){
   const classes = useStyles();
+  const webId = useWebId()
   const {profileDocument, passportDocument} = useModel(entityWebId)
   const [entity] = useProfile(profileDocument)
   const [passport] = usePassport(passportDocument)
@@ -55,11 +59,24 @@ export default function EntityPage({entityWebId}){
       loadRules()
     }
   }, [passport])
+  const [cult] = useCultByWebId(entityWebId)
   return (
     <DefaultLayout>
       <Grid item xs={12}>
         <Typography variant="h1">{entity && (entity.name || "an unnamed soul")}</Typography>
         <Link href={entity && entity.asRef()} target="_blank">Look behind the veil</Link>
+      </Grid>
+      <Grid item xs={12}>
+        {cult && (
+          <>
+            {passport.isFollowing(cult) ? (
+              <Link to={urls.cultByRef(cult.asRef())}>Enter Lair of {cult.name}</Link>
+            ) : (
+              <Button onClick={() => passport.applyToFollow(cult, webId)}>Apply to Join {cult.name}</Button>
+            )}
+
+          </>
+        )}
       </Grid>
       <Grid item xs={12}>
         {rules && (

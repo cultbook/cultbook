@@ -4,7 +4,7 @@ import { useWebId } from "@solid/react"
 import { ldp } from 'rdf-namespaces'
 import * as td from "tripledoc"
 
-import { Ritual, Cult, Passport, Performance, Notification, Profile, useModel, wwwCultWebId, privateCultDocument } from "./model"
+import { Ritual, Cult, Passport, Performance, Notification, Profile, useModel, wwwCultWebId, privateCultDocument, cultDocumentFromWebId } from "./model"
 import useLatestUpdate from "./hooks/useLatestUpdate"
 import { documentExists } from "./services"
 
@@ -77,6 +77,19 @@ export function useCultByRef(cultRef) {
       setPrivateDocument(virtualPrivateDocument)
     }
   }, [cultRef])
+  return useCult(document, privateDocument)
+}
+
+export function useCultByWebId(webId) {
+  const [document, setDocument] = useState()
+  const [privateDocument, setPrivateDocument] = useState()
+    useEffect(() => {
+    if (webId){
+      const [virtualDoc, privateVirtualDoc] = cultDocumentFromWebId(webId)
+      setDocument(virtualDoc)
+      setPrivateDocument(privateVirtualDoc)
+    }
+  }, [webId])
   return useCult(document, privateDocument)
 }
 

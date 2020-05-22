@@ -471,6 +471,20 @@ export class Passport {
     this.subject.removeRef(cb.follows, cultRef)
   }
 
+  isFollowingRef(cultRef){
+    return !!this.following && this.following.find(f => (f === cultRef))
+  }
+
+  isFollowing(cult){
+    return this.isFollowingRef(cult.asRef())
+  }
+
+  async applyToFollow(cult, webId){
+    this.addFollowing(cult.asRef())
+    await this.save()
+    await cult.applyToJoin(webId)
+  }
+
   isSwornTo(rule) {
     const ref = rule.asRef()
     return !!this.subject.getAllRefs(cb.swornTo).find(rule => (rule === ref))
@@ -581,6 +595,29 @@ const modelCache = {
 
 }
 
+export function cultDocumentFromWebId(webId){
+  const profileSubject = describeSubject().isFoundAt(webId)
+  const storage = describeContainer()
+        .isFoundOn(profileSubject, space.storage);
+  const publicTypeIndex = describeDocument()
+        .isFoundOn(profileSubject, solid.publicTypeIndex)
+  const publicStorage = describeContainer().experimental_isContainedIn(storage, "public")
+  const privateStorage = describeContainer().experimental_isContainedIn(storage, "private")
+  const cultPublicTypeRegistration = describeSubject()
+        .isFoundIn(publicTypeIndex)
+        .withRef(rdf.type, solid.TypeRegistration)
+        .withRef(solid.forClass, cb.Cult)
+  const cultDocument = describeDocument()
+        .isFoundOn(cultPublicTypeRegistration, solid.instance, publicStorage)
+  const cultPrivateDocRegistration = describeSubject()
+        .isFoundIn(cultDocument)
+        .withRef(rdf.type, solid.TypeRegistration)
+        .withRef(solid.forClass, cb.Cult)
+  const cultPrivateDocument = describeDocument()
+        .isFoundOn(cultPrivateDocRegistration, rdfs.seeAlso, privateStorage)
+  return [cultDocument, cultPrivateDocument]
+}
+
 export function useModel(webId){
   const [model, setModel] = useState({})
   useEffect(() => {
@@ -588,7 +625,6 @@ export function useModel(webId){
       if (modelCache[webId]){
         setModel(modelCache[webId])
       } else {
-        console.log("CREATING NEW MODEL")
         const profileDocument = describeDocument().isFoundAt(webId)
 
         const profileSubject = describeSubject().isFoundAt(webId)
