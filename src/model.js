@@ -371,8 +371,8 @@ export class Cult {
     return documentExists(this.aclRef)
   }
 
-  async ensureAcl(){
-    return createPrivateCultDocAcl(this.privateDocument.asRef(), this.ownerWebId)
+  async ensureAcl(creatorWebId){
+    return createPrivateCultDocAcl(this.privateDocument.asRef(), creatorWebId || this.ownerWebId)
   }
 
   async ensureOwnerMember(){
@@ -405,7 +405,7 @@ inv: a as:Create;
     this.name = name
     await Promise.all([
       this.save(),
-      this.ensureAcl(),
+      this.ensureAcl(creator),
       this.notifyCultOfWWWOfCreation(creator)
     ])
   }
