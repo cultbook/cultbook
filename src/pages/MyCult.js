@@ -15,6 +15,7 @@ import { useModel } from "../model"
 import { useCult, useDocumentExists } from "../data"
 import * as urls from "../urls"
 import ButtonLink from "../components/ButtonLink"
+import Link from "../components/Link"
 import Linkify from "../components/Linkify"
 import Datepicker from "../components/Datepicker"
 import ProfileLink from "../components/ProfileLink"
@@ -341,15 +342,25 @@ function EditableCultMembers({cult}){
 function CultInfo({cult}){
   const classes = useStyles();
   const [aclCreated, checkingAcl, error, refresh] = useDocumentExists(cult.aclRef)
-  async function fixAcl(){
+  async function fixCult(){
     await cult.ensureAcl()
+    await cult.ensureOwnerMember()
     refresh()
+  }
+  const notConfiguredProperly = () => {
+    return cult && ((!checkingAcl && !aclCreated) || !cult.isOwnerMember())
   }
   return (
     <>
       <Grid item xs={12}>
         <EditableName entity={cult} schema={CultSchema} variant="h1"/>
       </Grid>
+    <Grid item xs={12}>
+      <Grid item xs={12}>
+        {cult && <Link href={cult.asRef()} target="_blank">View the source of {cult.name}</Link>}
+      </Grid>
+    </Grid>
+
       <Grid item xs={12}>
         <EditableDescription entity={cult} schema={CultSchema}/>
       </Grid>
@@ -368,12 +379,12 @@ function CultInfo({cult}){
       <Grid item xs={12}>
         <ButtonLink to={urls.cult(cult)}>Public Page</ButtonLink>
       </Grid>
-      {cult && !checkingAcl && !aclCreated && (
+      {notConfiguredProperly() && (
         <Grid item xs={12}>
           <Typography variant="body1">
             Your cult is not configured properly. You may need to summon the Cult of WWW for assistance.
           </Typography>
-          <Button onClick={fixAcl}>
+          <Button onClick={fixCult}>
             Try to fix it
           </Button>
         </Grid>

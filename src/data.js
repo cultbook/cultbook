@@ -6,7 +6,8 @@ import * as td from "tripledoc"
 
 import { Ritual, Cult, Passport, Performance, Notification, Profile, useModel, wwwCultWebId, privateCultDocument, cultDocumentFromWebId } from "./model"
 import useLatestUpdate from "./hooks/useLatestUpdate"
-import { documentExists } from "./services"
+import { deleteDocument, documentExists } from "./services"
+import { loadImage } from "./utils/fetch"
 
 export function useDocument(virtualDocument){
   const [document, setDocument] = useState()
@@ -143,7 +144,7 @@ export function useNotification(uri){
 export function usePerformance(uri){
   const performanceDocument = useMemo(() => uri && describeDocument().isFoundAt(uri), [uri])
   const [ performanceDoc, save, loading, error ] = useDocument(performanceDocument)
-  const performance = performanceDoc && new Performance(performanceDoc, save)
+  const performance = useMemo(() => performanceDoc && new Performance(performanceDoc, save), [performanceDoc, save])
   return [performance, loading, error]
 }
 
@@ -177,4 +178,29 @@ export function useDocumentExists(uri){
     }
   }, [uri])
   return [exists, loading, error, checkExists]
+}
+
+export function useImage(imageUri){
+  const [imageSrc, setImageSrc] = useState()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState()
+  useEffect(() => {
+    if (imageUri){
+      async function loadImageFromUri(){
+        setLoading(true)
+        try {
+          setImageSrc(await loadImage(imageUri))
+        } catch (e) {
+          setError(e)
+        }
+        setLoading(false)
+      }
+      loadImageFromUri()
+    }
+  }, [imageUri])
+  const deleteImage = useCallback(async () => {
+    await deleteDocument(imageUri)
+    setImageSrc(null)
+  }, [imageUri])
+  return [imageSrc, loading, error, deleteImage]
 }

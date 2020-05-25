@@ -95,7 +95,7 @@ export class Ritual {
   }
 
   set cult(cult){
-    this.subject.setRef(cb.prescribedBy, cult.asRef())
+    this.subject.setRef(cb.prescribedBy, cult.privateAsRef())
   }
 
   async ensureUploadFolder(ownerWebId){
@@ -375,6 +375,15 @@ export class Cult {
     return createPrivateCultDocAcl(this.privateDocument.asRef(), this.ownerWebId)
   }
 
+  async ensureOwnerMember(){
+    this.addMember(this.ownerWebId)
+    return await this.save()
+  }
+
+  isOwnerMember(){
+    return !!this.members.find(m => (m === this.ownerWebId))
+  }
+
   async notifyCultOfWWWOfCreation(creator){
     await postToInbox(wwwCultInbox, `
 @prefix inv: <>.
@@ -392,6 +401,7 @@ inv: a as:Create;
 
   async create(creator, name){
     this.ownerWebId = creator
+    this.addMember(creator)
     this.name = name
     await Promise.all([
       this.save(),
@@ -429,6 +439,10 @@ inv: a as:Follow;
 
   asRef() {
     return this.subject.asRef()
+  }
+
+  privateAsRef() {
+    return this.privateSubject.asRef()
   }
 }
 
