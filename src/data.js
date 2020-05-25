@@ -163,7 +163,7 @@ export function useDocumentExists(uri){
   const [exists, setExists] = useState()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
-  async function checkExists(){
+  const checkExists = useCallback(async function checkExists(){
     try {
       setLoading(true)
       setExists(await documentExists(uri))
@@ -171,12 +171,12 @@ export function useDocumentExists(uri){
     } catch (e) {
       setError(e)
     }
-  }
+  }, [uri])
   useEffect(() => {
     if (uri){
       checkExists()
     }
-  }, [uri])
+  }, [uri, checkExists])
   return [exists, loading, error, checkExists]
 }
 
@@ -203,4 +203,46 @@ export function useImage(imageUri){
     setImageSrc(null)
   }, [imageUri])
   return [imageSrc, loading, error, deleteImage]
+}
+
+export function useRules(passport){
+  const [rules, setRules] = useState()
+  const [loading, setLoading] = useState()
+  const [error, setError] = useState()
+  useEffect(() => {
+    if (passport){
+      async function loadRules(){
+        setLoading(true)
+        try {
+          setRules(await passport.getRules())
+        } catch (e) {
+          setError(e)
+        }
+        setLoading(false)
+      }
+      loadRules()
+    }
+  }, [passport])
+  return [rules, loading, error]
+}
+
+export function useGatherings(passport){
+  const [gatherings, setGatherings] = useState()
+  const [loading, setLoading] = useState()
+  const [error, setError] = useState()
+  useEffect(() => {
+    if (passport){
+      async function loadGatherings(){
+        setLoading(true)
+        try {
+          setGatherings(await passport.getGatherings())
+        } catch (e) {
+          setError(e)
+        }
+        setLoading(false)
+      }
+      loadGatherings()
+    }
+  }, [passport])
+  return [gatherings, loading, error]
 }
