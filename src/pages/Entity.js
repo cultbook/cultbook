@@ -9,7 +9,7 @@ import { useWebId } from "@solid/react"
 
 import * as urls from "../urls"
 import DefaultLayout from "../layouts/Default"
-import { useProfile, usePassport, usePerformance, useCultByWebId } from "../data"
+import { useProfile, usePassport, useRules, useGatherings, usePerformance, useCultByWebId, useImage } from "../data"
 import { useModel } from "../model"
 import Link from "../components/Link"
 import Loader from "../components/Loader"
@@ -27,8 +27,10 @@ export function EntityPageByEncodedRef() {
 
 function Performance({uri}){
   const [performance] = usePerformance(uri)
+  const [imageSrc, loading, error, deleteImage] = useImage(performance && performance.object)
+
   return performance ? (
-    <img src={performance.object} alt={performance.title}/>
+    <img src={imageSrc} alt={performance.title}/>
   ) : (
     <Loader/>
   )
@@ -44,21 +46,24 @@ function Rule({rule}){
   )
 }
 
+function Gathering({gathering}){
+  return (
+    <>
+      <Typography variant="h5">
+        {gathering.name}
+      </Typography>
+    </>
+  )
+}
+
 export default function EntityPage({entityWebId}){
   const classes = useStyles();
   const webId = useWebId()
   const {profileDocument, passportDocument} = useModel(entityWebId)
   const [entity] = useProfile(profileDocument)
   const [passport] = usePassport(passportDocument)
-  const [rules, setRules] = useState()
-  useEffect(() => {
-    if (passport){
-      async function loadRules(){
-        setRules(await passport.getRules())
-      }
-      loadRules()
-    }
-  }, [passport])
+  const [rules] = useRules(passport)
+  const [gatherings] = useGatherings(passport)
   const [cult] = useCultByWebId(entityWebId)
   return (
     <DefaultLayout>
@@ -75,6 +80,16 @@ export default function EntityPage({entityWebId}){
               <Button onClick={() => passport.applyToFollow(cult, webId)}>Apply to Join {cult.name}</Button>
             )}
 
+          </>
+        )}
+      </Grid>
+      <Grid item xs={12}>
+        {gatherings && (
+          <>
+            <Typography variant="h3">Attending</Typography>
+            {gatherings.map(gathering => (
+              <Gathering gathering={gathering} key={gathering.asRef()}/>
+            ))}
           </>
         )}
       </Grid>
