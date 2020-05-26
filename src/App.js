@@ -6,7 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { useLoggedIn } from '@solid/react';
 
-import { AuthProvider } from "./context/auth"
+import { AuthProvider, useAuthContext } from "./context/auth"
 import LandingPage from "./pages/Landing"
 import HomePage from "./pages/Home"
 import MePage from "./pages/Me"
@@ -53,6 +53,19 @@ function RootPage() {
   )
 }
 
+function Login () {
+  const { logIn } = useAuthContext()
+  const loginComplete = !!window.location.hash
+  if (!loginComplete) {
+    logIn()
+  }
+  return loginComplete ? (
+    <Redirect to='/' />
+  ) : (
+    <Loader/>
+  )
+}
+
 function App() {
   const classes = useStyles();
   return (
@@ -67,6 +80,7 @@ function App() {
           <PrivateRoute path="/ritual/:encodedRef" component={RitualPageByEncodedRef}/>
           <PrivateRoute path="/entity/:encodedRef" component={EntityPageByEncodedRef}/>
           <Route path="/cult/:encodedCultRef" component={CultPageByEncodedRef}/>
+          <Route path="/login" component={Login}/>
           <Route path="/" component={RootPage}/>
         </Switch>
       </div>

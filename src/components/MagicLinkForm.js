@@ -6,7 +6,7 @@ import { Form, Formik } from 'formik';
 import { TextField } from "../components/form"
 import Button from '@material-ui/core/Button';
 
-export default function LoginButton({onEmailSubmit}){
+export default function MagicLinkForm({onEmailSubmit}){
   const [email, setEmail] = useState("")
   const { sendMagicLink } = useAuthContext()
   async function sendEmail({email}) {

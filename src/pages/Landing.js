@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 
-import LoginButton from "../components/LoginButton"
+import MagicLinkForm from "../components/MagicLinkForm"
 import ButtonLink from "../components/ButtonLink"
 
 const useStyles = makeStyles(theme => ({
@@ -53,7 +53,7 @@ const ThirdScene = ({setScene, setEmail}) => (
         The book seems to be bound with a patchwork of different colors of leather. As you open it, you see pages and pages filled with email addressess written in red ink. An inscription runs along the top of each page: "Of all that is written, I love only what a person hath written with his blood. Write with blood, and thou wilt find that blood is spirit."
       </p>
     </Typography>
-      <LoginButton onEmailSubmit={(email) => {
+      <MagicLinkForm onEmailSubmit={(email) => {
         setEmail(email)
         setScene("fourth")
       }}/>

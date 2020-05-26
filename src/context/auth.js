@@ -12,6 +12,7 @@ async function sendMagicLink(email) {
 }
 
 async function logIn() {
+  console.log("Logging into" + SolidServerURI)
   return await auth.login(SolidServerURI)
 }
 
