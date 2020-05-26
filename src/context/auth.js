@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import auth from 'solid-auth-client';
-import { postJSON } from '../utils/fetch';
+import { postFormData } from '../utils/fetch';
 import { useHistory } from "react-router-dom";
 
 const SolidServerURI = "https://solid.thecultbook.com"
@@ -8,7 +8,7 @@ const SolidServerURI = "https://solid.thecultbook.com"
 async function sendMagicLink(body) {
   const magicLinkURI = SolidServerURI + "/magic-link/generate"
 
-  return await postJSON(magicLinkURI, body)
+  return await postFormData(magicLinkURI, body)
 }
 
 async function logIn() {

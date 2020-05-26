@@ -12,13 +12,19 @@ export async function postTurtle(uri, body){
   });
 }
 
-export async function postJSON(uri, body){
+export async function postFormData(uri, body){
+  const formBody = [];
+  for (var key in body) {
+    const encodedKey = encodeURIComponent(key)
+    const encodedValue = encodeURIComponent(body[key])
+    formBody.push(encodedKey + "=" + encodedValue)
+  }
+
   const response = await auth.fetch(uri, {
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
     },
-    body: JSON.stringify(body)
-  });
+    body: formBody.join("&")
+  })
 }
