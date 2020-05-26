@@ -31,8 +31,13 @@ export const AuthProvider = (props) => {
     history.push("/")
   }
 
+  async function logInAndGoHome() {
+    await logIn()
+    history.push("/")
+  }
+
   return (
-    <Provider {...props} value={{ logOut: logOutAndGoHome, logIn, sendMagicLink }} />
+    <Provider {...props} value={{ logOut: logOutAndGoHome, logIn: logInAndGoHome, sendMagicLink }} />
   )
 }
 
