@@ -28,3 +28,7 @@ export const GatheringSchema = Yup.object().shape({
 export const ProfileSchema = Yup.object().shape({
   name: Yup.string().min(1).max(66),
 })
+
+export const EmailSchema = Yup.object().shape({
+  email: Yup.string().email(),
+})

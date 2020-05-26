@@ -1,15 +1,27 @@
 import React, { createContext, useContext } from 'react';
 import auth from 'solid-auth-client';
+import { postFormData } from '../utils/fetch';
 import { useHistory } from "react-router-dom";
 
-async function logIn() {
-  return await auth.popupLogin({ popupUri: "/popup.html" })
+const SolidServerURI = "https://solid.thecultbook.com"
+
+async function sendMagicLink(email) {
+  const magicLinkURI = SolidServerURI + "/magic-link/generate"
+  console.log("Sending magic link to " + email)
+  return await postFormData(magicLinkURI, {email})
 }
+
+async function logIn(callbackUri) {
+  console.log("Logging into" + SolidServerURI + " with callbackUri: " + callbackUri)
+  return await auth.login(SolidServerURI, {callbackUri})
+
+}
+
 async function logOut() {
   return await auth.logout()
 }
 
-const AuthContext = createContext({ logIn, logOut })
+const AuthContext = createContext({ logOut, logIn, sendMagicLink })
 
 const { Provider } = AuthContext;
 
@@ -21,12 +33,8 @@ export const AuthProvider = (props) => {
     history.push("/")
   }
 
-  async function logInAndGoHome() {
-    await logIn()
-    history.push("/")
-  }
   return (
-    <Provider {...props} value={{ logIn: logInAndGoHome, logOut: logOutAndGoHome }} />
+    <Provider {...props} value={{ logOut: logOutAndGoHome, logIn, sendMagicLink }} />
   )
 }
 
