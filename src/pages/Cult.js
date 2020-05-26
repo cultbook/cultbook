@@ -55,7 +55,7 @@ export default function CultPage({cultRef}){
   const webId = useWebId()
   const { passportDocument } = useModel(webId)
   const classes = useStyles();
-  const [cult] = useCultByRef(cultRef)
+  const [cult, cultLoading] = useCultByRef(cultRef)
   const rituals = cult && cult.rituals
   const gatherings = cult && cult.gatherings
   const rules = cult && cult.rules
@@ -89,103 +89,125 @@ export default function CultPage({cultRef}){
         <Typography variant="h1">{cult && cult.name}</Typography>
         {currentUserIsWWWCult && <CultBookmarker cult={cult}/>}
       </Grid>
-      <Grid item xs={3}/>
-      <Grid item xs={6}>
-        {rituals && (
-          <>
-            <Typography variant="h2">Rituals</Typography>
-            <List>
-              {rituals.map(ritual => (
-                <ListItem key={ritual.asRef()} className={classes.ritual}>
-                  <ListItemText
-                    primary={ritual.name}
-                    secondary={ritual.description}
-                  >
-                  </ListItemText>
-                  <ListItemText>
-                    <ButtonLink to={urls.ritual(ritual)}>
-                      Perform
-                    </ButtonLink>
-                  </ListItemText>
-                </ListItem>
-              ))}
-            </List>
-          </>
-        )}
-      </Grid>
-      <Grid item xs={3}/>
-      <Grid item xs={3}/>
-      <Grid item xs={6}>
-        {rules && (
-          <>
-            <Typography variant="h2">Rules</Typography>
-            <List>
-              {rules.map(rule => (
-                <ListItem key={rule.asRef()} className={classes.rule}>
-                  <ListItemText
-                    primary={rule.name}
-                    secondary={rule.description}
-                  />
-                  {passport && (
-                    <ListItemText>
-                      {passport.isSwornTo(rule) ? (
-                        <Button onClick={() => breakOath(rule)}>
-                          Break Your Oath
-                        </Button>
-                      ) : (
-                        <Button onClick={() => swearTo(rule)}>
-                          Swear to Obey
-                        </Button>
-                      )}
-                    </ListItemText>
-                  )}
-                </ListItem>
-              ))}
-            </List>
-          </>
-        )}
-      </Grid>
-      <Grid item xs={3}/>
       <Grid item xs={12}>
-        {gatherings && (
-          <>
-            <Typography variant="h2">Gatherings</Typography>
-            <List>
-              {gatherings.map(gathering => (
-                <ListItem key={gathering.asRef()} className={classes.gatheringListItem}>
-                  <Box display="flex" flexDirection="column" className={classes.gathering}>
-                    <ListItemText
-                      primary={gathering.name}
-                      secondary={gathering.description}
-                    />
-                    <ListItemText>
-                      we will convene at&nbsp;
-                      <Linkify>{gathering.location}</Linkify>
-                    </ListItemText>
-                    <ListItemText>
-                      at {gathering.time && gathering.time.toLocaleString()}
-                    </ListItemText>
-                    {passport && (
-                      <ListItemText>
-                        {passport.isAttending(gathering) ? (
-                          <Button onClick={() => cancelPlans(gathering)}>
-                            Cancel plans
-                          </Button>
-                        ) : (
-                          <Button onClick={() => rsvp(gathering)}>
-                            RSVP
-                          </Button>
-                        )}
-                      </ListItemText>
-                    )}
-
-                  </Box>
-                </ListItem>
-              ))}
-            </List>
-          </>
-        )}
+        <Typography variant="body1">{cult && cult.description}</Typography>
       </Grid>
+      {!cultLoading && cult && (
+        <>
+          {
+            cult.hasPrivateAccess ? (
+              <>
+                <Grid item xs={3}/>
+                <Grid item xs={6}>
+                  {rituals && (
+                    <>
+                      <Typography variant="h2">Rituals</Typography>
+                      <List>
+                        {rituals.map(ritual => (
+                          <ListItem key={ritual.asRef()} className={classes.ritual}>
+                            <ListItemText
+                              primary={ritual.name}
+                              secondary={ritual.description}
+                            >
+                            </ListItemText>
+                            <ListItemText>
+                              <ButtonLink to={urls.ritual(ritual)}>
+                                Perform
+                              </ButtonLink>
+                            </ListItemText>
+                          </ListItem>
+                  ))}
+                </List>
+              </>
+            )}
+          </Grid>
+          <Grid item xs={3}/>
+          <Grid item xs={3}/>
+          <Grid item xs={6}>
+            {rules && (
+              <>
+                <Typography variant="h2">Rules</Typography>
+                <List>
+                  {rules.map(rule => (
+                    <ListItem key={rule.asRef()} className={classes.rule}>
+                      <ListItemText
+                        primary={rule.name}
+                        secondary={rule.description}
+                      />
+                      {passport && (
+                        <ListItemText>
+                          {passport.isSwornTo(rule) ? (
+                            <Button onClick={() => breakOath(rule)}>
+                              Break Your Oath
+                            </Button>
+                          ) : (
+                            <Button onClick={() => swearTo(rule)}>
+                              Swear to Obey
+                            </Button>
+                          )}
+                        </ListItemText>
+                      )}
+                    </ListItem>
+                  ))}
+                </List>
+              </>
+            )}
+          </Grid>
+          <Grid item xs={3}/>
+          <Grid item xs={12}>
+            {gatherings && (
+              <>
+                <Typography variant="h2">Gatherings</Typography>
+                <List>
+                  {gatherings.map(gathering => (
+                    <ListItem key={gathering.asRef()} className={classes.gatheringListItem}>
+                      <Box display="flex" flexDirection="column" className={classes.gathering}>
+                        <ListItemText
+                          primary={gathering.name}
+                          secondary={gathering.description}
+                        />
+                        <ListItemText>
+                          we will convene at&nbsp;
+                          <Linkify>{gathering.location}</Linkify>
+                        </ListItemText>
+                        <ListItemText>
+                          at {gathering.time && gathering.time.toLocaleString()}
+                        </ListItemText>
+                        {passport && (
+                          <ListItemText>
+                            {passport.isAttending(gathering) ? (
+                              <Button onClick={() => cancelPlans(gathering)}>
+                                Cancel plans
+                              </Button>
+                            ) : (
+                              <Button onClick={() => rsvp(gathering)}>
+                                RSVP
+                              </Button>
+                            )}
+                          </ListItemText>
+                        )}
+                      </Box>
+                    </ListItem>
+                  ))}
+                </List>
+              </>
+            )}
+          </Grid>
+        </>
+            ) : (
+              <>
+                <Grid item xs={12}>
+                  <Typography variant="h5">
+                    You do not have access to the mysteries of this cult.
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <ButtonLink to="/cults">Browse more Cults</ButtonLink>
+                </Grid>
+              </>
+            )}
+        </>
+      )}
     </DefaultLayout>
   )
 }

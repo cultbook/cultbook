@@ -256,6 +256,10 @@ export class Cult {
     this.subject.setString(rdfs.comment, newComment)
   }
 
+  get hasPrivateAccess() {
+    return !!this.privateDocument
+  }
+
   get members() {
     return this.privateSubject && this.privateSubject.getAllRefs(vcard.hasMember)
   }
