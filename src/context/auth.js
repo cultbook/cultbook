@@ -21,6 +21,11 @@ async function logOut() {
   return await auth.logout()
 }
 
+async function popupLogIn() {
+  await auth.popupLogin({ popupUri: "/popup.html" })
+  return
+}
+
 const AuthContext = createContext({ logOut, logIn, sendMagicLink })
 
 const { Provider } = AuthContext;
@@ -33,8 +38,13 @@ export const AuthProvider = (props) => {
     history.push("/")
   }
 
+  async function popupLogInAndGoHome() {
+    await popupLogIn()
+    history.push("/")
+  }
+
   return (
-    <Provider {...props} value={{ logOut: logOutAndGoHome, logIn, sendMagicLink }} />
+    <Provider {...props} value={{ logOut: logOutAndGoHome, logIn, popupLogIn: popupLogInAndGoHome, sendMagicLink }} />
   )
 }
 

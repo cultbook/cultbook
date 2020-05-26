@@ -12,6 +12,11 @@ import HomePage from "./pages/Home"
 import MePage from "./pages/Me"
 import MyCultPage from "./pages/MyCult"
 import CultsPage from "./pages/Cults"
+import SolidPage from "./pages/Solid"
+import CabinPage from "./pages/Cabin"
+import BookPage from "./pages/Book"
+import RefusePage from "./pages/Refuse"
+import TrustPage from "./pages/Trust"
 import NotificationsPage from "./pages/Notifications"
 import { CultPageByEncodedRef } from "./pages/Cult"
 import { RitualPageByEncodedRef } from "./pages/Ritual"
@@ -85,6 +90,11 @@ function App() {
           <PrivateRoute path="/entity/:encodedRef" component={EntityPageByEncodedRef}/>
           <Route path="/cult/:encodedCultRef" component={CultPageByEncodedRef}/>
           <Route path="/login" component={Login}/>
+          <Route path="/solid" component={SolidPage}/>
+          <Route path="/cabin" component={CabinPage}/>
+          <Route path="/book" component={BookPage}/>
+          <Route path="/refuse" component={RefusePage}/>
+          <Route path="/trust" component={TrustPage}/>
           <Route path="/" component={RootPage}/>
         </Switch>
       </div>

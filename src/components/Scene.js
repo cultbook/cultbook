@@ -5,7 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   scene: {
     maxWidth: "66vw",
-    margin: "auto"
+    margin: "auto",
+    fontSize: "1.666em"
   }
 }))
 

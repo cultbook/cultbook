@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 
 import { useWebId } from "@solid/react"
 import { Form, Formik } from 'formik';

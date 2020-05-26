@@ -21,8 +21,8 @@ export default function MagicLinkForm({onEmailSubmit}){
       validationSchema={EmailSchema}
     >
       <Form>
-        <TextField name="email" type="email" placeholder="add your email to the list" autoFocus/>
-        <Button type="submit">submit</Button>
+        <TextField name="email" type="email" placeholder="write your email" autoFocus/>
+        <Button type="submit">seal with blood</Button>
       </Form>
     </Formik>
   )

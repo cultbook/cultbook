@@ -12,14 +12,15 @@ const useStyles = makeStyles(theme => ({
 
 export default function LandingPage(){
   const classes = useStyles();
-
   return (
     <OutsideLayout>
       <Scene>
-        As you walk past a cabin deep in the bowels of the ship you notice a strange soft throbbing from inside. Through the porthole in the door you see a dim eerie light.
+        <p>
+          Inside the cabin you find a comfortable looking chair and a side table. On the table is a book engraved with arcane symbols and glowing with a soft power. You feel compelled to pick it up.
+        </p>
       </Scene>
-      <ButtonLink to="/cabin">go inside</ButtonLink>
-      <ButtonLink href={urls.leave}>keep walking</ButtonLink>
+      <ButtonLink to="/book">pick up the book</ButtonLink>
+      <ButtonLink href={urls.leave}>get outta here</ButtonLink>
     </OutsideLayout>
   )
 }

@@ -4,3 +4,4 @@ export const ritualByRef = (ritualRef) => ritualRef && `/ritual/${encodeURICompo
 export const ritual = (ritual) => ritual && ritualByRef(ritual.asRef())
 export const profileByRef = (profileRef) => profileRef && `/entity/${encodeURIComponent(profileRef)}`
 export const profile = (profile) => profile && profileByRef(profile.asRef())
+export const leave = "https://www.bigsickshindig.com/"
