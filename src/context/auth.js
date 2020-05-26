@@ -11,9 +11,10 @@ async function sendMagicLink(email) {
   return await postFormData(magicLinkURI, {email})
 }
 
-async function logIn() {
-  console.log("Logging into" + SolidServerURI)
-  return await auth.login(SolidServerURI)
+async function logIn(callbackUri) {
+  console.log("Logging into" + SolidServerURI + " with callbackUri: " + callbackUri)
+  return await auth.login(SolidServerURI, {callbackUri})
+
 }
 
 async function logOut() {

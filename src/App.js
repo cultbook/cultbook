@@ -44,6 +44,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   )
 }
 
+function getRootURI () {
+  return window.location.protocol + "//" + window.location.host + "/"
+}
+
 function RootPage() {
   const loggedIn = useLoggedIn()
   return (loggedIn === undefined) ? (
@@ -55,15 +59,15 @@ function RootPage() {
 
 function Login () {
   const { logIn } = useAuthContext()
-  const loginComplete = !!window.location.hash
-  if (!loginComplete) {
-    logIn()
+  const loggedIn = useLoggedIn()
+  if (loggedIn === undefined) {
+    return ( <Loader/> )
+  } else if (loggedIn === true) {
+    return ( <Redirect to='/'/> )
+  } else {
+    logIn(getRootURI())
+    return ( <Loader/> )
   }
-  return loginComplete ? (
-    <Redirect to='/' />
-  ) : (
-    <Loader/>
-  )
 }
 
 function App() {
