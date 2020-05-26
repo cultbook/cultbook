@@ -11,3 +11,14 @@ export async function postTurtle(uri, body){
     body
   });
 }
+
+export async function postJSON(uri, body){
+  const response = await auth.fetch(uri, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+}
