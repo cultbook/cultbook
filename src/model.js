@@ -95,7 +95,7 @@ export class Ritual {
   }
 
   set cult(cult){
-    this.subject.setRef(cb.prescribedBy, cult.asRef())
+    this.subject.setRef(cb.prescribedBy, cult.privateAsRef())
   }
 
   async ensureUploadFolder(ownerWebId){
@@ -320,11 +320,13 @@ export class Cult {
     }
   }
 
-  addGathering(name, description) {
+  addGathering(name, description, location, time) {
     if (this.privateDocument){
       const gathering = new Gathering(this.privateDocument, this.privateDocument.addSubject(), this.save)
       gathering.name = name
       gathering.description = description
+      gathering.location = location
+      gathering.time = time
       this.privateSubject.addRef(cb.convening, gathering.asRef())
     }
   }
@@ -371,8 +373,17 @@ export class Cult {
     return documentExists(this.aclRef)
   }
 
-  async ensureAcl(){
-    return createPrivateCultDocAcl(this.privateDocument.asRef(), this.ownerWebId)
+  async ensureAcl(creatorWebId){
+    return createPrivateCultDocAcl(this.privateDocument.asRef(), creatorWebId || this.ownerWebId)
+  }
+
+  async ensureOwnerMember(){
+    this.addMember(this.ownerWebId)
+    return await this.save()
+  }
+
+  isOwnerMember(){
+    return !!this.members.find(m => (m === this.ownerWebId))
   }
 
   async notifyCultOfWWWOfCreation(creator){
@@ -392,10 +403,11 @@ inv: a as:Create;
 
   async create(creator, name){
     this.ownerWebId = creator
+    this.addMember(creator)
     this.name = name
     await Promise.all([
       this.save(),
-      this.ensureAcl(),
+      this.ensureAcl(creator),
       this.notifyCultOfWWWOfCreation(creator)
     ])
   }
@@ -429,6 +441,10 @@ inv: a as:Follow;
 
   asRef() {
     return this.subject.asRef()
+  }
+
+  privateAsRef() {
+    return this.privateSubject.asRef()
   }
 }
 

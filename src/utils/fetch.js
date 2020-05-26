@@ -28,3 +28,13 @@ export async function postFormData(uri, body){
     body: formBody.join("&")
   })
 }
+
+export async function loadImage(uri){
+  const response = await auth.fetch(uri)
+  if (response.status === 200){
+    const body = await response.blob()
+    return URL.createObjectURL(body)
+  } else {
+    throw new Error(response)
+  }
+}

@@ -10,13 +10,14 @@ import Typography from '@material-ui/core/Typography';
 import { ldp } from 'rdf-namespaces'
 
 import DefaultLayout from "../layouts/Default"
-import { useDocument, useProfile, useRitualByRef, usePassport, usePerformance } from "../data"
+import { useDocument, useProfile, useRitualByRef, usePassport, usePerformance, useImage } from "../data"
 import { useModel } from "../model"
 import Link from "../components/Link"
 import ImageUploader from "../components/ImageUploader"
 import Loader from "../components/Loader"
 import ProfileLink from "../components/ProfileLink"
 import { createPrivateCultResourceAcl } from "../utils/acl"
+import { loadImage } from "../utils/fetch"
 import { deleteDocument, documentExists } from "../services"
 
 const useStyles = makeStyles(theme => ({
@@ -33,33 +34,21 @@ export function RitualPageByEncodedRef() {
 function Performance({uri}){
   const webId = useWebId()
   const [performance] = usePerformance(uri)
-  const [exists, setExists] = useState()
-  useEffect(() => {
-    if (uri && performance){
-      async function checkExists(){
-        setExists(await documentExists(performance.object))
-      }
-      checkExists()
-    }
-  }, [performance, uri])
-  const retract = () => {
-    deleteDocument(performance.object)
-    setExists(false)
-  }
-  return (exists === true) ? (
-    performance ? (
+  const [imageSrc, loading, error, deleteImage] = useImage(performance && performance.object)
+  return loading ? (
+    <Loader/>
+  ) : (
+    imageSrc ? (
       <>
-        <img src={performance.object} alt={performance.title}/>
+      <img src={imageSrc} alt={performance.title}/>
         <Typography variant="caption">
           performed by <ProfileLink webId={performance.actor}/>
-        </Typography>
-        {(webId === performance.actor) && <Button onClick={retract}>Delete</Button>}
+      </Typography>
+        {(webId === performance.actor) && <Button onClick={deleteImage}>Delete</Button>}
       </>
     ) : (
-      <Loader/>
+      <></>
     )
-  ) : (
-    <></>
   )
 }
 

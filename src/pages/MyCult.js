@@ -15,6 +15,7 @@ import { useModel } from "../model"
 import { useCult, useDocumentExists } from "../data"
 import * as urls from "../urls"
 import ButtonLink from "../components/ButtonLink"
+import Link from "../components/Link"
 import Linkify from "../components/Linkify"
 import Datepicker from "../components/Datepicker"
 import ProfileLink from "../components/ProfileLink"
@@ -231,32 +232,38 @@ function EditableCultRules({cult}){
 
 function EditableCultGatherings({cult}){
   const gatherings = cult && cult.gatherings
-  const addGathering = async (name, description) => {
-    cult.addGathering(name, description)
-    await cult.save()
-  }
   const removeGathering = async (gathering) => {
     cult.removeGathering(gathering)
     await cult.save()
   }
-  const submitAddGathering = async ({name, description}, {resetForm}) => {
-    await addGathering(name, description)
+  const [adding, setAdding] = useState(false)
+  const submitAddGathering = async ({name, description, location, time}, {resetForm}) => {
+    cult.addGathering(name, description, location, time)
+    await cult.save()
     resetForm()
+    setAdding(false)
   }
   return (
     <>
       <Typography variant="h4">Gatherings</Typography>
-      <Formik
-        initialValues={{name: "", description: ""}}
-        onSubmit={submitAddGathering}
-        validationSchema={GatheringSchema}
-      >
-        <Form>
-          <TextField name="name" type="text" placeholder="name"/>
-          <TextField name="description" type="text" placeholder="description"/>
-          <Button type="submit">Add a Gathering</Button>
-        </Form>
-      </Formik>
+      <Button onClick={() => setAdding(!adding)}>Add a Gathering</Button>
+      {adding && (
+        <Formik
+          initialValues={{name: "", description: "", location: "", time: new Date()}}
+          onSubmit={submitAddGathering}
+          validationSchema={GatheringSchema}
+        >
+          <Form>
+            <TextField name="name" type="text" placeholder="name"/>
+            <TextField name="description" type="text" placeholder="description"/>
+            <TextField name="location" type="text" placeholder="location" />
+            <Datepicker name="time" autoFocus showTimeSelect inline
+                        openToDate={new Date()}
+            />
+            <Button type="submit">Announce</Button>
+          </Form>
+        </Formik>
+      )}
       {gatherings && (
         <List>
           {gatherings.map(gathering => (
@@ -341,15 +348,25 @@ function EditableCultMembers({cult}){
 function CultInfo({cult}){
   const classes = useStyles();
   const [aclCreated, checkingAcl, error, refresh] = useDocumentExists(cult.aclRef)
-  async function fixAcl(){
+  async function fixCult(){
     await cult.ensureAcl()
+    await cult.ensureOwnerMember()
     refresh()
+  }
+  const notConfiguredProperly = () => {
+    return cult && ((!checkingAcl && !aclCreated) || !cult.isOwnerMember())
   }
   return (
     <>
       <Grid item xs={12}>
         <EditableName entity={cult} schema={CultSchema} variant="h1"/>
       </Grid>
+    <Grid item xs={12}>
+      <Grid item xs={12}>
+        {cult && <Link href={cult.asRef()} target="_blank">View the source of {cult.name}</Link>}
+      </Grid>
+    </Grid>
+
       <Grid item xs={12}>
         <EditableDescription entity={cult} schema={CultSchema}/>
       </Grid>
@@ -368,12 +385,12 @@ function CultInfo({cult}){
       <Grid item xs={12}>
         <ButtonLink to={urls.cult(cult)}>Public Page</ButtonLink>
       </Grid>
-      {cult && !checkingAcl && !aclCreated && (
+      {notConfiguredProperly() && (
         <Grid item xs={12}>
           <Typography variant="body1">
             Your cult is not configured properly. You may need to summon the Cult of WWW for assistance.
           </Typography>
-          <Button onClick={fixAcl}>
+          <Button onClick={fixCult}>
             Try to fix it
           </Button>
         </Grid>
