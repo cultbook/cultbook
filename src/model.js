@@ -320,11 +320,13 @@ export class Cult {
     }
   }
 
-  addGathering(name, description) {
+  addGathering(name, description, location, time) {
     if (this.privateDocument){
       const gathering = new Gathering(this.privateDocument, this.privateDocument.addSubject(), this.save)
       gathering.name = name
       gathering.description = description
+      gathering.location = location
+      gathering.time = time
       this.privateSubject.addRef(cb.convening, gathering.asRef())
     }
   }

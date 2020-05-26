@@ -232,32 +232,38 @@ function EditableCultRules({cult}){
 
 function EditableCultGatherings({cult}){
   const gatherings = cult && cult.gatherings
-  const addGathering = async (name, description) => {
-    cult.addGathering(name, description)
-    await cult.save()
-  }
   const removeGathering = async (gathering) => {
     cult.removeGathering(gathering)
     await cult.save()
   }
-  const submitAddGathering = async ({name, description}, {resetForm}) => {
-    await addGathering(name, description)
+  const [adding, setAdding] = useState(false)
+  const submitAddGathering = async ({name, description, location, time}, {resetForm}) => {
+    cult.addGathering(name, description, location, time)
+    await cult.save()
     resetForm()
+    setAdding(false)
   }
   return (
     <>
       <Typography variant="h4">Gatherings</Typography>
-      <Formik
-        initialValues={{name: "", description: ""}}
-        onSubmit={submitAddGathering}
-        validationSchema={GatheringSchema}
-      >
-        <Form>
-          <TextField name="name" type="text" placeholder="name"/>
-          <TextField name="description" type="text" placeholder="description"/>
-          <Button type="submit">Add a Gathering</Button>
-        </Form>
-      </Formik>
+      <Button onClick={() => setAdding(!adding)}>Add a Gathering</Button>
+      {adding && (
+        <Formik
+          initialValues={{name: "", description: "", location: "", time: new Date()}}
+          onSubmit={submitAddGathering}
+          validationSchema={GatheringSchema}
+        >
+          <Form>
+            <TextField name="name" type="text" placeholder="name"/>
+            <TextField name="description" type="text" placeholder="description"/>
+            <TextField name="location" type="text" placeholder="location" />
+            <Datepicker name="time" autoFocus showTimeSelect inline
+                        openToDate={new Date()}
+            />
+            <Button type="submit">Announce</Button>
+          </Form>
+        </Formik>
+      )}
       {gatherings && (
         <List>
           {gatherings.map(gathering => (
