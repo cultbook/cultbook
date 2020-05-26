@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 export default function LoginButton({onEmailSubmit}){
   const [email, setEmail] = useState("")
   const { sendMagicLink } = useAuthContext()
-  async function sendEmail(email) {
+  async function sendEmail({email}) {
     onEmailSubmit(email)
     await sendMagicLink(email)
   }

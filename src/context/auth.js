@@ -5,10 +5,10 @@ import { useHistory } from "react-router-dom";
 
 const SolidServerURI = "https://solid.thecultbook.com"
 
-async function sendMagicLink(body) {
+async function sendMagicLink(email) {
   const magicLinkURI = SolidServerURI + "/magic-link/generate"
-
-  return await postFormData(magicLinkURI, body)
+  console.log("Sending magic link to " + email)
+  return await postFormData(magicLinkURI, {email})
 }
 
 async function logIn() {
