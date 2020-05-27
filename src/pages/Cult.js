@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import { useWebId } from "@solid/react"
 
 import ProfileLink from "../components/ProfileLink"
+import ApplyToJoinCultButton from "../components/ApplyToJoinCultButton"
 import DefaultLayout from "../layouts/Default"
 import { useCultByRef, useCurrentUserIsWWWCult, usePassport } from "../data"
 import { useModel } from "../model"
@@ -225,10 +226,13 @@ export default function CultPage({cultRef}){
                     You do not have access to the mysteries of this cult. The cult leader has been notified of your desire to become an initiate.
                   </Typography>
                 </Grid>
+                <Grid item xs={3}/>
+                <Grid item xs={12}>
+                  <ApplyToJoinCultButton webId={webId} passport={passport} cult={cult}/>
+                </Grid>
                 <Grid item xs={12}>
                   <ButtonLink to="/cults">Browse more Cults</ButtonLink>
                 </Grid>
-                <Grid item xs={3}/>
               </>
             )}
         </>

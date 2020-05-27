@@ -11,6 +11,7 @@ import { usePassport, useNotification, useProfileByWebId, useCultByRef } from ".
 import { as } from "../vocab"
 import { deleteNotification } from "../services"
 import Loader from "../components/Loader"
+import Link from "../components/Link"
 
 function NotificationCultDetails({cultUri}){
   const [ cult ] = useCultByRef(cultUri)
@@ -89,7 +90,15 @@ function ApplicationNotification({notification, ...props}){
       <Typography variant="h4">{notification && notification.name}</Typography>
       <Typography variant="h5">{notification && notification.description}</Typography>
       <Typography variant="h5">Applicant: {profile && profile.name}</Typography>
-      <Button onClick={() => approveApplication()}>accept application</Button>
+      {cult && (
+        <>
+          {cult.isFull ? (
+            <Typography variant="h5">Your cult is full: <Link to="/me/cult">banish members to add more</Link></Typography>
+          ) : (
+            <Button onClick={() => approveApplication()}>accept application</Button>
+          )}
+        </>
+      )}
       <Button onClick={() => deleteNotification(notification.asRef())}>deny application</Button>
     </div>
   )

@@ -264,8 +264,12 @@ export class Cult {
     return this.privateSubject && this.privateSubject.getAllRefs(vcard.hasMember)
   }
 
+  get isFull(){
+    return (this.members.length >= 26)
+  }
+
   hasMember(webId){
-    new Set(this.members).has(webId)
+    return new Set(this.members).has(webId)
   }
 
   removeMember(memberWebId) {

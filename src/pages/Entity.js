@@ -9,7 +9,7 @@ import { useWebId } from "@solid/react"
 
 import * as urls from "../urls"
 import DefaultLayout from "../layouts/Default"
-import { useProfile, usePassport, useRules, useGatherings, usePerformance, useCultByWebId, useImage } from "../data"
+import { useProfile, useCult, usePassport, useRules, useGatherings, usePerformance, useCultByWebId, useImage } from "../data"
 import { useModel } from "../model"
 import Link from "../components/Link"
 import Loader from "../components/Loader"
@@ -59,17 +59,31 @@ function Gathering({gathering}){
 export default function EntityPage({entityWebId}){
   const classes = useStyles();
   const webId = useWebId()
-  const {profileDocument, passportDocument} = useModel(entityWebId)
+  const {cultDocument: myCultDocument, cultPrivateDocument: myCultPrivateDocument} = useModel(webId)
+  const [myCult] = useCult(myCultDocument, myCultPrivateDocument)
+
+  const {profileDocument, passportDocument, cultDocument, cultPrivateDocument} = useModel(entityWebId)
   const [entity] = useProfile(profileDocument)
   const [passport] = usePassport(passportDocument)
   const [rules] = useRules(passport)
   const [gatherings] = useGatherings(passport)
-  const [cult] = useCultByWebId(entityWebId)
+  const [cult] = useCult(cultDocument, cultPrivateDocument)
+  const addToMyCult = async () => {
+    myCult.addMember(entity.asRef())
+    await myCult.save()
+  }
   return (
     <DefaultLayout>
       <Grid item xs={12}>
         <Typography variant="h1">{entity && (entity.name || "an unnamed soul")}</Typography>
         <Link href={entity && entity.asRef()} target="_blank">Look behind the veil</Link>
+      </Grid>
+      <Grid item xs={12}>
+        {entity && myCult && !myCult.hasMember(entity.asRef()) && !myCult.isFull && (
+          <Button onClick={addToMyCult}>
+            Add {entity.name} to {myCult.name}
+          </Button>
+        )}
       </Grid>
       <Grid item xs={12}>
         {cult && (

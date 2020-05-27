@@ -311,16 +311,18 @@ function EditableCultMembers({cult}){
   return (
     <>
       <Typography variant="h4">Members</Typography>
-      <Formik
-        initialValues={{member: ""}}
-        onSubmit={({member}) => {addMember(member)}}
-        validationSchema={AddMemberSchema}
-      >
-        <Form>
-          <TextField name="member" type="text" placeholder="webid"/>
-          <Button type="submit">Add a Member</Button>
-        </Form>
-      </Formik>
+      {cult && (!cult.isFull) && (
+        <Formik
+          initialValues={{member: ""}}
+          onSubmit={({member}) => {addMember(member)}}
+          validationSchema={AddMemberSchema}
+        >
+          <Form>
+            <TextField name="member" type="text" placeholder="webid"/>
+            <Button type="submit">Add a Member</Button>
+          </Form>
+        </Formik>
+      )}
       {members && (
         <List>
           {members.map(member => (

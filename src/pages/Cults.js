@@ -16,6 +16,7 @@ import * as urls from "../urls"
 import Loader from "../components/Loader"
 import Link from "../components/Link"
 import Scene from "../components/Scene"
+import ApplyToJoinCultButton from "../components/ApplyToJoinCultButton"
 import DefaultLayout from "../layouts/Default"
 
 const useStyles = makeStyles(theme => ({
@@ -39,7 +40,7 @@ function CultListItem({cultRef, follows, leave, passport, ...props}) {
         {follows ? (
           <Link to={urls.cultByRef(cultRef)}>Enter Lair</Link>
         ) : (
-          <Button onClick={apply}>Apply to Join</Button>
+          <ApplyToJoinCultButton webId={webId} passport={passport} cult={cult}/>
         )}
         {follows && <Button onClick={() => leave()}>Disavow</Button>
         }
@@ -93,7 +94,12 @@ export default function HomePage(){
       </Grid>
       <Grid item xs={12}>
         <Scene>
-          You pick up Thecultbook and start browsing. The words seem to shift under your eyes. The book seems to be interactive, with some words calling out to you to touch them...
+          <p>
+            You pick up Thecultbook and start browsing. The words seem to shift under your eyes.
+          </p>
+          <p>
+            Blood red words call out for you to touch them...
+          </p>
         </Scene>
       </Grid>
       <Grid item xs={3}>
