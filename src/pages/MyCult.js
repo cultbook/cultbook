@@ -363,15 +363,15 @@ function CultInfo({cult, passport}){
       <Grid item xs={12}>
         <EditableName entity={cult} schema={CultSchema} variant="h1"/>
       </Grid>
-    <Grid item xs={12}>
       <Grid item xs={12}>
-        {passport && passport.veilRemoved && cult && (
-          <Link href={cult.asRef()} target="_blank">
-            View the source of {cult.name}
-          </Link>
-        )}
+        <Grid item xs={12}>
+          {passport && passport.veilRemoved && cult && (
+            <Link href={cult.asRef()} target="_blank">
+              View the source of {cult.name}
+            </Link>
+          )}
+        </Grid>
       </Grid>
-    </Grid>
 
       <Grid item xs={12}>
         <EditableDescription entity={cult} schema={CultSchema}/>
