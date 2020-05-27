@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
 import { useWebId } from "@solid/react"
 
@@ -12,6 +14,7 @@ import DefaultLayout from "../layouts/Default"
 import { useProfile, useCult, usePassport, useRules, useGatherings, usePerformance, useCultByWebId, useImage } from "../data"
 import { useModel } from "../model"
 import Link from "../components/Link"
+import CultLink from "../components/CultLink"
 import Loader from "../components/Loader"
 import ButtonLink from "../components/ButtonLink"
 
@@ -117,6 +120,19 @@ export default function EntityPage({entityWebId}){
             {rules.map(rule => (
               <Rule rule={rule} key={rule.asRef()}/>
             ))}
+          </>
+        )}
+      </Grid>
+      <Grid item xs={12}>
+        {passport && passport.following && (
+          <>
+            <Typography variant="h3">Cults Followed</Typography>
+            <List>
+
+              {passport.following.map(cultRef => (
+                <CultLink cultRef={cultRef}/>
+              ))}
+            </List>
           </>
         )}
       </Grid>
