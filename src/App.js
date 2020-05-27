@@ -17,6 +17,7 @@ import CabinPage from "./pages/Cabin"
 import BookPage from "./pages/Book"
 import RefusePage from "./pages/Refuse"
 import TrustPage from "./pages/Trust"
+import CultLeadersPage from "./pages/CultLeadersPage"
 import NotificationsPage from "./pages/Notifications"
 import { CultPageByEncodedRef } from "./pages/Cult"
 import { RitualPageByEncodedRef } from "./pages/Ritual"
@@ -95,6 +96,7 @@ function App() {
           <Route path="/book" component={BookPage}/>
           <Route path="/refuse" component={RefusePage}/>
           <Route path="/trust" component={TrustPage}/>
+          <Route path="/joinus" component={CultLeadersPage}/>
           <Route path="/" component={RootPage}/>
         </Switch>
       </div>
