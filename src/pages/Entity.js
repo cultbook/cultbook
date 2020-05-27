@@ -73,8 +73,7 @@ export default function EntityPage({entityWebId}){
   const [gatherings] = useGatherings(passport)
   const [cult] = useCult(cultDocument, cultPrivateDocument)
   const addToMyCult = async () => {
-    myCult.addMember(entity.asRef())
-    await myCult.save()
+    await cult.addAndInviteMember(entity.asRef())
   }
   return (
     <DefaultLayout>

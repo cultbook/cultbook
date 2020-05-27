@@ -318,9 +318,7 @@ function EditableCultGatherings({cult}){
 function EditableCultMembers({cult}){
   const members = cult && cult.members
   const addMember = async (memberWebId) => {
-    cult.addMember(memberWebId)
-    await cult.save()
-    await inviteMember(memberWebId, cult.asRef())
+    await cult.addAndInviteMember(memberWebId)
   }
   const removeMember = async (memberWebId) => {
     cult.removeMember(memberWebId)
