@@ -11,12 +11,15 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 0,
     fontSize: "13vw"
   },
+  pageContainer: {
+    paddingBottom: theme.spacing(6)
+  }
 }))
 
 export default function OutsideLayout({children}){
   const classes = useStyles();
   return (
-    <Box>
+    <Box className={classes.pageContainer}>
       <header className="App-header">
         <h1 className={classes.logo}>cultbook</h1>
       </header>
