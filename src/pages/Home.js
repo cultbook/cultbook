@@ -46,10 +46,10 @@ function IdentifiedHomePage({cult, passport, profile}){
         <ButtonLink to="/me">Look in the Mirror</ButtonLink>
       </Grid>
       <Grid item xs={12}>
-        <ButtonLink to="/cults">Read Thecultbook</ButtonLink>
+        {cult && <MyCultLink cult={cult}/>}
       </Grid>
       <Grid item xs={12}>
-        {cult && <MyCultLink cult={cult}/>}
+        <ButtonLink to="/cults">Read Thecultbook</ButtonLink>
       </Grid>
       <Grid item xs={12}>
         {(!profile.hasControlPermission) && "YOU DID NOT GIVE US ENOUGH CONTROL: YOUR EXPERIENCE MAY BE SUBOPTIMAL. CONSULT THE CULT OF WWW FOR GUIDANCE!"}
