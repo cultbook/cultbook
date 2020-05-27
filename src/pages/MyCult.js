@@ -9,6 +9,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import CopyLinkIcon from '@material-ui/icons/FileCopy';
+import copy from 'copy-to-clipboard';
 
 import DefaultLayout from "../layouts/Default"
 import { useModel } from "../model"
@@ -358,6 +362,7 @@ function CultInfo({cult, passport}){
   const notConfiguredProperly = () => {
     return cult && ((!checkingAcl && !aclCreated) || !cult.isOwnerMember())
   }
+  const publicCultLink = cult && new URL(urls.cult(cult), window.location.toString()).toString()
   return (
     <>
       <Grid item xs={12}>
@@ -372,6 +377,17 @@ function CultInfo({cult, passport}){
           )}
         </Grid>
       </Grid>
+      <Grid item xs={12}>
+        <Typography variant="h5">
+          <Link to={publicCultLink}>Sharable Link</Link>
+          <Tooltip title="Copy to Clipboard" aria-label="copy to clipboard">
+            <IconButton onClick={() => {copy(publicCultLink)}}>
+              <CopyLinkIcon/>
+            </IconButton>
+          </Tooltip>
+        </Typography>
+      </Grid>
+
 
       <Grid item xs={12}>
         <EditableDescription entity={cult} schema={CultSchema}/>
@@ -387,9 +403,6 @@ function CultInfo({cult, passport}){
       </Grid>
       <Grid item className={classes.quadrant} xs={5}>
         <EditableCultMembers cult={cult}/>
-      </Grid>
-      <Grid item xs={12}>
-        <ButtonLink to={urls.cult(cult)}>Public Page</ButtonLink>
       </Grid>
       {notConfiguredProperly() && (
         <Grid item xs={12}>
