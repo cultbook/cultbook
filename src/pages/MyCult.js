@@ -316,6 +316,7 @@ function EditableCultGatherings({cult}){
 }
 
 function EditableCultMembers({cult}){
+  const webId = useWebId()
   const members = cult && cult.members
   const addMember = async (memberWebId) => {
     await cult.addAndInviteMember(memberWebId)
@@ -342,18 +343,20 @@ function EditableCultMembers({cult}){
       {members && (
         <List>
           {members.map(member => (
-            <ListItem key={member}>
-              <Grid container alignItems="center">
-                <Grid item xs={9}>
-                  <ProfileLink webId={member}/>
+            (member !== webId) && (
+              <ListItem key={member}>
+                <Grid container alignItems="center">
+                  <Grid item xs={9}>
+                    <ProfileLink webId={member}/>
+                  </Grid>
+                  <Grid item xs>
+                    <Button onClick={() => removeMember(member)}>
+                      Banish
+                    </Button>
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  <Button onClick={() => removeMember(member)}>
-                    Banish
-                  </Button>
-                </Grid>
-              </Grid>
-            </ListItem>
+              </ListItem>
+            )
           ))}
         </List>
       )}
