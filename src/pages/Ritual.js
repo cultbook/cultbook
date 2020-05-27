@@ -75,7 +75,9 @@ export default function RitualPage({ritualRef}){
       <Grid item xs={12}>
         <Typography variant="h1">{ritual && ritual.name}</Typography>
         <Typography variant="body1">{ritual && ritual.description}</Typography>
-        <Link href={ritual && ritual.asRef()} target="_blank">Look behind the veil</Link>
+        {passport && passport.veilRemoved && (
+          <Link href={ritual && ritual.asRef()} target="_blank">Look behind the veil</Link>
+        )}
       </Grid>
       <Grid item xs={12}>
         <Button onClick={() => setImageUploaderOpen(true) }>Perform This Ritual</Button>

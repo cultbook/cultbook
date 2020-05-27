@@ -12,7 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import DefaultLayout from "../layouts/Default"
 import { useModel } from "../model"
-import { useCult, useDocumentExists } from "../data"
+import { useCult, useDocumentExists, usePassport } from "../data"
 import * as urls from "../urls"
 import ButtonLink from "../components/ButtonLink"
 import Link from "../components/Link"
@@ -347,7 +347,7 @@ function EditableCultMembers({cult}){
 
 
 
-function CultInfo({cult}){
+function CultInfo({cult, passport}){
   const classes = useStyles();
   const [aclCreated, checkingAcl, error, refresh] = useDocumentExists(cult.aclRef)
   async function fixCult(){
@@ -365,7 +365,11 @@ function CultInfo({cult}){
       </Grid>
     <Grid item xs={12}>
       <Grid item xs={12}>
-        {cult && <Link href={cult.asRef()} target="_blank">View the source of {cult.name}</Link>}
+        {passport && passport.veilRemoved && cult && (
+          <Link href={cult.asRef()} target="_blank">
+            View the source of {cult.name}
+          </Link>
+        )}
       </Grid>
     </Grid>
 
@@ -404,11 +408,12 @@ function CultInfo({cult}){
 export default function MePage(){
   const classes = useStyles();
   const webId = useWebId()
-  const { cultDocument, cultPrivateDocument } = useModel(webId)
+  const { cultDocument, cultPrivateDocument, passportDocument } = useModel(webId)
   const [ cult ] = useCult(cultDocument, cultPrivateDocument)
+  const [ passport ] = usePassport(passportDocument)
   return (
     <DefaultLayout>
-      {cult && <CultInfo cult={cult} />}
+      {cult && <CultInfo cult={cult} passport={passport} />}
     </DefaultLayout>
   )
 }

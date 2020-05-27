@@ -13,6 +13,7 @@ import { useProfile, useCult, usePassport, useRules, useGatherings, usePerforman
 import { useModel } from "../model"
 import Link from "../components/Link"
 import Loader from "../components/Loader"
+import ButtonLink from "../components/ButtonLink"
 
 const useStyles = makeStyles(theme => ({
 }))
@@ -59,9 +60,9 @@ function Gathering({gathering}){
 export default function EntityPage({entityWebId}){
   const classes = useStyles();
   const webId = useWebId()
-  const {cultDocument: myCultDocument, cultPrivateDocument: myCultPrivateDocument} = useModel(webId)
+  const {cultDocument: myCultDocument, cultPrivateDocument: myCultPrivateDocument, passportDocument: myPassportDocument} = useModel(webId)
   const [myCult] = useCult(myCultDocument, myCultPrivateDocument)
-
+  const [ myPassport ] = usePassport(myPassportDocument)
   const {profileDocument, passportDocument, cultDocument, cultPrivateDocument} = useModel(entityWebId)
   const [entity] = useProfile(profileDocument)
   const [passport] = usePassport(passportDocument)
@@ -76,7 +77,9 @@ export default function EntityPage({entityWebId}){
     <DefaultLayout>
       <Grid item xs={12}>
         <Typography variant="h1">{entity && (entity.name || "an unnamed soul")}</Typography>
-        <Link href={entity && entity.asRef()} target="_blank">Look behind the veil</Link>
+        {myPassport && myPassport.veilRemoved && (
+          <Link href={entity && entity.asRef()} target="_blank">Look behind the veil</Link>
+        )}
       </Grid>
       <Grid item xs={12}>
         {entity && myCult && !myCult.hasMember(entity.asRef()) && !myCult.isFull && (
@@ -89,7 +92,7 @@ export default function EntityPage({entityWebId}){
         {cult && (
           <>
             {passport.isFollowing(cult) ? (
-              <Link to={urls.cultByRef(cult.asRef())}>Enter Lair of {cult.name}</Link>
+              <ButtonLink to={urls.cultByRef(cult.asRef())}>Enter Lair of {cult.name}</ButtonLink>
             ) : (
               <Button onClick={() => passport.applyToFollow(cult, webId)}>Apply to Join {cult.name}</Button>
             )}
