@@ -125,14 +125,6 @@ export default function CultbookAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      {/*<MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-        </MenuItem>*/}
       <Link to="/notifications" className={classes.notificationsLink}>
         <MenuItem>
           <NotificationsIconButton notificationsCount={notificationsCount}/>
@@ -151,11 +143,6 @@ export default function CultbookAppBar() {
             <Link className={classes.logo} to="/">cultbook</Link>
           </Typography>
           <div className={classes.sectionDesktop}>
-            {/*<IconButton aria-label="show 4 new mails" color="inherit">
-               <Badge badgeContent={4} color="secondary">
-               <MailIcon />
-               </Badge>
-               </IconButton>*/}
             <Link to="/notifications" className={classes.notificationsLink}>
               <NotificationsIconButton notificationsCount={notificationsCount}/>
             </Link>
