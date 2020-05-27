@@ -208,7 +208,7 @@ export default function CultPage({cultRef}){
                       <Typography variant="h2">Members</Typography>
                       <List>
                         {members.map(member => (
-                          <ListItem className={classes.member}>
+                          <ListItem className={classes.member} key={member}>
                             <ProfileLink webId={member}></ProfileLink>
                           </ListItem>
                         ))}

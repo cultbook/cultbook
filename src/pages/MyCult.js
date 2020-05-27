@@ -141,6 +141,9 @@ function EditableCultRituals({cult}){
   return (
     <>
       <Typography variant="h4">Rituals</Typography>
+      <Typography variant="body1">
+        Ask your followers to perform rituals and upload photographic evidence of their completion.
+      </Typography>
       <Formik
         initialValues={{name: "", description: ""}}
         onSubmit={submitAddRitual}
@@ -157,7 +160,7 @@ function EditableCultRituals({cult}){
           {rituals.map(ritual => (
             <ListItem key={ritual.asRef()}>
               <Grid container alignItems="center">
-                <Grid item xs={9}>
+                <Grid item xs={6}>
                   <Box>
                     <EditableName entity={ritual} schema={RitualSchema}/>
                   </Box>
@@ -165,7 +168,12 @@ function EditableCultRituals({cult}){
                     <EditableDescription entity={ritual} schema={RitualSchema}/>
                   </Box>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={3}>
+                  <ButtonLink to={urls.ritual(ritual)}>
+                    View Performances
+                  </ButtonLink>
+                </Grid>
+                <Grid item xs={3}>
                   <Button onClick={() => removeRitual(ritual)}>
                     Delete
                   </Button>
@@ -196,6 +204,9 @@ function EditableCultRules({cult}){
   return (
     <>
       <Typography variant="h4">Rules</Typography>
+      <Typography variant="body1">
+        Ask that your followers swear to abide by your rules.
+      </Typography>
       <Formik
         initialValues={{name: "", description: ""}}
         onSubmit={submitAddRule}
@@ -250,6 +261,9 @@ function EditableCultGatherings({cult}){
   return (
     <>
       <Typography variant="h4">Gatherings</Typography>
+      <Typography variant="body1">
+        Pick a time, place, and reason for your followers to gather.
+      </Typography>
       <Button onClick={() => setAdding(!adding)}>Add a Gathering</Button>
       {adding && (
         <Formik
@@ -362,7 +376,7 @@ function CultInfo({cult, passport}){
   const notConfiguredProperly = () => {
     return cult && ((!checkingAcl && !aclCreated) || !cult.isOwnerMember())
   }
-  const publicCultLink = cult && new URL(urls.cult(cult), window.location.toString()).toString()
+  const publicCultLink = cult && new URL(urls.cult(cult), urls.baseUrl()).toString()
   return (
     <>
       <Grid item xs={12}>
@@ -379,7 +393,7 @@ function CultInfo({cult, passport}){
       </Grid>
       <Grid item xs={12}>
         <Typography variant="h5">
-          <Link to={publicCultLink}>Sharable Link</Link>
+          <Link to={urls.cult(cult)}>Sharable Link</Link>
           <Tooltip title="Copy to Clipboard" aria-label="copy to clipboard">
             <IconButton onClick={() => {copy(publicCultLink)}}>
               <CopyLinkIcon/>
