@@ -15,7 +15,7 @@ export default function SolidPage(){
     <OutsideLayout>
       <Scene>
         <p>
-          Welcome, wizard!
+          Welcome, Wize Wizard!
         </p>
         <p>
           Know that when the Identity Daemon asks you to grant Thecultbook permissions you MUST grant us CONTROL or we will not be able to fully support your dark ends.
