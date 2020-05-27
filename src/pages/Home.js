@@ -89,7 +89,6 @@ export default function HomePage(){
   const { profileDocument, cultDocument, cultPrivateDocument, passportDocument } = useModel(webId)
   const [ cult ] = useCult(cultDocument, cultPrivateDocument)
   const [ passport ] = usePassport(passportDocument)
-
   const [profile, profileLoading] = useProfile(profileDocument)
   return (
     <DefaultLayout>

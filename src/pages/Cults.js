@@ -15,6 +15,7 @@ import { useCultByRef, usePassport, useKnownCults } from "../data"
 import * as urls from "../urls"
 import Loader from "../components/Loader"
 import Link from "../components/Link"
+import ButtonLink from "../components/ButtonLink"
 import Scene from "../components/Scene"
 import ApplyToJoinCultButton from "../components/ApplyToJoinCultButton"
 import DefaultLayout from "../layouts/Default"
@@ -55,10 +56,8 @@ function CultListItem({cultRef, follows, leave, passport, ...props}) {
   )
 }
 
-function KnownCults({passport}){
+function KnownCults({passport, cultRefs}){
   const classes = useStyles();
-  const [cultRefs] = useKnownCults()
-
   const following = useMemo(
     () => new Set(passport && passport.following),
     [passport]
@@ -86,29 +85,54 @@ export default function HomePage(){
   const webId = useWebId()
   const { passportDocument } = useModel(webId)
   const [ passport ] = usePassport(passportDocument)
+  const [cultRefs] = useKnownCults()
 
   return (
     <DefaultLayout>
       <Grid item xs={12}>
         <Typography variant="h1">Thecultbook</Typography>
       </Grid>
-      <Grid item xs={12}>
-        <Scene>
-          <p>
-            You pick up Thecultbook and start browsing. The words seem to shift under your eyes.
-          </p>
-          <p>
-            Blood red words call out for you to touch them...
-          </p>
-        </Scene>
-      </Grid>
-      <Grid item xs={3}>
-      </Grid>
-      <Grid item xs={6}>
-        <KnownCults passport={passport}/>
-      </Grid>
-      <Grid item xs={3}>
-      </Grid>
+      {cultRefs && (
+        <>
+          {cultRefs.length > 0 ? (
+            <>
+              <Grid item xs={12}>
+                <Scene>
+                  <p>
+                    You pick up Thecultbook and start browsing. The words seem to shift under your eyes.
+                  </p>
+                  <p>
+                    Blood red words call out for you to touch them...
+                  </p>
+                </Scene>
+              </Grid>
+              <Grid item xs={3}>
+              </Grid>
+              <Grid item xs={6}>
+                <KnownCults passport={passport} cultRefs={cultRefs}/>
+              </Grid>
+              <Grid item xs={3}>
+              </Grid>
+            </>
+          ) : (
+            <>
+              <Grid item xs={12}>
+                <Scene>
+                  <p>
+                    You open Thecultbook to blank pages.
+                  </p>
+                  <p>
+                    Perhaps you should come back later...
+                  </p>
+                </Scene>
+              </Grid>
+              <Grid item xs={12}>
+                <ButtonLink to="/">Direct Your Attention Elsewhere</ButtonLink>
+              </Grid>
+            </>
+          )}
+        </>
+      )}
     </DefaultLayout>
   )
 }
