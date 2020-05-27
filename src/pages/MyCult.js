@@ -381,6 +381,9 @@ function CultInfo({cult, passport}){
         <EditableName entity={cult} schema={CultSchema} variant="h1"/>
       </Grid>
       <Grid item xs={12}>
+        <EditableDescription entity={cult} schema={CultSchema}/>
+      </Grid>
+      <Grid item xs={12}>
         <Grid item xs={12}>
           {passport && passport.veilRemoved && cult && (
             <Link href={cult.asRef()} target="_blank">
@@ -398,11 +401,9 @@ function CultInfo({cult, passport}){
             </IconButton>
           </Tooltip>
         </Typography>
-      </Grid>
-
-
-      <Grid item xs={12}>
-        <EditableDescription entity={cult} schema={CultSchema}/>
+        <Typography variant="body1">
+          Send this link to new recruits
+        </Typography>
       </Grid>
       <Grid item className={classes.quadrant} xs={5}>
         <EditableCultRituals cult={cult} />
