@@ -69,29 +69,34 @@ const NotificationsIconButton = ({notificationsCount}) => (
   </IconButton>
 )
 
-const LinkMenuItem = ({to, onClick, ...props}) => {
+const LinkMenuItem = forwardRef(({to, onClick, ...props}, ref) => {
   const history = useHistory();
   const navigate = () => {
     history.push(to)
     onClick && onClick()
   }
   return (
-    <MenuItem onClick={navigate} {...props}/>
+    <MenuItem onClick={navigate} ref={ref} {...props}/>
   )
+})
 
-}
-
-const MeMenuItem = (props) => (
-  <LinkMenuItem to="/me">
+const MeMenuItem = forwardRef((props, ref) => (
+  <LinkMenuItem to="/me" ref={ref} {...props}>
     Me
   </LinkMenuItem>
-)
+))
 
-const MyCultMenuItem = () => (
-  <LinkMenuItem to="/me/cult">
+const MyCultMenuItem = forwardRef((props, ref) => (
+  <LinkMenuItem to="/me/cult" ref={ref} {...props}>
     My Cult
   </LinkMenuItem>
-)
+))
+
+const ReportMenuItem = forwardRef((props, ref) => (
+  <LinkMenuItem to="/report" {...props}>
+    Report a Problem
+  </LinkMenuItem>
+))
 
 export default function CultbookAppBar() {
   const classes = useStyles();
@@ -131,6 +136,7 @@ export default function CultbookAppBar() {
     >
       <MeMenuItem onClick={handleMenuClose}/>
       <MyCultMenuItem onClick={handleMenuClose}/>
+      <ReportMenuItem/>
       <LogoutMenuItem/>
     </Menu>
   );
@@ -161,6 +167,7 @@ export default function CultbookAppBar() {
       </Link>
       <MeMenuItem onClick={handleMenuClose}/>
       <MyCultMenuItem onClick={handleMenuClose}/>
+      <ReportMenuItem/>
       <LogoutMenuItem/>
     </Menu>
   );

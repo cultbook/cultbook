@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid';
 
 import { as } from "./vocab"
 import { postToInbox, documentExists, inviteMember, notifyMember } from "./services"
+import { wwwCultInbox } from "./constants"
 import { createPrivateCultDocAcl, createRitualUploadFolderAcl } from "./utils/acl"
 
 const prefix = "https://thecultbook.com/ontology#"
@@ -14,6 +15,7 @@ export const cb = {
   Cult: `${prefix}Cult`,
   Passport: `${prefix}Passport`,
   Performance: `${prefix}Performance`,
+  Report: `${prefix}Report`,
   ImageNotification: `${prefix}ImageNotification`,
   HTMLNotification: `${prefix}HTMLNotification`,
   InductedNotification: `${prefix}InductedNotification`,
@@ -32,10 +34,6 @@ export const cb = {
   uploadFolder: `${prefix}uploadFolder`,
   notificationHtml: `${prefix}notificationHtml`
 }
-
-const wwwCultRoot = "https://cultofwww.solid.thecultbook.com"
-export const wwwCultWebId = `${wwwCultRoot}/profile/card#me`
-export const wwwCultInbox = `${wwwCultRoot}/inbox`
 
 export class Rule {
   constructor(document, subject, save) {

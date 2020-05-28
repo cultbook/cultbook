@@ -120,7 +120,7 @@ export default function CultPage({cultRef}){
                   {rituals && (
                     <>
                       <Typography variant="h2">Rituals</Typography>
-                      {(rituals.length == 0) &&
+                      {(rituals.length === 0) &&
                         <Typography variant="h6">
                           No rituals... the altar yearns for blood.
                         </Typography>
@@ -148,7 +148,7 @@ export default function CultPage({cultRef}){
                   {rules && (
                     <>
                       <Typography variant="h2">Rules</Typography>
-                      {(rules.length == 0) &&
+                      {(rules.length === 0) &&
                         <Typography variant="h6">
                           No rules... no masters.
                         </Typography>
@@ -183,7 +183,7 @@ export default function CultPage({cultRef}){
                   {gatherings && (
                     <>
                       <Typography variant="h2">Gatherings</Typography>
-                      {(gatherings.length == 0) &&
+                      {(gatherings.length === 0) &&
                         <Typography variant="h6">
                           No gatherings... yet.
                         </Typography>
@@ -227,7 +227,7 @@ export default function CultPage({cultRef}){
                   {members && (
                     <>
                       <Typography variant="h2">Members</Typography>
-                      {(members.length == 0) &&
+                      {(members.length === 0) &&
                         <Typography variant="h6">
                           No members
                         </Typography>

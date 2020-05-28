@@ -32,3 +32,7 @@ export const ProfileSchema = Yup.object().shape({
 export const EmailSchema = Yup.object().shape({
   email: Yup.string().email(),
 })
+
+export const ReportSchema = Yup.object().shape({
+  message: Yup.string().min(1),
+})

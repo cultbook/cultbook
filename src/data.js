@@ -4,7 +4,8 @@ import { useWebId } from "@solid/react"
 import { ldp } from 'rdf-namespaces'
 import * as td from "tripledoc"
 
-import { Ritual, Cult, Passport, Performance, Notification, Profile, useModel, wwwCultWebId, privateCultDocument, cultDocumentFromWebId } from "./model"
+import { Ritual, Cult, Passport, Performance, Notification, Profile, useModel, privateCultDocument, cultDocumentFromWebId } from "./model"
+import { wwwCultWebId } from "./constants"
 import useLatestUpdate from "./hooks/useLatestUpdate"
 import { deleteDocument, documentExists } from "./services"
 import { loadImage } from "./utils/fetch"

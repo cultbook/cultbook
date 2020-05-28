@@ -1,6 +1,7 @@
 import { fetchDocument } from "tripledoc"
 import { ldp } from "rdf-namespaces"
 import auth from 'solid-auth-client';
+import {wwwCultInbox} from "./constants"
 
 export const postToInbox = async (inboxUri, body) =>
   auth.fetch(inboxUri, {
@@ -59,5 +60,19 @@ inv: a cb:InductedNotification;
     rdfs:label "You have been inducted";
     rdfs:comment "You are now one of us";
     as:object <${cultUri}>.
+`)
+}
+
+export async function sendReportToWWW(webId, message) {
+  await postToInbox(wwwCultInbox, `
+@prefix inv: <>.
+@prefix cb: <https://thecultbook.com/ontology#>.
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+inv: a cb:Report;
+    rdfs:label "We received a report";
+    as:actor <${webId}>;
+    rdfs:comment """${message}""".
 `)
 }

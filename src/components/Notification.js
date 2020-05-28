@@ -133,7 +133,7 @@ function ApplicationNotification({notification, ...props}){
 
 function ImageNotification({notification}){
   return (
-    <img src={notification && notification.subject.getRef(foaf.img)}/>
+    <img src={notification && notification.subject.getRef(foaf.img)} alt={notification && notification.name}/>
   )
 }
 
@@ -145,13 +145,35 @@ function HTMLNotification({notification}){
   )
 }
 
+function ReportNotification({notification}){
+  const classes = useStyles()
+  const [ profile ] = useProfileByWebId(notification && notification.actor)
+
+  return (
+    <div>
+      <Typography variant="h5">
+        Reporter: <Link to={urls.profileByRef(notification.actor)}>{profile && profile.name}</Link>
+      </Typography>
+      {notification.object && (
+        <Typography variant="h6">
+          Object: <Link to={notification.object}>{notification.object}</Link>
+        </Typography>
+      )}
+      <Typography variant="body1">
+        {notification.description}
+      </Typography>
+    </div>
+  )
+}
+
 const typesToNotificationComponents = {
   [as.Invite]: InviteNotification,
   [as.Create]: CreatedNotification,
   [as.Follow]: ApplicationNotification,
   [cb.ImageNotification]: ImageNotification,
   [cb.HTMLNotification]: HTMLNotification,
-  [cb.InductedNotification]: InductedNotification
+  [cb.InductedNotification]: InductedNotification,
+  [cb.Report]: ReportNotification
 }
 
 function notificationComponentForType(type){

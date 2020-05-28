@@ -19,6 +19,7 @@ import RefusePage from "./pages/Refuse"
 import TrustPage from "./pages/Trust"
 import CultLeadersPage from "./pages/CultLeadersPage"
 import NotificationsPage from "./pages/Notifications"
+import ReportPage from "./pages/Report"
 import NotificationDemosPage from "./pages/NotificationDemos"
 import { CultPageByEncodedRef } from "./pages/Cult"
 import { RitualPageByEncodedRef } from "./pages/Ritual"
@@ -89,6 +90,7 @@ function App() {
           <PrivateRoute path="/me" component={MePage}/>
           <PrivateRoute path="/demos" component={NotificationDemosPage}/>
           <PrivateRoute path="/notifications" component={NotificationsPage}/>
+          <PrivateRoute path="/report" component={ReportPage}/>
           <PrivateRoute path="/ritual/:encodedRef" component={RitualPageByEncodedRef}/>
           <PrivateRoute path="/entity/:encodedRef" component={EntityPageByEncodedRef}/>
           <Route path="/cult/:encodedCultRef" component={CultPageByEncodedRef}/>

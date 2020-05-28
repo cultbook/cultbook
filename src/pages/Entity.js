@@ -111,7 +111,7 @@ export default function EntityPage({entityWebId}){
         {gatherings && (
           <>
             <Typography variant="h3">Attending</Typography>
-            {(gatherings.length == 0) &&
+            {(gatherings.length === 0) &&
               <Typography variant="h6">
                 Alone and nowhere to go...
               </Typography>
@@ -126,7 +126,7 @@ export default function EntityPage({entityWebId}){
         {rules && (
           <>
             <Typography variant="h3">Oaths Sworn</Typography>
-            {(rules.length == 0) &&
+            {(rules.length === 0) &&
               <Typography variant="h6">
                 {entity.name} follows no rules... not even their own.
               </Typography>
@@ -142,7 +142,7 @@ export default function EntityPage({entityWebId}){
           <>
             <Typography variant="h3">Cults Followed</Typography>
             <List>
-              {(passport.following.length == 0) &&
+              {(passport.following.length === 0) &&
                 <Typography variant="h6">
                   {entity.name} is truly a lone wolf.
                 </Typography>
@@ -163,7 +163,7 @@ export default function EntityPage({entityWebId}){
             ))}
           </>
         )}
-        {(!passport || passport.performances.length == 0) &&
+        {(!passport || passport.performances.length === 0) &&
           <Typography variant="h6">
             Performance schedule empty as the void.
           </Typography>
