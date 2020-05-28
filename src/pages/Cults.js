@@ -9,6 +9,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
+import {useLocation} from "react-router-dom";
 
 import { useModel } from "../model"
 import { useCultByRef, usePassport, useKnownCults } from "../data"
@@ -18,6 +19,7 @@ import Link from "../components/Link"
 import ButtonLink from "../components/ButtonLink"
 import Scene from "../components/Scene"
 import ApplyToJoinCultButton from "../components/ApplyToJoinCultButton"
+import Paginator from "../components/Paginator"
 import DefaultLayout from "../layouts/Default"
 
 const useStyles = makeStyles(theme => ({
@@ -34,29 +36,38 @@ function CultListItem({cultRef, follows, leave, passport, ...props}) {
     await passport.save()
     await cult.applyToJoin(webId)
   }
+  const isMember = cult && cult.hasMember(webId)
   return (
     <ListItem {...props}>
-      <ListItemText>
-        <h4>{loading ? <Loader/> : cult ? cult.name : "could not load cult..."}</h4>
-        {follows ? (
-          <Link to={urls.cultByRef(cultRef)}>Enter Lair</Link>
-        ) : (
-          <ApplyToJoinCultButton passport={passport} cult={cult}/>
-        )}
-        {follows && <Button onClick={() => leave()}>Disavow</Button>
-        }
-        {passport && passport.veilRemoved && (
-          <Grid item xs={12}>
-            {cult && <Link href={cult.asRef()} target="_blank">View the source of {cult.name}</Link>}
-          </Grid>
-        )}
+      {loading ? (
+        <Loader/>
+      ) : (
+        <ListItemText>
+          <h4>{cult ? cult.name : "could not load cult..."}</h4>
+          {isMember ? (
+            <Link to={urls.cultByRef(cultRef)}>Enter Lair</Link>
+          ) : (
+            follows ? (
+              <Link to={urls.cultByRef(cultRef)}>Approach Lair</Link>
+            ) : (
+              <ApplyToJoinCultButton passport={passport} cult={cult}/>
+            )
+          )}
+          {follows && <Button onClick={() => leave()}>Disavow</Button>
+          }
+          {passport && passport.veilRemoved && (
+            <Grid item xs={12}>
+              {cult && <Link href={cult.asRef()} target="_blank">View the source of {cult.name}</Link>}
+            </Grid>
+          )}
 
-      </ListItemText>
+        </ListItemText>
+      )}
     </ListItem>
   )
 }
 
-function KnownCults({passport, cultRefs}){
+function KnownCults({passport, cultRefs, pageSize=6}){
   const classes = useStyles();
   const following = useMemo(
     () => new Set(passport && passport.following),
@@ -66,18 +77,42 @@ function KnownCults({passport, cultRefs}){
     passport.removeFollowing(cultUri)
     passport.save()
   }
-
+  const location = useLocation()
+  const query = new URLSearchParams(location.search);
+  const page = parseInt(query.get('page') || '1', 10);
+  const cultRefsPage = cultRefs.slice((page - 1) * pageSize, page * pageSize)
+  const totalItems = cultRefs.length
+  const pageCount = Math.floor(totalItems / pageSize) + ((totalItems % pageSize === 0) ? 0 : 1)
+  const multiPage = (pageCount > 1)
   return (
-    <List>
-      {cultRefs && cultRefs.map(cultRef => (
-        <CultListItem key={cultRef} cultRef={cultRef}
-                      follows={following.has(cultRef)}
-                      leave={() => leaveCult(cultRef)}
-                      passport={passport}
-                      className={classes.cultListItem}
-        />
-      ))}
-    </List>
+    <>
+      {multiPage && (
+        <Grid item xs={12}>
+          <Paginator page={page} pageSize={pageSize} totalItems={totalItems} className={classes.paginator}/>
+        </Grid>
+      )}
+      <Grid item xs={3}>
+      </Grid>
+      <Grid item xs={6}>
+        <List>
+          {cultRefsPage && cultRefsPage.map(cultRef => (
+            <CultListItem key={cultRef} cultRef={cultRef}
+                          follows={following.has(cultRef)}
+                          leave={() => leaveCult(cultRef)}
+                          passport={passport}
+                          className={classes.cultListItem}
+            />
+          ))}
+        </List>
+      </Grid>
+      <Grid item xs={3}>
+      </Grid>
+      {multiPage && (
+        <Grid item xs={12}>
+          <Paginator page={page} pageSize={pageSize} totalItems={totalItems} className={classes.paginator}/>
+        </Grid>
+      )}
+    </>
   )
 }
 
@@ -104,13 +139,7 @@ export default function HomePage(){
                   Blood red words call out for you to touch them...
                 </Scene>
               </Grid>
-              <Grid item xs={3}>
-              </Grid>
-              <Grid item xs={6}>
-                <KnownCults passport={passport} cultRefs={cultRefs}/>
-              </Grid>
-              <Grid item xs={3}>
-              </Grid>
+              {cultRefs && (<KnownCults passport={passport} cultRefs={cultRefs}/>)}
             </>
           ) : (
             <>

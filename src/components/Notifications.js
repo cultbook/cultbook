@@ -8,6 +8,7 @@ import {useLocation} from "react-router-dom";
 
 import Link from "../components/Link"
 import Notification from "../components/Notification"
+import Paginator from "../components/Paginator"
 
 const useStyles = makeStyles(theme => ({
   paginator: {
@@ -25,29 +26,14 @@ export default function Notifications({notifications, pageSize=10}){
   const query = new URLSearchParams(location.search);
   const page = parseInt(query.get('page') || '1', 10);
   const notificationsPage = notifications.slice((page - 1) * pageSize, page * pageSize)
-  const pageCount = Math.floor(notifications.length / pageSize) + ((notifications.length % pageSize === 0) ? 0 : 1)
+  const totalItems = notifications.length
+  const pageCount = Math.floor(totalItems / pageSize) + ((totalItems % pageSize === 0) ? 0 : 1)
   const multiPage = (pageCount > 1)
-  const paginator = (
-    <div className={classes.paginator}>
-      <Pagination
-        page={page}
-        count={pageCount}
-
-        renderItem={(item) => (
-          <PaginationItem
-            component={Link}
-            to={`${location.pathname}${item.page === 1 ? '' : `?page=${item.page}`}`}
-            {...item}
-          />
-        )}
-      />
-    </div>
-  )
   return (
     <>
       {multiPage && (
         <Grid item xs={12}>
-          {paginator}
+          <Paginator page={page} pageSize={pageSize} totalItems={totalItems} className={classes.paginator}/>
         </Grid>
       )}
       <Grid item xs={12}>
@@ -61,7 +47,7 @@ export default function Notifications({notifications, pageSize=10}){
       </Grid>
       {multiPage && (
         <Grid item xs={12}>
-          {paginator}
+          <Paginator page={page} pageSize={pageSize} totalItems={totalItems} className={classes.paginator}/>
         </Grid>
       )}
     </>
