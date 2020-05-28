@@ -14,6 +14,8 @@ export const cb = {
   Cult: `${prefix}Cult`,
   Passport: `${prefix}Passport`,
   Performance: `${prefix}Performance`,
+  ImageNotification: `${prefix}ImageNotification`,
+  HTMLNotification: `${prefix}HTMLNotification`,
   follows: `${prefix}follows`,
   convening: `${prefix}convening`,
   convenedBy: `${prefix}convenedBy`,
@@ -26,7 +28,8 @@ export const cb = {
   attending: `${prefix}attending`,
   knowsAbout: `${prefix}knowsAbout`,
   veilRemoved: `${prefix}veilRemoved`,
-  uploadFolder: `${prefix}uploadFolder`
+  uploadFolder: `${prefix}uploadFolder`,
+  notificationHtml: `${prefix}notificationHtml`
 }
 
 const wwwCultRoot = "https://cultofwww.solid.thecultbook.com"

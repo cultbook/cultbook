@@ -5,13 +5,24 @@ import { useWebId } from "@solid/react"
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import { foaf } from 'rdf-namespaces';
+import Iframe from 'react-iframe'
+import { makeStyles } from '@material-ui/core/styles';
 
-import { useModel } from "../model"
+import { cb, useModel } from "../model"
 import { usePassport, useNotification, useProfileByWebId, useCultByRef } from "../data"
 import { as } from "../vocab"
 import { deleteNotification } from "../services"
 import Loader from "../components/Loader"
 import Link from "../components/Link"
+
+const useStyles = makeStyles(theme => ({
+  htmlNotificationIframe: {
+    margin: "auto",
+    width: "90vw",
+    height: "90vh"
+  },
+}))
 
 function NotificationCultDetails({cultUri}){
   const [ cult ] = useCultByRef(cultUri)
@@ -104,10 +115,32 @@ function ApplicationNotification({notification, ...props}){
   )
 }
 
+function ImageNotification({notification}){
+  return (
+    <div>
+      <Typography variant="h4">{notification && notification.name}</Typography>
+      <img src={notification && notification.subject.getRef(foaf.img)}/>
+    </div>
+  )
+}
+
+function HTMLNotification({notification}){
+  const classes = useStyles()
+  return (
+    <div>
+      <Typography variant="h4">{notification && notification.name}</Typography>
+      <Iframe url={notification && notification.subject.getRef(cb.notificationHtml)}
+              className={classes.htmlNotificationIframe}/>
+    </div>
+  )
+}
+
 const typesToNotificationComponents = {
   [as.Invite]: InviteNotification,
   [as.Create]: CreatedNotification,
-  [as.Follow]: ApplicationNotification
+  [as.Follow]: ApplicationNotification,
+  [cb.ImageNotification]: ImageNotification,
+  [cb.HTMLNotification]: HTMLNotification
 }
 
 function notificationComponentForType(type){
