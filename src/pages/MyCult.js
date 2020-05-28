@@ -408,16 +408,16 @@ function CultInfo({cult, passport}){
           Send this link to new recruits
         </Typography>
       </Grid>
-      <Grid item className={classes.quadrant} xs={5}>
+      <Grid item className={classes.quadrant} xs={12} md={5}>
         <EditableCultRituals cult={cult} />
       </Grid>
-      <Grid item className={classes.quadrant} xs={5}>
+      <Grid item className={classes.quadrant} xs={12} md={5}>
         <EditableCultRules cult={cult} />
       </Grid>
-      <Grid item className={classes.quadrant} xs={5}>
+      <Grid item className={classes.quadrant} xs={12} md={5}>
         <EditableCultGatherings cult={cult} />
       </Grid>
-      <Grid item className={classes.quadrant} xs={5}>
+      <Grid item className={classes.quadrant} xs={12} md={5}>
         <EditableCultMembers cult={cult}/>
       </Grid>
       {notConfiguredProperly() && (
