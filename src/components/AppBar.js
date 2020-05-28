@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 import { useWebId } from "@solid/react"
 import { ldp } from 'rdf-namespaces'
 import { useDocument } from "../data"
@@ -14,6 +14,8 @@ import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import { useHistory } from "react-router-dom";
+
 
 import Link from "./Link"
 import ButtonLink from "./ButtonLink"
@@ -67,17 +69,28 @@ const NotificationsIconButton = ({notificationsCount}) => (
   </IconButton>
 )
 
-const MeButton = () => <ButtonLink to="/me">Me</ButtonLink>
+const LinkMenuItem = ({to, onClick, ...props}) => {
+  const history = useHistory();
+  const navigate = () => {
+    history.push(to)
+    onClick && onClick()
+  }
+  return (
+    <MenuItem onClick={navigate} {...props}/>
+  )
+
+}
 
 const MeMenuItem = (props) => (
-  <MenuItem component={ButtonLink} to="/me" {...props}>
+  <LinkMenuItem to="/me">
     Me
-  </MenuItem>
+  </LinkMenuItem>
 )
-const MyCultMenuItem = (props) => (
-  <MenuItem component={ButtonLink} to="/me/cult" {...props}>
+
+const MyCultMenuItem = () => (
+  <LinkMenuItem to="/me/cult">
     My Cult
-  </MenuItem>
+  </LinkMenuItem>
 )
 
 export default function CultbookAppBar() {
@@ -116,8 +129,8 @@ export default function CultbookAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MeMenuItem/>
-      <MyCultMenuItem/>
+      <MeMenuItem onClick={handleMenuClose}/>
+      <MyCultMenuItem onClick={handleMenuClose}/>
       <LogoutMenuItem/>
     </Menu>
   );
@@ -146,8 +159,8 @@ export default function CultbookAppBar() {
           <p>Notifications</p>
         </MenuItem>
       </Link>
-      <MeMenuItem/>
-      <MyCultMenuItem/>
+      <MeMenuItem onClick={handleMenuClose}/>
+      <MyCultMenuItem onClick={handleMenuClose}/>
       <LogoutMenuItem/>
     </Menu>
   );
