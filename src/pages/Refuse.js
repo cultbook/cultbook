@@ -15,12 +15,10 @@ export default function RefusePage(){
   return (
     <OutsideLayout>
       <Scene>
-        <p>
-          You dare defy the will of Thecultbook!
-        </p>
-        <p>
-          Why do you refuse?
-        </p>
+        You dare defy the will of Thecultbook!
+      </Scene>
+      <Scene>
+        Why do you refuse?
       </Scene>
       <Box>
         <ButtonLink size='large' to="/trust">I do not trust Thecultbook</ButtonLink>

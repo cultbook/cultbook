@@ -98,12 +98,10 @@ export default function HomePage(){
             <>
               <Grid item xs={12}>
                 <Scene>
-                  <p>
-                    You pick up Thecultbook and start browsing. The words seem to shift under your eyes.
-                  </p>
-                  <p>
-                    Blood red words call out for you to touch them...
-                  </p>
+                  You pick up Thecultbook and start browsing. The words seem to shift under your eyes.
+                </Scene>
+                <Scene>
+                  Blood red words call out for you to touch them...
                 </Scene>
               </Grid>
               <Grid item xs={3}>

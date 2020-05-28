@@ -16,9 +16,7 @@ export default function LandingPage(){
   return (
     <OutsideLayout>
       <Scene>
-        <p>
-          Inside the cabin you find a comfortable looking chair and a side table. On the table is a book engraved with arcane symbols and glowing with a soft power. You feel compelled to pick it up.
-        </p>
+        Inside the cabin you find a comfortable looking chair and a side table. On the table is a book engraved with arcane symbols and glowing with a soft power. You feel compelled to pick it up.
       </Scene>
       <Box>
         <ButtonLink size='large' to="/book">pick up the book</ButtonLink>

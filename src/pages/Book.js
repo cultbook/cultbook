@@ -21,12 +21,10 @@ export default function LandingPage(){
       {submitted ? (
         <>
           <Scene>
-            <p>
-              You submit to the lure of the book and add your email. You know not what nefarious purpose it will use your email for. Have you just been added to its email marketing list? Will the book's mother start sending you chain messages in ALL CAPS?
-            </p>
-            <p>
-              You realize you should check your email and assess the damage.
-            </p>
+            You submit to the lure of the book and add your email. You know not what nefarious purpose it will use your email for. Have you just been added to its email marketing list? Will the book's mother start sending you chain messages in ALL CAPS?
+          </Scene>
+          <Scene>
+            You realize you should check your email and assess the damage.
           </Scene>
           <Box>
             <ButtonLink size='large' href={ "https://" + email.substring(email.lastIndexOf("@") + 1) }>check your email</ButtonLink>
@@ -41,15 +39,13 @@ export default function LandingPage(){
       ) : (
         <>
           <Scene>
-            <p>
-              The book seems to be bound with a patchwork of different colors of leather. As you open it, you see pages and pages filled with email addressess written in red ink.
-            </p>
-            <p>
-              An inscription runs along the top of each page:
-            </p>
-            <p>
-              "Of all that is written, I love only what a person hath written with his blood. Write with blood, and thou wilt find that blood is spirit."
-            </p>
+            The book seems to be bound with a patchwork of different colors of leather. As you open it, you see pages and pages filled with email addressess written in red ink.
+          </Scene>
+          <Scene>
+            An inscription runs along the top of each page:
+          </Scene>
+          <Scene>
+            "Of all that is written, I love only what a person hath written with his blood. Write with blood, and thou wilt find that blood is spirit."
           </Scene>
           <MagicLinkForm onEmailSubmit={(email) => {
             setEmail(email)
