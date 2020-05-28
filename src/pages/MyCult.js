@@ -54,7 +54,7 @@ function EditableDescription({entity, schema}){
       validationSchema={schema}
     >
       <Form>
-        <TextField name="description" type="text" placeholder="description" autoFocus/>
+        <TextField multiline name="description" type="text" placeholder="description" autoFocus/>
         <Button type="submit">save</Button>
       </Form>
     </Formik>
@@ -82,7 +82,7 @@ function EditableLocation({entity, schema}){
       validationSchema={schema}
     >
       <Form>
-        <TextField name="location" type="text" placeholder="location" autoFocus/>
+        <TextField multiline name="location" type="text" placeholder="location" autoFocus/>
         <Button type="submit">save</Button>
       </Form>
     </Formik>
@@ -126,6 +126,7 @@ function EditableTime({entity, schema}){
 
 
 function EditableCultRituals({cult}){
+  const [adding, setAdding] = useState(false)
   const classes = useStyles();
   const rituals = cult && cult.rituals
   const addRitual = async (name, description) => {
@@ -137,6 +138,7 @@ function EditableCultRituals({cult}){
   const submitAddRitual = async ({name, description}, {resetForm}) => {
     await addRitual(name, description)
     resetForm()
+    setAdding(false)
   }
   return (
     <>
@@ -144,17 +146,24 @@ function EditableCultRituals({cult}){
       <Typography variant="body1">
         Ask your followers to perform rituals and upload photographic evidence of their completion.
       </Typography>
-      <Formik
-        initialValues={{name: "", description: ""}}
-        onSubmit={submitAddRitual}
-        validationSchema={RitualSchema}
-      >
-        <Form>
-          <TextField name="name" type="text" placeholder="name"/>
-          <TextField name="description" type="text" placeholder="description"/>
-          <Button type="submit">Add a Ritual</Button>
-        </Form>
-      </Formik>
+      <Button onClick={() => setAdding(!adding)}>Add a Ritual</Button>
+      {adding && (
+        <Formik
+          initialValues={{name: "", description: ""}}
+          onSubmit={submitAddRitual}
+          validationSchema={RitualSchema}
+        >
+          <Form>
+            <Box>
+              <TextField name="name" type="text" placeholder="name"/>
+            </Box>
+            <Box>
+              <TextField multiline name="description" type="text" placeholder="description"/>
+            </Box>
+            <Button type="submit">Create</Button>
+          </Form>
+        </Formik>
+      )}
       {rituals && (
         <List>
           {rituals.map(ritual => (
@@ -188,6 +197,7 @@ function EditableCultRituals({cult}){
 }
 
 function EditableCultRules({cult}){
+  const [adding, setAdding] = useState(false)
   const rules = cult && cult.rules
   const addRule = async (name, description) => {
     cult.addRule(name, description)
@@ -200,6 +210,7 @@ function EditableCultRules({cult}){
   const submitAddRule = async ({name, description}, {resetForm}) => {
     await addRule(name, description)
     resetForm()
+    setAdding(false)
   }
   return (
     <>
@@ -207,17 +218,24 @@ function EditableCultRules({cult}){
       <Typography variant="body1">
         Ask that your followers swear to abide by your rules.
       </Typography>
-      <Formik
-        initialValues={{name: "", description: ""}}
-        onSubmit={submitAddRule}
-        validationSchema={RuleSchema}
-      >
-        <Form>
-          <TextField name="name" type="text" placeholder="name"/>
-          <TextField name="description" type="text" placeholder="description"/>
-          <Button type="submit">Add a Rule</Button>
-        </Form>
-      </Formik>
+      <Button onClick={() => setAdding(!adding)}>Add a Rule</Button>
+      {adding && (
+        <Formik
+          initialValues={{name: "", description: ""}}
+          onSubmit={submitAddRule}
+          validationSchema={RuleSchema}
+        >
+          <Form>
+            <Box>
+              <TextField name="name" type="text" placeholder="name"/>
+            </Box>
+            <Box>
+              <TextField multiline name="description" type="text" placeholder="description"/>
+            </Box>
+            <Button type="submit">Create Rule</Button>
+          </Form>
+        </Formik>
+      )}
       {rules && (
         <List>
           {rules.map(rule => (
@@ -272,12 +290,19 @@ function EditableCultGatherings({cult}){
           validationSchema={GatheringSchema}
         >
           <Form>
-            <TextField name="name" type="text" placeholder="name"/>
-            <TextField name="description" type="text" placeholder="description"/>
-            <TextField name="location" type="text" placeholder="location" />
-            <Datepicker name="time" autoFocus showTimeSelect inline
-                        openToDate={new Date()}
-            />
+            <Box>
+              <TextField name="name" type="text" placeholder="name"/>
+            </Box>
+            <Box>
+              <TextField multiline name="description" type="text" placeholder="description"/>
+            </Box>
+            <Box>
+              <TextField multiline name="location" type="text" placeholder="location" />
+            </Box>
+            <Box>
+              <Datepicker name="time" showTimeSelect inline openToDate={new Date()}
+              />
+            </Box>
             <Button type="submit">Announce</Button>
           </Form>
         </Formik>
@@ -328,7 +353,7 @@ function EditableCultMembers({cult}){
   return (
     <>
       <Typography variant="h4">Members</Typography>
-      {cult && (!cult.isFull) && (
+      {false && cult && (!cult.isFull) && (
         <Formik
           initialValues={{member: ""}}
           onSubmit={({member}) => {addMember(member)}}
