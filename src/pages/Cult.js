@@ -148,7 +148,7 @@ export default function CultPage({cultRef}){
                   {rules && (
                     <>
                       <Typography variant="h2">Rules</Typography>
-                      {(gatherings.length == 0) &&
+                      {(rules.length == 0) &&
                         <Typography variant="h6">
                           No rules... no masters.
                         </Typography>

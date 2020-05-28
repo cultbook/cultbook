@@ -19,6 +19,11 @@ import Loader from "../components/Loader"
 import ButtonLink from "../components/ButtonLink"
 
 const useStyles = makeStyles(theme => ({
+  quadrant: {
+    border: "3px solid rgba(220, 20, 60, 0.25)",
+    borderStyle: "outset",
+    marginTop: "20px",
+  },
 }))
 
 
@@ -102,32 +107,46 @@ export default function EntityPage({entityWebId}){
           </>
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={5} className={classes.quadrant}>
         {gatherings && (
           <>
             <Typography variant="h3">Attending</Typography>
+            {(gatherings.length == 0) &&
+              <Typography variant="h6">
+                Alone and nowhere to go...
+              </Typography>
+            }
             {gatherings.map(gathering => (
               <Gathering gathering={gathering} key={gathering.asRef()}/>
             ))}
           </>
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={5} className={classes.quadrant}>
         {rules && (
           <>
             <Typography variant="h3">Oaths Sworn</Typography>
+            {(rules.length == 0) &&
+              <Typography variant="h6">
+                {entity.name} follows no rules... not even their own.
+              </Typography>
+            }
             {rules.map(rule => (
               <Rule rule={rule} key={rule.asRef()}/>
             ))}
           </>
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={5} className={classes.quadrant}>
         {passport && passport.following && (
           <>
             <Typography variant="h3">Cults Followed</Typography>
             <List>
-
+              {(passport.following.length == 0) &&
+                <Typography variant="h6">
+                  {entity.name} is truly a lone wolf.
+                </Typography>
+              }
               {passport.following.map(cultRef => (
                 <CultLink cultRef={cultRef}/>
               ))}
@@ -135,7 +154,7 @@ export default function EntityPage({entityWebId}){
           </>
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={5} className={classes.quadrant}>
         {passport && passport.performances && (
           <>
             <Typography variant="h3">Performances</Typography>
@@ -144,6 +163,11 @@ export default function EntityPage({entityWebId}){
             ))}
           </>
         )}
+        {(!passport || passport.performances.length == 0) &&
+          <Typography variant="h6">
+            Performance schedule empty as the void.
+          </Typography>
+        }
       </Grid>
     </DefaultLayout>
   )
