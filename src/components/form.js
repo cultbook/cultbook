@@ -8,7 +8,10 @@ import { useField } from 'formik'
 const useStyles = makeStyles(theme => ({
   textField: {
 
-  }
+  },
+  input: {
+    color: '#f00',
+  },
 }))
 
 export const TextField = ({ label, ...props }) => {
@@ -16,6 +19,9 @@ export const TextField = ({ label, ...props }) => {
   const [field, meta] = useField(props)
   return (
     <MuiTextField className={classes.textField}
+                  InputProps={{
+                    className: classes.input
+                  }}
                   error={!!meta.error} helperText={meta.error}
                   {...field} {...props}/>
   )

@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 
 import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 
 import MagicLinkForm from "../components/MagicLinkForm"
 import ButtonLink from "../components/ButtonLink"
@@ -27,9 +28,15 @@ export default function LandingPage(){
               You realize you should check your email and assess the damage.
             </p>
           </Scene>
-          <ButtonLink href={ "https://" + email.substring(email.lastIndexOf("@") + 1) }>check your email</ButtonLink>
-          <ButtonLink to="/">I already checked my email</ButtonLink>
-          <ButtonLink href={urls.leave}>leave</ButtonLink>
+          <Box>
+            <ButtonLink size='large' href={ "https://" + email.substring(email.lastIndexOf("@") + 1) }>check your email</ButtonLink>
+          </Box>
+          <Box>
+            <ButtonLink size='large' to="/">I already checked my email</ButtonLink>
+          </Box>
+          <Box>
+            <ButtonLink size='large' href={urls.leave}>leave</ButtonLink>
+          </Box>
         </>
       ) : (
         <>
@@ -48,7 +55,7 @@ export default function LandingPage(){
             setEmail(email)
             setSubmitted(true)
           }}/>
-          <ButtonLink to="/refuse">refuse</ButtonLink>
+          <ButtonLink size='large' to="/refuse">refuse</ButtonLink>
         </>
       )}
     </OutsideLayout>

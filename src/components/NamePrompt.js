@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,6 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Form, Formik } from 'formik';
 
+import Button from '../components/Button';
 import {CultSchema} from "../validations"
 import {TextField} from "./form"
 
@@ -34,7 +34,7 @@ export default function NamePrompt({
 
   return (
     <div>
-      <Button onClick={handleClickOpen}>
+      <Button size='large' onClick={handleClickOpen}>
         {openPrompt}
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">

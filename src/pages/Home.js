@@ -73,16 +73,18 @@ function UnidentifiedHomePage({profile}){
   }
   return (
     <>
-      <Grid item xs={12}>
-        <Scene>
-          You sense a presence in the darkness. You feel an urge to identify yourself, but know somehow that this name, like all names, is impermanent.
-        </Scene>
-        <NamePrompt openPrompt="choose a name"
-                    title="what shall we call you?"
-                    prompt="you can change this later"
-                    onSubmit={setName}/>
+      <Stage>
+        <Grid item xs={12}>
+          <Scene>
+            You sense a presence in the darkness. You feel an urge to identify yourself, but know somehow that this name, like all names, is impermanent.
+          </Scene>
+          <NamePrompt openPrompt="choose a name"
+                      title="what shall we call you?"
+                      prompt="you can change this later"
+                      onSubmit={setName}/>
 
-      </Grid>
+        </Grid>
+      </Stage>
     </>
   )
 }

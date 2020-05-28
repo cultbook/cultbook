@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 
 import ButtonLink from "../components/ButtonLink"
 import Scene from "../components/Scene"
@@ -19,8 +20,12 @@ export default function LandingPage(){
           Inside the cabin you find a comfortable looking chair and a side table. On the table is a book engraved with arcane symbols and glowing with a soft power. You feel compelled to pick it up.
         </p>
       </Scene>
-      <ButtonLink to="/book">pick up the book</ButtonLink>
-      <ButtonLink href={urls.leave}>get outta here</ButtonLink>
+      <Box>
+        <ButtonLink size='large' to="/book">pick up the book</ButtonLink>
+      </Box>
+      <Box>
+        <ButtonLink size='large' href={urls.leave}>get outta here</ButtonLink>
+      </Box>
     </OutsideLayout>
   )
 }

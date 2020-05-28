@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 
 import ButtonLink from "../components/ButtonLink"
 import Scene from "../components/Scene"
@@ -18,8 +19,12 @@ export default function LandingPage(){
       <Scene>
         As you walk past a cabin deep in the bowels of the ship you notice a strange soft throbbing from inside. Through the porthole in the door you see a dim eerie light.
       </Scene>
-      <ButtonLink to="/cabin">go inside</ButtonLink>
-      <ButtonLink href={urls.leave}>keep walking</ButtonLink>
+      <Box>
+        <ButtonLink size='large' to="/cabin">go inside</ButtonLink>
+      </Box>
+      <Box>
+        <ButtonLink size='large' href={urls.leave}>keep walking</ButtonLink>
+      </Box>
     </OutsideLayout>
   )
 }
