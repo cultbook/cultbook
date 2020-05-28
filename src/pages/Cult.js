@@ -36,7 +36,12 @@ const useStyles = makeStyles(theme => ({
   },
   rule: {
     textAlign: "left"
-  }
+  },
+  quadrant: {
+    border: "3px solid rgba(220, 20, 60, 0.25)",
+    borderStyle: "outset",
+    marginTop: "20px",
+  },
 }))
 
 
@@ -111,11 +116,15 @@ export default function CultPage({cultRef}){
           {
             cult.hasPrivateAccess ? (
               <>
-                <Grid item xs={3}/>
-                <Grid item xs={6}>
+                <Grid item xs={12} md={5} className={classes.quadrant}>
                   {rituals && (
                     <>
                       <Typography variant="h2">Rituals</Typography>
+                      {(rituals.length == 0) &&
+                        <Typography variant="h6">
+                          No rituals... the altar yearns for blood.
+                        </Typography>
+                      }
                       <List>
                         {rituals.map(ritual => (
                           <ListItem key={ritual.asRef()} className={classes.ritual}>
@@ -135,12 +144,15 @@ export default function CultPage({cultRef}){
                     </>
                   )}
                 </Grid>
-                <Grid item xs={3}/>
-                <Grid item xs={3}/>
-                <Grid item xs={6}>
+                <Grid item xs={12} md={5} className={classes.quadrant}>
                   {rules && (
                     <>
                       <Typography variant="h2">Rules</Typography>
+                      {(gatherings.length == 0) &&
+                        <Typography variant="h6">
+                          No rules... no masters.
+                        </Typography>
+                      }
                       <List>
                         {rules.map(rule => (
                           <ListItem key={rule.asRef()} className={classes.rule}>
@@ -167,11 +179,15 @@ export default function CultPage({cultRef}){
                     </>
                   )}
                 </Grid>
-                <Grid item xs={3}/>
-                <Grid item xs={12}>
+                <Grid item xs={12} md={5} className={classes.quadrant}>
                   {gatherings && (
                     <>
                       <Typography variant="h2">Gatherings</Typography>
+                      {(gatherings.length == 0) &&
+                        <Typography variant="h6">
+                          No gatherings... yet.
+                        </Typography>
+                      }
                       <List>
                         {gatherings.map(gathering => (
                           <ListItem key={gathering.asRef()} className={classes.gatheringListItem}>
@@ -207,14 +223,19 @@ export default function CultPage({cultRef}){
                     </>
                   )}
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} md={5} className={classes.quadrant}>
                   {members && (
                     <>
                       <Typography variant="h2">Members</Typography>
+                      {(members.length == 0) &&
+                        <Typography variant="h6">
+                          No members
+                        </Typography>
+                      }
                       <List>
                         {members.map(member => (
                           <ListItem className={classes.member} key={member}>
-                            <ProfileLink webId={member}></ProfileLink>
+                            <ProfileLink size='large' webId={member}></ProfileLink>
                           </ListItem>
                         ))}
                       </List>
