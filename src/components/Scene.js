@@ -6,7 +6,12 @@ const useStyles = makeStyles(theme => ({
   scene: {
     maxWidth: "66vw",
     margin: "auto",
-    fontSize: "1.666em"
+    fontSize: '1.666rem',
+    textAlign: 'justify',
+    marginBottom: theme.spacing(3),
+    [theme.breakpoints.up('md')]: {
+      fontSize: '2.666rem',
+    },
   }
 }))
 

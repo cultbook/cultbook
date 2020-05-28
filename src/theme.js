@@ -4,10 +4,13 @@ import pink from '@material-ui/core/colors/pink';
 const darkTheme = createMuiTheme({
   palette: {
     type: "dark",
-    primary: pink
+    primary: pink,
   },
   typography: {
-    fontFamily:['gryphius-mvb']
+    fontFamily:['gryphius-mvb'],
+    button: {
+      wordSpacing: '4px',
+    },
   }
 })
 

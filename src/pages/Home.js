@@ -12,6 +12,7 @@ import Link from "../components/Link"
 import ButtonLink from '../components/ButtonLink'
 import MyCultLink from "../components/MyCultLink"
 import Scene from "../components/Scene"
+import Stage from "../components/Stage"
 import NamePrompt from "../components/NamePrompt"
 import DefaultLayout from "../layouts/Default"
 
@@ -19,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   scene: {
     maxWidth: "66vw",
     margin: "auto"
-  }
+  },
 }))
 
 function IdentifiedHomePage({cult, passport, profile}){
@@ -27,38 +28,40 @@ function IdentifiedHomePage({cult, passport, profile}){
 
   return (
     <>
-      <Grid item xs={12}>
-        <Scene>
-          You seem to find yourself in a vast ancient chamber. You remain unsure of whether you are really here or whether your perceptions have been fully captured by some unknown power. You see a large mirror and a table covered with darkly iridescent cloth.
-        </Scene>
-        <Scene>
-          On the table is an ornately decorated book titled "Thecultbook"
-        </Scene>
-      </Grid>
-      {cult && !cult.created && (
+      <Stage>
         <Grid item xs={12}>
           <Scene>
-            You feel an odd compulsion to start a cult, but do not fully understand what that means...
+            You seem to find yourself in a vast ancient chamber. You remain unsure of whether you are really here or whether your perceptions have been fully captured by some unknown power. You see a large mirror and a table covered with darkly iridescent cloth.
+          </Scene>
+          <Scene>
+            On the table is an ornately decorated book titled "Thecultbook."
           </Scene>
         </Grid>
-      )}
-      <Grid item xs={12}>
-        <ButtonLink to="/me">Look in the Mirror</ButtonLink>
-      </Grid>
-      <Grid item xs={12}>
-        {cult && <MyCultLink cult={cult}/>}
-      </Grid>
-      <Grid item xs={12}>
-        <ButtonLink to="/cults">Read Thecultbook</ButtonLink>
-      </Grid>
-      <Grid item xs={12}>
-        {(!profile.hasControlPermission) && "YOU DID NOT GIVE US ENOUGH CONTROL: YOUR EXPERIENCE MAY BE SUBOPTIMAL. CONSULT THE CULT OF WWW FOR GUIDANCE!"}
-      </Grid>
-      {passport && passport.veilRemoved && (
+        {cult && !cult.created && (
+          <Grid item xs={12}>
+            <Scene>
+              You feel an odd compulsion to start a cult, but do not fully understand what that means...
+            </Scene>
+          </Grid>
+        )}
         <Grid item xs={12}>
-          {cult && <Link href={cult.asRef()} target="_blank">View the source of {cult.name}</Link>}
+          <ButtonLink size='large' to="/me">Look in the Mirror</ButtonLink>
         </Grid>
-      )}
+        <Grid item xs={12}>
+          {cult && <MyCultLink size='large' cult={cult}/>}
+        </Grid>
+        <Grid item xs={12}>
+          <ButtonLink size='large' to="/cults">Read Thecultbook</ButtonLink>
+        </Grid>
+        <Grid item xs={12}>
+          {(!profile.hasControlPermission) && "YOU DID NOT GIVE US ENOUGH CONTROL: YOUR EXPERIENCE MAY BE SUBOPTIMAL. CONSULT THE CULT OF WWW FOR GUIDANCE!"}
+        </Grid>
+        {passport && passport.veilRemoved && (
+          <Grid item xs={12}>
+            {cult && <Link href={cult.asRef()} target="_blank">View the source of {cult.name}</Link>}
+          </Grid>
+        )}
+      </Stage>
     </>
   )
 }
