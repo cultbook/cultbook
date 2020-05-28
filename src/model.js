@@ -5,7 +5,7 @@ import { space, solid, rdf, rdfs, ldp, vcard, foaf, schema, cal, acl, dct } from
 import { v4 as uuid } from 'uuid';
 
 import { as } from "./vocab"
-import { postToInbox, documentExists, inviteMember } from "./services"
+import { postToInbox, documentExists, inviteMember, notifyMember } from "./services"
 import { createPrivateCultDocAcl, createRitualUploadFolderAcl } from "./utils/acl"
 
 const prefix = "https://thecultbook.com/ontology#"
@@ -16,6 +16,7 @@ export const cb = {
   Performance: `${prefix}Performance`,
   ImageNotification: `${prefix}ImageNotification`,
   HTMLNotification: `${prefix}HTMLNotification`,
+  InductedNotification: `${prefix}InductedNotification`,
   follows: `${prefix}follows`,
   convening: `${prefix}convening`,
   convenedBy: `${prefix}convenedBy`,
@@ -279,6 +280,12 @@ export class Cult {
 
   addMember(webId) {
     this.privateSubject && this.privateSubject.addRef(vcard.hasMember, webId)
+  }
+
+  async addAndNotifyMember(memberWebId){
+    this.addMember(memberWebId)
+    await this.save()
+    await notifyMember(memberWebId, this.asRef())
   }
 
   async addAndInviteMember(memberWebId){

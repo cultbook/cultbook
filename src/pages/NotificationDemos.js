@@ -49,6 +49,7 @@ export default function NotificationDemos({children}) {
     "https://cultofwww.solid.thecultbook.com/public/image.ttl",
     "https://cultofwww.solid.thecultbook.com/public/html.ttl",
     "https://cultofwww.solid.thecultbook.com/public/image2.ttl",
+    "https://cultofwww.solid.thecultbook.com/public/inducted.ttl",
   ]
   return (
     <DefaultLayout>

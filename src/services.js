@@ -43,3 +43,21 @@ inv: a as:Invite;
     as:object <${cultUri}>.
 `)
 }
+
+export const notifyMember = async (memberWebId, cultUri) => {
+  const profileDoc = await fetchDocument(memberWebId)
+  const profile = profileDoc && profileDoc.getSubject(memberWebId)
+  const inboxUri = profile && profile.getRef(ldp.inbox)
+
+  await postToInbox(inboxUri, `
+@prefix inv: <>.
+@prefix cb: <https://thecultbook.com/ontology#>.
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+inv: a cb:InductedNotification;
+    rdfs:label "You have been inducted";
+    rdfs:comment "You are now one of us";
+    as:object <${cultUri}>.
+`)
+}

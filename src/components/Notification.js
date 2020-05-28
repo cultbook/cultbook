@@ -17,8 +17,10 @@ import { as } from "../vocab"
 import { deleteNotification } from "../services"
 import Loader from "../components/Loader"
 import Link from "../components/Link"
+import ButtonLink from "../components/ButtonLink"
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import * as urls from "../urls"
 
 const useStyles = makeStyles(theme => ({
   htmlNotificationIframe: {
@@ -34,7 +36,7 @@ function NotificationCultDetails({cultUri}){
 
   return (
     <div>
-      cult name: {name}
+      {name}
     </div>
   )
 }
@@ -68,6 +70,21 @@ function InviteNotification({notification}){
   )
 }
 
+function InductedNotification({notification}){
+  const cultUri = notification && notification.object
+  const [cult] = useCultByRef(cultUri)
+  return (
+    <div>
+      <Typography variant="h5">{notification && notification.description}</Typography>
+      {cult && (
+        <ButtonLink to={urls.cult(cult)}>
+          Enter Lair of {cult.name}
+        </ButtonLink>
+      )}
+    </div>
+  )
+}
+
 function CreatedNotification({notification}){
   const cultUri = notification && notification.object
   const webId = useWebId()
@@ -93,8 +110,7 @@ function ApplicationNotification({notification, ...props}){
   const [ cult ] = useCultByRef(notification && notification.object)
 
   const approveApplication = async () => {
-    cult.addMember(profile.asRef())
-    await cult.save()
+    await cult.addAndNotifyMember(profile.asRef())
     await deleteNotification(notification.asRef())
   }
   return (
@@ -134,7 +150,8 @@ const typesToNotificationComponents = {
   [as.Create]: CreatedNotification,
   [as.Follow]: ApplicationNotification,
   [cb.ImageNotification]: ImageNotification,
-  [cb.HTMLNotification]: HTMLNotification
+  [cb.HTMLNotification]: HTMLNotification,
+  [cb.InductedNotification]: InductedNotification
 }
 
 function notificationComponentForType(type){
