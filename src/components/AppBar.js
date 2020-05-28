@@ -16,7 +16,8 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 
 import Link from "./Link"
-import LogoutButton from "./LogoutButton"
+import ButtonLink from "./ButtonLink"
+import {LogoutMenuItem} from "./LogoutButton"
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -66,6 +67,19 @@ const NotificationsIconButton = ({notificationsCount}) => (
   </IconButton>
 )
 
+const MeButton = () => <ButtonLink to="/me">Me</ButtonLink>
+
+const MeMenuItem = (props) => (
+  <MenuItem component={ButtonLink} to="/me" {...props}>
+    Me
+  </MenuItem>
+)
+const MyCultMenuItem = (props) => (
+  <MenuItem component={ButtonLink} to="/me/cult" {...props}>
+    My Cult
+  </MenuItem>
+)
+
 export default function CultbookAppBar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -102,8 +116,9 @@ export default function CultbookAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}><Link to="/me">Me</Link></MenuItem>
-      <MenuItem onClick={handleMenuClose}><LogoutButton/></MenuItem>
+      <MeMenuItem/>
+      <MyCultMenuItem/>
+      <LogoutMenuItem/>
     </Menu>
   );
 
@@ -131,8 +146,9 @@ export default function CultbookAppBar() {
           <p>Notifications</p>
         </MenuItem>
       </Link>
-      <MenuItem onClick={handleMenuClose}><Link to="/me">Me</Link></MenuItem>
-      <MenuItem onClick={handleMenuClose}><LogoutButton/></MenuItem>
+      <MeMenuItem/>
+      <MyCultMenuItem/>
+      <LogoutMenuItem/>
     </Menu>
   );
   return (
