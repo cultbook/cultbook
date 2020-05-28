@@ -8,7 +8,7 @@ import { ldp } from 'rdf-namespaces'
 
 import { useDocument } from "../data"
 import { useModel } from "../model"
-import Notification from "../components/Notification"
+import Notifications from "../components/Notifications"
 import DefaultLayout from "../layouts/Default"
 
 
@@ -48,18 +48,12 @@ export default function NotificationDemos({children}) {
     "https://cultofwww.solid.thecultbook.com/public/create.ttl",
     "https://cultofwww.solid.thecultbook.com/public/image.ttl",
     "https://cultofwww.solid.thecultbook.com/public/html.ttl",
+    "https://cultofwww.solid.thecultbook.com/public/image2.ttl",
   ]
-  console.log(notifications)
   return (
     <DefaultLayout>
       <Grid item xs={12}>
-        {notifications && (
-          <>
-            {notifications.map(notification => (
-              <Notification uri={notification} key={notification}/>
-            ))}
-          </>
-        )}
+        <Notifications notifications={notifications} pageSize={3}/>
       </Grid>
     </DefaultLayout>
   )

@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import { foaf } from 'rdf-namespaces';
 import Iframe from 'react-iframe'
 import { makeStyles } from '@material-ui/core/styles';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 
 import { cb, useModel } from "../model"
 import { usePassport, useNotification, useProfileByWebId, useCultByRef } from "../data"
@@ -15,12 +17,14 @@ import { as } from "../vocab"
 import { deleteNotification } from "../services"
 import Loader from "../components/Loader"
 import Link from "../components/Link"
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 
 const useStyles = makeStyles(theme => ({
   htmlNotificationIframe: {
     margin: "auto",
-    width: "90vw",
-    height: "90vh"
+    width: "33vw",
+    height: "66vw"
   },
 }))
 
@@ -40,7 +44,6 @@ function NotificationCultDetails({cultUri}){
 function GenericNotification({notification}){
   return (
     <div>
-      <Typography variant="h4">{notification && notification.name}</Typography>
       <Typography variant="h5">{notification && notification.description}</Typography>
     </div>
   )
@@ -57,7 +60,6 @@ function InviteNotification({notification}){
   }
   return (
     <div>
-      <Typography variant="h4">{notification && notification.name}</Typography>
       <Typography variant="h5">{notification && notification.description}</Typography>
       <NotificationCultDetails cultUri={cultUri}/>
       <Button onClick={() => acceptInvitation()}>accept invitation</Button>
@@ -78,7 +80,6 @@ function CreatedNotification({notification}){
   }
   return (
     <div>
-      <Typography variant="h4">{notification && notification.name}</Typography>
       <Typography variant="h5">{notification && notification.description}</Typography>
       <NotificationCultDetails cultUri={cultUri}/>
       <Button onClick={() => recordCult()}>take note</Button>
@@ -98,7 +99,6 @@ function ApplicationNotification({notification, ...props}){
   }
   return (
     <div>
-      <Typography variant="h4">{notification && notification.name}</Typography>
       <Typography variant="h5">{notification && notification.description}</Typography>
       <Typography variant="h5">Applicant: {profile && profile.name}</Typography>
       {cult && (
@@ -117,21 +117,15 @@ function ApplicationNotification({notification, ...props}){
 
 function ImageNotification({notification}){
   return (
-    <div>
-      <Typography variant="h4">{notification && notification.name}</Typography>
-      <img src={notification && notification.subject.getRef(foaf.img)}/>
-    </div>
+    <img src={notification && notification.subject.getRef(foaf.img)}/>
   )
 }
 
 function HTMLNotification({notification}){
   const classes = useStyles()
   return (
-    <div>
-      <Typography variant="h4">{notification && notification.name}</Typography>
       <Iframe url={notification && notification.subject.getRef(cb.notificationHtml)}
               className={classes.htmlNotificationIframe}/>
-    </div>
   )
 }
 
@@ -153,9 +147,16 @@ export default function Notification({uri}){
   if (notification){
     const NotificationComponent = notificationComponentForType(notification.type)
     return (
-      <Box marginBottom={6}>
-        <NotificationComponent notification={notification}/>
-      </Box>
+      <ExpansionPanel TransitionProps={{ unmountOnExit: true }} >
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="h5">{notification && notification.name}</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <Box margin="auto">
+            <NotificationComponent notification={notification} />
+          </Box>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     )
   } else {
     return <Loader/>
