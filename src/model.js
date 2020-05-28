@@ -32,7 +32,8 @@ export const cb = {
   knowsAbout: `${prefix}knowsAbout`,
   veilRemoved: `${prefix}veilRemoved`,
   uploadFolder: `${prefix}uploadFolder`,
-  notificationHtml: `${prefix}notificationHtml`
+  notificationHtml: `${prefix}notificationHtml`,
+  archive: `${prefix}archive`,
 }
 
 export class Rule {
@@ -724,7 +725,7 @@ export function useModel(webId){
         const passportDocument = describeDocument()
               .isEnsuredOn(passportPublicTypeRegistration, solid.instance, publicStorage)
 
-        const newModel = { profileDocument, cultDocument, cultPrivateDocument, passportDocument, inboxContainer }
+        const newModel = { profileDocument, cultDocument, cultPrivateDocument, passportDocument, inboxContainer, storage }
         modelCache[webId] = newModel
         setModel(newModel)
       }
@@ -732,3 +733,6 @@ export function useModel(webId){
   }, [webId])
   return model
 }
+
+export const makeArchiveVirtualDoc = (storageDoc) =>
+  storageDoc && describeContainer().experimental_isFoundAt(`${storageDoc.asRef()}private/inboxArchive/`)

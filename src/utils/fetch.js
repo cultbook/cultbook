@@ -12,6 +12,34 @@ export async function postTurtle(uri, body){
   });
 }
 
+export async function moveDocument(fromUri, toUri){
+  const response = await auth.fetch(fromUri, {
+    method: 'GET',
+    force: true,
+    headers: {
+      'Content-Type': "text/turtle",
+      credentials: 'include'
+    }
+  });
+  await auth.fetch(toUri, {
+    method: 'PUT',
+    force: true,
+    headers: {
+      'Content-Type': "text/turtle",
+      credentials: 'include'
+    },
+    body: await response.blob()
+  });
+  await auth.fetch(fromUri, {
+    method: 'DELETE',
+    force: true,
+    headers: {
+      credentials: 'include'
+    }
+  });
+  return true
+}
+
 export async function postFormData(uri, body){
   const formBody = [];
   for (var key in body) {

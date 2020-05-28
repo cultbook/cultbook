@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function Notifications({notifications, pageSize=10}){
+export default function Notifications({notifications, pageSize=10, archiveContainerRef}){
   const classes = useStyles()
   const location = useLocation()
   const query = new URLSearchParams(location.search);
@@ -40,7 +40,7 @@ export default function Notifications({notifications, pageSize=10}){
         {notificationsPage && (
           <>
             {notificationsPage.map(notification => (
-              <Notification uri={notification} key={notification}/>
+              <Notification uri={notification} archiveContainerRef={archiveContainerRef} key={notification}/>
             ))}
           </>
         )}
