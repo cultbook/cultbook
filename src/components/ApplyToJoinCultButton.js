@@ -1,8 +1,10 @@
 import React, { useState }from 'react'
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { useWebId } from "@solid/react"
 
-export default function ApplyToJoinCultButton({webId, passport, cult}){
+export default function ApplyToJoinCultButton({passport, cult}){
+  const webId = useWebId()
   const [applied, setApplied] = useState(false)
   const apply = async () => {
     if (!passport.isFollowing(cult)) {
@@ -12,9 +14,10 @@ export default function ApplyToJoinCultButton({webId, passport, cult}){
     await cult.applyToJoin(webId)
     setApplied(true)
   }
+  console.log("APPLY BUTTON", webId, cult && cult.ownerWebId, webId)
   return (
     <>
-      {cult && passport && (
+      {cult && passport && (cult.ownerWebId !== webId) && (
         <>
           {applied ? (
             <Typography variant="body1">

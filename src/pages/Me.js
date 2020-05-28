@@ -6,6 +6,10 @@ import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useWebId } from "@solid/react"
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import CopyLinkIcon from '@material-ui/icons/FileCopy';
+import copy from 'copy-to-clipboard';
 
 import DefaultLayout from "../layouts/Default"
 import { useModel } from "../model"
@@ -16,6 +20,7 @@ import { EditableName } from "../components/Editable"
 import { ProfileSchema } from "../validations"
 import Scene from "../components/Scene"
 import ButtonLink from "../components/ButtonLink"
+import Link from "../components/Link"
 import * as urls from "../urls"
 
 const useStyles = makeStyles(theme => ({
@@ -31,6 +36,7 @@ export default function MePage(){
   const [ cult ] = useCult(cultDocument, cultPrivateDocument)
   const [ passport ] = usePassport(passportDocument)
   const [ profile ] = useProfileByWebId(webId)
+  const publicProfileLink = profile && new URL(urls.profile(profile), urls.baseUrl()).toString()
   return (
     <DefaultLayout>
       <Grid item xs={12}>
@@ -41,9 +47,14 @@ export default function MePage(){
       <Grid item xs={12}>
         {profile && <EditableName entity={profile} schema={ProfileSchema} variant="h1"/>}
       </Grid>
-      <Grid item xs={12}>
-        {profile && <ButtonLink to={urls.profileByRef(profile.asRef())}>Public Profile</ButtonLink>}
-      </Grid>
+      <Typography variant="h5">
+        <Link to={profile && urls.profile(profile)}>Sharable Link</Link>
+        <Tooltip title="Copy to Clipboard" aria-label="copy to clipboard">
+          <IconButton onClick={() => {copy(publicProfileLink)}}>
+            <CopyLinkIcon/>
+          </IconButton>
+        </Tooltip>
+      </Typography>
       <Grid item xs={12}>
         <ButtonLink to="/">Direct your attention elsewhere</ButtonLink>
       </Grid>

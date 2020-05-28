@@ -507,7 +507,7 @@ export class Passport {
     return this.isFollowingRef(cult.asRef())
   }
 
-  async applyToFollow(cult, webId){
+  async followAndApplyToJoin(cult, webId){
     this.addFollowing(cult.asRef())
     await this.save()
     await cult.applyToJoin(webId)

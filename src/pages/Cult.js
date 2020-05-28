@@ -101,6 +101,11 @@ export default function CultPage({cultRef}){
       <Grid item xs={12}>
         <Typography variant="body1">{cult && cult.description}</Typography>
       </Grid>
+      {cult && (webId === cult.ownerWebId) && (
+        <Grid item xs={12}>
+          <ButtonLink to="/me/cult">Administer {cult.name}</ButtonLink>
+        </Grid>
+      )}
       {!cultLoading && cult && (
         <>
           {
@@ -228,7 +233,7 @@ export default function CultPage({cultRef}){
                 </Grid>
                 <Grid item xs={3}/>
                 <Grid item xs={12}>
-                  <ApplyToJoinCultButton webId={webId} passport={passport} cult={cult}/>
+                  <ApplyToJoinCultButton passport={passport} cult={cult}/>
                 </Grid>
                 <Grid item xs={12}>
                   <ButtonLink to="/cults">Browse more Cults</ButtonLink>

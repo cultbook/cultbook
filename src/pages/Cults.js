@@ -41,7 +41,7 @@ function CultListItem({cultRef, follows, leave, passport, ...props}) {
         {follows ? (
           <Link to={urls.cultByRef(cultRef)}>Enter Lair</Link>
         ) : (
-          <ApplyToJoinCultButton webId={webId} passport={passport} cult={cult}/>
+          <ApplyToJoinCultButton passport={passport} cult={cult}/>
         )}
         {follows && <Button onClick={() => leave()}>Disavow</Button>
         }

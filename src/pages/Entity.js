@@ -93,10 +93,10 @@ export default function EntityPage({entityWebId}){
       <Grid item xs={12}>
         {cult && (
           <>
-            {passport.isFollowing(cult) ? (
+            {(passport.isFollowing(cult) || (webId === cult.ownerWebId))? (
               <ButtonLink to={urls.cultByRef(cult.asRef())}>Enter Lair of {cult.name}</ButtonLink>
             ) : (
-              <Button onClick={() => passport.applyToFollow(cult, webId)}>Apply to Join {cult.name}</Button>
+              <Button onClick={() => passport.followAndApplyToJoin(cult, webId)}>Apply to Join {cult.name}</Button>
             )}
 
           </>
