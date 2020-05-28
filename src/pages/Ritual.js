@@ -6,6 +6,11 @@ import { useParams } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
 import { ldp } from 'rdf-namespaces'
 
@@ -39,13 +44,19 @@ function Performance({uri}){
     <Loader/>
   ) : (
     imageSrc ? (
-      <>
-      <img src={imageSrc} alt={performance.title}/>
-        <Typography variant="caption">
-          performed by <ProfileLink webId={performance.actor}/>
-      </Typography>
-        {(webId === performance.actor) && <Button onClick={deleteImage}>Delete</Button>}
-      </>
+      <Card>
+        <CardActionArea>
+          <CardMedia component="img" src={imageSrc} title={performance.title}/>
+          <CardContent>
+            <Typography variant="caption">
+              performed by <ProfileLink webId={performance.actor}/>
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          {(webId === performance.actor) && <Button onClick={deleteImage}>Delete</Button>}
+        </CardActions>
+      </Card>
     ) : (
       <></>
     )
@@ -89,15 +100,15 @@ export default function RitualPage({ritualRef}){
 
         />
       </Grid>
-      <Grid item xs={12}>
         {uploads && (uploads.length > 0) && (
           <>
             {uploads.map(url => (
+              <Grid item xs={4}>
                 <Performance uri={url} key={url}/>
+              </Grid>
             ))}
           </>
         )}
-      </Grid>
     </DefaultLayout>
   )
 }

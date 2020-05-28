@@ -170,7 +170,8 @@ export default ({onClose, onUpload, uploadDirectory, ...props}) => {
         {previewSrc && (
           <>
             <img src={previewSrc} className={classes.previewImage} alt={altText}/>
-            <TextField value={altText} label="alt text" variant="filled" size="small"
+            <TextField value={altText} label="describe this image for those without sight"
+                       variant="filled" size="small"
                        className={classes.altTextField}
                        onChange={(e) => setAltText(e.target.value)}/>
           </>
