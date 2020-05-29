@@ -257,7 +257,7 @@ export default function CultPage({cultRef}){
                   <ApplyToJoinCultButton passport={passport} cult={cult}/>
                 </Grid>
                 <Grid item xs={12}>
-                  <ButtonLink to="/cults">Browse more Cults</ButtonLink>
+                  <ButtonLink to="/thecultbook">Browse more Cults</ButtonLink>
                 </Grid>
               </>
             )}

@@ -14,7 +14,6 @@ export default function ApplyToJoinCultButton({passport, cult}){
     await cult.applyToJoin(webId)
     setApplied(true)
   }
-  console.log("APPLY BUTTON", webId, cult && cult.ownerWebId, webId)
   return (
     <>
       {cult && passport && (cult.ownerWebId !== webId) && (

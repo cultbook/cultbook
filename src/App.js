@@ -11,7 +11,7 @@ import LandingPage from "./pages/Landing"
 import HomePage from "./pages/Home"
 import MePage from "./pages/Me"
 import MyCultPage from "./pages/MyCult"
-import CultsPage from "./pages/Cults"
+import CultsPage, {FollowedCultsPage} from "./pages/Cults"
 import SolidPage from "./pages/Solid"
 import CabinPage from "./pages/Cabin"
 import BookPage from "./pages/Book"
@@ -85,7 +85,8 @@ function App() {
       <CssBaseline/>
       <div className={classes.app}>
         <Switch>
-          <PrivateRoute path="/cults" component={CultsPage}/>
+          <PrivateRoute path="/thecultbook/followed" component={FollowedCultsPage}/>
+          <PrivateRoute path="/thecultbook" component={CultsPage} tab="cults"/>
           <PrivateRoute path="/me/cult" component={MyCultPage}/>
           <PrivateRoute path="/me" component={MePage}/>
           <PrivateRoute path="/demos" component={NotificationDemosPage}/>
