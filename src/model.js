@@ -26,6 +26,7 @@ export const cb = {
   demandedBy: `${prefix}demandedBy`,
   prescribes: `${prefix}prescribes`,
   prescribedBy: `${prefix}prescribedBy`,
+  prescribedByPublic: `${prefix}prescribedByPublic`,
   performed: `${prefix}performed`,
   swornTo: `${prefix}swornTo`,
   attending: `${prefix}attending`,
@@ -34,7 +35,8 @@ export const cb = {
   uploadFolder: `${prefix}uploadFolder`,
   notificationHtml: `${prefix}notificationHtml`,
   archive: `${prefix}archive`,
-  backstory: `${prefix}backstory`
+  backstory: `${prefix}backstory`,
+  performedFor: `${prefix}performedFor`
 }
 
 export class Rule {
@@ -96,8 +98,13 @@ export class Ritual {
     return this.subject.getRef(cb.prescribedBy)
   }
 
+  get publicCultRef() {
+    return this.subject.getRef(cb.prescribedByPublic)
+  }
+
   set cult(cult){
     this.subject.setRef(cb.prescribedBy, cult.privateAsRef())
+    this.subject.setRef(cb.prescribedByPublic, cult.asRef())
   }
 
   async ensureUploadFolder(ownerWebId){
@@ -123,7 +130,7 @@ export class Ritual {
     return this._uploadFolderVirtualDocument
   }
 
-  async addPerformance(performerWebId, performanceArtifactRef, performanceName, type){
+  async addPerformance(performerWebId, performanceArtifactRef, performanceName, type, ritualRef){
     return postToInbox(this.uploadFolder, `
 @prefix inv: <>.
 @prefix dct: <http://purl.org/dc/terms/>.
@@ -133,6 +140,7 @@ export class Ritual {
 inv: a cb:Performance;
     dct:title "${performanceName}";
     dct:format "${type}";
+    cb:performedFor <${ritualRef}>;
     as:actor <${performerWebId}>;
     as:object <${performanceArtifactRef}>.
 `)
@@ -662,6 +670,10 @@ export class Performance {
 
   get type(){
     return this.subject.getRef(dct.format)
+  }
+
+  get performedFor(){
+    return this.subject.getRef(cb.performedFor)
   }
 }
 

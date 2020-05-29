@@ -17,6 +17,7 @@ import Link from "../components/Link"
 import CultLink from "../components/CultLink"
 import Loader from "../components/Loader"
 import ButtonLink from "../components/ButtonLink"
+import Performance from "../components/Performance"
 
 const useStyles = makeStyles(theme => ({
   quadrant: {
@@ -31,17 +32,6 @@ export function EntityPageByEncodedRef() {
   const { encodedRef } = useParams()
   return (
     <EntityPage entityWebId={decodeURIComponent(encodedRef)} />
-  )
-}
-
-function Performance({uri}){
-  const [performance] = usePerformance(uri)
-  const [imageSrc, loading, error, deleteImage] = useImage(performance && performance.object)
-
-  return performance ? (
-    <img src={imageSrc} alt={performance.title}/>
-  ) : (
-    <Loader/>
   )
 }
 
@@ -150,7 +140,7 @@ export default function EntityPage({entityWebId}){
                 </Typography>
               }
               {passport.following.map(cultRef => (
-                <CultLink cultRef={cultRef}/>
+                <CultLink cultRef={cultRef} key={cultRef}/>
               ))}
             </List>
           </>
