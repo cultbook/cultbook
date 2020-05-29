@@ -52,7 +52,7 @@ function CultListItem({cultRef, follows, leave, passport, ...props}) {
         <Loader/>
       ) : (
         cult ? (
-          <ListItemText>
+          <ListItemText className="fadeIn">
             <Typography variant="h4">
               <Link to={cultUrl}>
                 {cult.name}
@@ -90,10 +90,12 @@ function CultListItem({cultRef, follows, leave, passport, ...props}) {
   )
 }
 
+const timeDependentDecimal = () => ((1000000000000000 / Math.floor(Date.now() / 10000)) % 1)
+
 // thanks, https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(timeDependentDecimal() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
@@ -156,7 +158,7 @@ function KnownCults({passport, cultRefs, pageSize=6, random=false}){
       )}
       {random && (
         <Grid item xs={12}>
-          <Button onClick={() => {setRefresh(true)}}>Show Me More Cults</Button>
+          <Button onClick={() => {setRefresh(true)}}>Check for Different Cults</Button>
         </Grid>
       )}
     </>
@@ -173,7 +175,7 @@ export default function CultsPage({tab=0}){
   const [knownCultRefs] = useKnownCults()
   const followedCultRefs = passport && passport.following
   const cultRefs = (tab === 0) ? knownCultRefs : followedCultRefs
-  const random = false;//= (tab === 0) ? true : false
+  const random = (tab === 0) ? true : false
   const history = useHistory()
   const changeTab = (e, value) => {
     if (value === 0){
