@@ -253,9 +253,11 @@ export default function CultPage({cultRef}){
                   </Typography>
                 </Grid>
                 <Grid item xs={3}/>
-                <Grid item xs={12}>
-                  <ApplyToJoinCultButton passport={passport} cult={cult}/>
-                </Grid>
+                {passport && !passport.isFollowing(cult) && (
+                  <Grid item xs={12}>
+                    <ApplyToJoinCultButton passport={passport} cult={cult}/>
+                  </Grid>
+                )}
                 <Grid item xs={12}>
                   <ButtonLink to="/thecultbook">Browse more Cults</ButtonLink>
                 </Grid>
