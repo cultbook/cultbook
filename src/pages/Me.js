@@ -16,7 +16,7 @@ import { useModel } from "../model"
 import { useCult, useProfileByWebId, usePassport } from "../data"
 import MyCultLink from "../components/MyCultLink"
 import CultLink from "../components/CultLink"
-import { EditableName } from "../components/Editable"
+import { EditableName, EditableDescription, EditableBackstory } from "../components/Editable"
 import { ProfileSchema } from "../validations"
 import Scene from "../components/Scene"
 import ButtonLink from "../components/ButtonLink"
@@ -51,6 +51,8 @@ export default function MePage(){
       </Grid>
       <Grid item xs={12}>
         {profile && <EditableName entity={profile} schema={ProfileSchema} variant="h1"/>}
+        {profile && <EditableDescription entity={profile} schema={ProfileSchema} variant="h3"/>}
+        {profile && <EditableBackstory entity={profile} schema={ProfileSchema} variant="h3"/>}
       </Grid>
       <Grid item xs={12}>
         <Typography variant="h5">

@@ -24,7 +24,7 @@ import Linkify from "../components/Linkify"
 import Datepicker from "../components/Datepicker"
 import ProfileLink from "../components/ProfileLink"
 import { TextField } from "../components/form"
-import { EditableName } from "../components/Editable"
+import { EditableName, EditableDescription } from "../components/Editable"
 import { AddMemberSchema, CultSchema, RitualSchema, RuleSchema, GatheringSchema } from "../validations"
 import { inviteMember } from "../services"
 
@@ -37,33 +37,6 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function EditableDescription({entity, schema}){
-  const [editing, setEditing] = useState(false)
-  const description = entity && entity.description
-  const setDescription = async (newDescription) => {
-    if (description !== newDescription) {
-      entity.description = newDescription
-      await entity.save()
-    }
-    setEditing(false)
-  }
-  return editing ? (
-    <Formik
-      initialValues={{description: description || ""}}
-      onSubmit={({description}) => { setDescription(description) }}
-      validationSchema={schema}
-    >
-      <Form>
-        <TextField multiline name="description" type="text" placeholder="description" autoFocus/>
-        <Button type="submit">save</Button>
-      </Form>
-    </Formik>
-  ) : (
-    <Typography variant="body1" onClick={() => setEditing(true)}>
-      {description || "click to set description"}
-    </Typography>
-  )
-}
 
 function EditableLocation({entity, schema}){
   const [editing, setEditing] = useState(false)

@@ -84,6 +84,8 @@ export default function EntityPage({entityWebId}){
     <DefaultLayout>
       <Grid item xs={12}>
         <Typography variant="h1">{entity && (entity.name || "an unnamed soul")}</Typography>
+        <Typography variant="body1">{entity && (entity.description || "a forgettable figure")}</Typography>
+        <Typography variant="body1">{entity && (entity.backstory || "of no particular reknown")}</Typography>
         {myPassport && myPassport.veilRemoved && (
           <Link href={entity && entity.asRef()} target="_blank">Look behind the veil</Link>
         )}

@@ -34,6 +34,7 @@ export const cb = {
   uploadFolder: `${prefix}uploadFolder`,
   notificationHtml: `${prefix}notificationHtml`,
   archive: `${prefix}archive`,
+  backstory: `${prefix}backstory`
 }
 
 export class Rule {
@@ -196,6 +197,22 @@ export class Profile {
   set name(newName) {
     this.subject.setString(vcard.fn, newName)
     this.subject.setString(foaf.name, newName)
+  }
+
+  get description() {
+    return this.subject.getString(rdfs.comment)
+  }
+
+  set description(newComment) {
+    this.subject.setString(rdfs.comment, newComment)
+  }
+
+  get backstory() {
+    return this.subject.getString(cb.backstory)
+  }
+
+  set backstory(newComment) {
+    this.subject.setString(cb.backstory, newComment)
   }
 
   get inbox(){
