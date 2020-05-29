@@ -94,6 +94,14 @@ const LinkMenuItem = forwardRef(({to, onClick, ...props}, ref) => {
   )
 })
 
+const HrefLinkMenuItem = forwardRef(({href, ...props}, ref) => {
+  return (
+    <Link href={href} target="_blank" color="inherit">
+      <MenuItem ref={ref} {...props}/>
+    </Link>
+  )
+})
+
 const MeMenuItem = forwardRef((props, ref) => (
   <LinkMenuItem to="/me" ref={ref} {...props}>
     Me
@@ -110,6 +118,12 @@ const ReportMenuItem = forwardRef((props, ref) => (
   <LinkMenuItem to="/report" {...props}>
     Report a Problem
   </LinkMenuItem>
+))
+
+const TopiaMenuItem = forwardRef((props, ref) => (
+  <HrefLinkMenuItem href="https://cultbook.topia.io/" {...props}>
+    Cultbooktopia
+  </HrefLinkMenuItem>
 ))
 
 export default function CultbookAppBar() {
@@ -150,6 +164,7 @@ export default function CultbookAppBar() {
     >
       <MeMenuItem onClick={handleMenuClose}/>
       <MyCultMenuItem onClick={handleMenuClose}/>
+      <TopiaMenuItem/>
       <ReportMenuItem/>
       <LogoutMenuItem/>
     </Menu>
