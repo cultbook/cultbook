@@ -173,7 +173,7 @@ export default function CultsPage({tab=0}){
   const [knownCultRefs] = useKnownCults()
   const followedCultRefs = passport && passport.following
   const cultRefs = (tab === 0) ? knownCultRefs : followedCultRefs
-  const random = (tab === 0) ? true : false
+  const random = false;//= (tab === 0) ? true : false
   const history = useHistory()
   const changeTab = (e, value) => {
     if (value === 0){
