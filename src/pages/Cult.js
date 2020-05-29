@@ -138,11 +138,12 @@ export default function CultPage({cultRef}){
                             <ListItemText
                               primary={ritual.name}
                               secondary={ritual.description}
+                              secondaryTypographyProps={{variant: "body1"}}
                             >
                             </ListItemText>
                             <ListItemText>
                               <ButtonLink to={urls.ritual(ritual)}>
-                                Perform
+                                View Performances
                               </ButtonLink>
                             </ListItemText>
                           </ListItem>
