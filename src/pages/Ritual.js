@@ -19,7 +19,7 @@ import ProfileLink from "../components/ProfileLink"
 import { createPrivateCultResourceAcl } from "../utils/acl"
 import { loadImage } from "../utils/fetch"
 import { deleteDocument, documentExists } from "../services"
-import Performance from "../components/Performance"
+import {Performance, PerformanceInContext} from "../components/Performance"
 import * as urls from "../urls"
 
 const useStyles = makeStyles(theme => ({
@@ -84,7 +84,7 @@ export default function RitualPage({ritualRef}){
           <>
             {uploads.map(url => (
               <Grid item xs={4}>
-                <Performance uri={url} key={url}/>
+                <PerformanceInContext uri={url} ritual={ritual} cult={cult} key={url} />
               </Grid>
             ))}
           </>

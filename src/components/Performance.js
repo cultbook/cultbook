@@ -26,11 +26,21 @@ import { loadImage } from "../utils/fetch"
 import { deleteDocument, documentExists } from "../services"
 import * as urls from "../urls"
 
-export default function Performance({uri}){
-  const webId = useWebId()
+export function PerformanceByUri({uri}){
   const [performance] = usePerformance(uri)
   const [ritual] = useRitualByRef(performance && performance.performedFor)
   const [cult] = useCultByRef(ritual && ritual.publicCultRef)
+  return (<Performance performance={performance} ritual={ritual} cult={cult}/>)
+}
+
+export function PerformanceInContext({uri, ritual, cult}){
+  const [performance] = usePerformance(uri)
+  return (<Performance performance={performance} ritual={ritual} cult={cult}/>)
+
+}
+
+export default function Performance({performance, ritual, cult}){
+  const webId = useWebId()
   const [imageSrc, loading, error, deleteImage] = useImage(performance && performance.object)
   return loading ? (
     <Loader/>

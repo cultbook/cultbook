@@ -17,7 +17,7 @@ import Link from "../components/Link"
 import CultLink from "../components/CultLink"
 import Loader from "../components/Loader"
 import ButtonLink from "../components/ButtonLink"
-import Performance from "../components/Performance"
+import {PerformanceByUri} from "../components/Performance"
 
 const useStyles = makeStyles(theme => ({
   quadrant: {
@@ -151,7 +151,7 @@ export default function EntityPage({entityWebId}){
           <>
             <Typography variant="h3">Performances</Typography>
             {passport.performances.map(performance => (
-              <Performance uri={performance} key={performance}/>
+              <PerformanceByUri uri={performance} key={performance}/>
             ))}
           </>
         )}
