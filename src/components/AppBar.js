@@ -74,11 +74,12 @@ const NotificationsIconButton = ({notificationsCount}) => (
 const RadioIconButton = ({radio, setRadio}) => {
   return (
     <>
-      <IconButton aria-label={`radio`} color="inherit"
+      {/*<IconButton aria-label={`radio`} color="inherit"
                   onClick={() => {setRadio(!radio)}}>
         {radio ? <RadioOnIcon /> : <RadioOffIcon/>}
       </IconButton>
-    </>
+       */}
+      </>
   )
 }
 
