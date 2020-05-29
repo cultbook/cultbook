@@ -12,6 +12,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Typography from '@material-ui/core/Typography';
 
 import Loader from './Loader';
 
@@ -185,7 +186,7 @@ export default ({onClose, onUpload, uploadDirectory, ...props}) => {
                        />}
               label="content warning?"
             />
-
+            <Typography variant="caption">you MUST include a content warning if your image contains nudity.</Typography>
           </>
         )}
       </DialogContent>
