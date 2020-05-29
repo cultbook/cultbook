@@ -30,9 +30,6 @@ export default function LandingPage(){
             <ButtonLink size='large' href={ "https://" + email.substring(email.lastIndexOf("@") + 1) }>check your email</ButtonLink>
           </Box>
           <Box>
-            <ButtonLink size='large' to="/">I already checked my email</ButtonLink>
-          </Box>
-          <Box>
             <ButtonLink size='large' href={urls.leave}>leave</ButtonLink>
           </Box>
         </>
