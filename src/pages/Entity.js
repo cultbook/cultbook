@@ -120,7 +120,7 @@ export default function EntityPage({entityWebId}){
             <Typography variant="h3">Oaths Sworn</Typography>
             {(rules.length === 0) &&
               <Typography variant="h6">
-                {entity.name} follows no rules... not even their own.
+                {entity && entity.name} follows no rules... not even their own.
               </Typography>
             }
             {rules.map(rule => (
