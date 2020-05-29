@@ -48,7 +48,7 @@ function IdentifiedHomePage({cult, passport, profile}){
           <ButtonLink size='large' to="/me">Look in the Mirror</ButtonLink>
         </Grid>
         <Grid item xs={12}>
-          {cult && <MyCultLink size='large' cult={cult}/>}
+          {cult && <MyCultLink prefix="attend to" size='large' cult={cult}/>}
         </Grid>
         <Grid item xs={12}>
           <ButtonLink size='large' to="/thecultbook">Read Thecultbook</ButtonLink>

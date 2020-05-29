@@ -5,7 +5,7 @@ import { useWebId } from "@solid/react"
 import ButtonLink from "./ButtonLink"
 import NamePrompt from "./NamePrompt"
 
-export default function MyCultLink({cult, ...props}){
+export default function MyCultLink({cult, prefix, ...props}){
   const webId = useWebId()
   const startCult = async (name) => {
     await cult.create(webId, name)
@@ -13,7 +13,7 @@ export default function MyCultLink({cult, ...props}){
   return (
     <>
       {cult && cult.created ? (
-        <ButtonLink size='large' to="/me/cult" {...props}>{cult && cult.name}</ButtonLink>
+        <ButtonLink size='large' to="/me/cult" {...props}>{prefix} {cult && cult.name}</ButtonLink>
       ) : (
         <NamePrompt openPrompt="Start a Cult"
                     title="what shall we call your cult?"
