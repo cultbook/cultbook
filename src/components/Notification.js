@@ -158,6 +158,24 @@ function HTMLNotification({notification}){
   )
 }
 
+function VideoNotification({notification}){
+  const classes = useStyles()
+  return (
+    <div>
+      <video controls src={notification && notification.object}> </video>
+    </div>
+  )
+}
+
+function AudioNotification({notification}){
+  const classes = useStyles()
+  return (
+    <div>
+      <audio controls src={notification && notification.object}> </audio>
+    </div>
+  )
+}
+
 function ReportNotification({notification}){
   const classes = useStyles()
   const [ profile ] = useProfileByWebId(notification && notification.actor)
@@ -186,7 +204,9 @@ const typesToNotificationComponents = {
   [cb.ImageNotification]: ImageNotification,
   [cb.HTMLNotification]: HTMLNotification,
   [cb.InductedNotification]: InductedNotification,
-  [cb.Report]: ReportNotification
+  [cb.Report]: ReportNotification,
+  [cb.VideoNotification]: VideoNotification,
+  [cb.AudioNotification]: AudioNotification
 }
 
 function notificationComponentForType(type){

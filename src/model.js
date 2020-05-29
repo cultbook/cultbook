@@ -18,6 +18,8 @@ export const cb = {
   Report: `${prefix}Report`,
   ImageNotification: `${prefix}ImageNotification`,
   HTMLNotification: `${prefix}HTMLNotification`,
+  VideoNotification: `${prefix}VideoNotification`,
+  AudioNotification: `${prefix}AudioNotification`,
   InductedNotification: `${prefix}InductedNotification`,
   follows: `${prefix}follows`,
   convening: `${prefix}convening`,
