@@ -13,6 +13,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import RadioOnIcon from '@material-ui/icons/RadioButtonChecked';
+import RadioOffIcon from '@material-ui/icons/RadioButtonUnchecked';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import { useHistory } from "react-router-dom";
 
@@ -68,6 +70,17 @@ const NotificationsIconButton = ({notificationsCount}) => (
     </Badge>
   </IconButton>
 )
+
+const RadioIconButton = ({radio, setRadio}) => {
+  return (
+    <>
+      <IconButton aria-label={`radio`} color="inherit"
+                  onClick={() => {setRadio(!radio)}}>
+        {radio ? <RadioOnIcon /> : <RadioOffIcon/>}
+      </IconButton>
+    </>
+  )
+}
 
 const LinkMenuItem = forwardRef(({to, onClick, ...props}, ref) => {
   const history = useHistory();
@@ -149,6 +162,7 @@ export default function CultbookAppBar() {
   const notifications = inbox && inbox.getAllRefs(ldp.contains)
   const notificationsCount = notifications && notifications.length
   const mobileMenuId = 'primary-search-account-menu-mobile';
+  const [radio, setRadio] = useState(false)
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -159,6 +173,7 @@ export default function CultbookAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
+      <RadioIconButton radio={radio} setRadio={setRadio}/>
       <Link to="/notifications" className={classes.notificationsLink}>
         <MenuItem>
           <NotificationsIconButton notificationsCount={notificationsCount}/>
@@ -179,6 +194,7 @@ export default function CultbookAppBar() {
             <Link className={classes.logo} to="/">cultbook</Link>
           </Typography>
           <div className={classes.sectionDesktop}>
+            <RadioIconButton radio={radio} setRadio={setRadio}/>
             <Link to="/notifications" className={classes.notificationsLink}>
               <NotificationsIconButton notificationsCount={notificationsCount}/>
             </Link>
@@ -208,6 +224,7 @@ export default function CultbookAppBar() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      {radio && <audio autoPlay src="http://nthmost.net:8000/kstk" style={{width: "300px"}}></audio>}
     </div>
   );
 }
