@@ -28,6 +28,9 @@ import DefaultLayout from "../layouts/Default"
 const useStyles = makeStyles(theme => ({
   cultListItem: {
     textAlign: "center"
+  },
+  tabsFlexContainer: {
+    justifyContent: "center"
   }
 }))
 
@@ -163,6 +166,7 @@ function KnownCults({passport, cultRefs, pageSize=6, random=false}){
 export const FollowedCultsPage = () => <CultsPage tab={1}/>
 
 export default function CultsPage({tab=0}){
+  const classes = useStyles()
   const webId = useWebId()
   const { passportDocument } = useModel(webId)
   const [ passport ] = usePassport(passportDocument)
@@ -194,7 +198,7 @@ export default function CultsPage({tab=0}){
         </Scene>
       </Grid>
       <Grid item xs={12}>
-        <Tabs value={tab} onChange={changeTab} aria-label="cultss tabs">
+        <Tabs value={tab} onChange={changeTab} aria-label="cultss tabs" classes={{flexContainer: classes.tabsFlexContainer}}>
           <Tab label="Cults" />
           <Tab label="Followed" />
         </Tabs>
