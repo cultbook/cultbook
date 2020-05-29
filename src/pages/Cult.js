@@ -104,6 +104,13 @@ export default function CultPage({cultRef}){
         {currentUserIsWWWCult && <CultBookmarker cult={cult}/>}
       </Grid>
       <Grid item xs={12}>
+        {cult && (
+          <Typography variant="h3">
+            by <ProfileLink webId={cult && cult.ownerWebId}/>
+          </Typography>
+        )}
+      </Grid>
+      <Grid item xs={12}>
         <Typography variant="body1">{cult && cult.description}</Typography>
       </Grid>
       {cult && (webId === cult.ownerWebId) && (
