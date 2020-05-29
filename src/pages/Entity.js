@@ -68,7 +68,7 @@ export default function EntityPage({entityWebId}){
   const [gatherings] = useGatherings(passport)
   const [cult] = useCult(cultDocument, cultPrivateDocument)
   const addToMyCult = async () => {
-    await cult.addAndInviteMember(entity.asRef())
+    await myCult.addAndInviteMember(entity.asRef())
   }
   return (
     <DefaultLayout>
@@ -90,10 +90,10 @@ export default function EntityPage({entityWebId}){
       <Grid item xs={12}>
         {cult && (
           <>
-            {(passport.isFollowing(cult) || (webId === cult.ownerWebId))? (
+            {(myPassport.isFollowing(cult) || (webId === cult.ownerWebId))? (
               <ButtonLink to={urls.cultByRef(cult.asRef())}>Enter Lair of {cult.name}</ButtonLink>
             ) : (
-              <Button onClick={() => passport.followAndApplyToJoin(cult, webId)}>Apply to Join {cult.name}</Button>
+              <Button onClick={() => myPassport.followAndApplyToJoin(cult, webId)}>Apply to Join {cult.name}</Button>
             )}
 
           </>
