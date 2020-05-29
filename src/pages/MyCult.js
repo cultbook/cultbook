@@ -31,7 +31,7 @@ import { inviteMember } from "../services"
 
 const useStyles = makeStyles(theme => ({
   quadrant: {
-    border: "3px solid rgba(220, 20, 60, 0.25)",
+    border: "15px solid rgba(220, 20, 60, 0.25)",
     borderStyle: "outset",
     marginTop: "20px",
   },

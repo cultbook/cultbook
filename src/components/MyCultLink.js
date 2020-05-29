@@ -13,7 +13,7 @@ export default function MyCultLink({cult, ...props}){
   return (
     <>
       {cult && cult.created ? (
-        <ButtonLink to="/me/cult" {...props}>Attend to {cult && cult.name}</ButtonLink>
+        <ButtonLink size='large' to="/me/cult" {...props}>{cult && cult.name}</ButtonLink>
       ) : (
         <NamePrompt openPrompt="Start a Cult"
                     title="what shall we call your cult?"

@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box';
 const useStyles = makeStyles(theme => ({
   logo: {
     fontFamily: "gothicus, serif",
-    color: "#ac5858",
+    color: "rgb(220, 20, 60)",
     marginTop: 0,
     marginBottom: 0,
     fontSize: "13vw"

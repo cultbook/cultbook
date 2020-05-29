@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     color: "inherit"
   },
   logo: {
-    color: "#ac5858",
+    color: "#DC143C",
     '&:hover': {
       textDecoration: "none"
     }

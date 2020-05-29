@@ -26,7 +26,12 @@ import * as urls from "../urls"
 const useStyles = makeStyles(theme => ({
   cultLink: {
     margin: "auto"
-  }
+  },
+  quadrant: {
+    border: "15px solid rgba(220, 20, 60, 0.4)",
+    borderStyle: "outset",
+    marginTop: "20px",
+  },
 }))
 
 export default function MePage(){
@@ -39,32 +44,39 @@ export default function MePage(){
   const publicProfileLink = profile && new URL(urls.profile(profile), urls.baseUrl()).toString()
   return (
     <DefaultLayout>
-      <Grid item xs={12}>
-        <Scene>
-          You look into a ancient mirror and gaze upon the visage of
-        </Scene>
+      <Grid item xs={8}>
+        <Typography variant="h3">
+          You look into an ancient mirror and gaze upon the visage of...
+        </Typography>
       </Grid>
       <Grid item xs={12}>
         {profile && <EditableName entity={profile} schema={ProfileSchema} variant="h1"/>}
       </Grid>
-      <Typography variant="h5">
-        <Link to={profile && urls.profile(profile)}>Sharable Link</Link>
-        <Tooltip title="Copy to Clipboard" aria-label="copy to clipboard">
-          <IconButton onClick={() => {copy(publicProfileLink)}}>
-            <CopyLinkIcon/>
-          </IconButton>
-        </Tooltip>
-      </Typography>
       <Grid item xs={12}>
-        <ButtonLink to="/">Direct your attention elsewhere</ButtonLink>
+        <Typography variant="h5">
+          <Link to={profile && urls.profile(profile)}>Sharable Link</Link>
+          <Tooltip title="Copy to Clipboard" aria-label="copy to clipboard">
+            <IconButton onClick={() => {copy(publicProfileLink)}}>
+              <CopyLinkIcon/>
+            </IconButton>
+          </Tooltip>
+        </Typography>
       </Grid>
-      <Grid item xs={12}>
-        {cult && <MyCultLink cult={cult}/>}
-      </Grid>
-      <Grid item xs={12}>
+      {cult &&
+        <>
+          <Grid item xs={3}></Grid>
+          <Grid item xs={6} className={classes.quadrant}>
+             <Typography variant="h3">The Cult You Lead</Typography>
+            <MyCultLink cult={cult}/>
+          </Grid>
+          <Grid item xs={3}></Grid>
+        </>
+      }
+      <Grid item xs={3}></Grid>
+      <Grid item xs={6} className={classes.quadrant}>
         {passport && (
           <>
-            <Typography variant="h3">Cults You Follow</Typography>
+            <Typography variant="h3">The Cults You Follow</Typography>
             <List>
               {passport.following && passport.following.map(cultRef => (
                 <ListItem>
@@ -75,6 +87,7 @@ export default function MePage(){
           </>
         )}
       </Grid>
+      <Grid item xs={3}></Grid>
     </DefaultLayout>
   )
 }

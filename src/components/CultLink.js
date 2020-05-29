@@ -13,7 +13,7 @@ export default function CultLink({cultRef, ...props}){
   return (
     <>
       {cult && (
-        <Link to={urls.cult(cult)} {...props}>{cult && cult.name}</Link>
+        <ButtonLink size='large' to={urls.cult(cult)} {...props}><span style={{color:'#DC143C'}}>{cult && cult.name}</span></ButtonLink>
       )}
     </>
   )
