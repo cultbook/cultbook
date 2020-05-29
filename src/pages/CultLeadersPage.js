@@ -30,7 +30,7 @@ export default function CultLeadersPage(){
         The future will be ours.
       </Scene>
       <Scene>
-        To complete the ritual we need multitudes: a horde of humans all prepared to fight for the future of the Web. We need your leadership, your recruiting, your connections to reach criticl mass.
+        To complete the ritual we need multitudes: a horde of humans all prepared to fight for the future of the Web. We need your leadership, your recruiting, your connections to reach critical mass.
       </Scene>
       <Scene>
         Your task, should you accept it, is to create a cult and fill it with followers. Create rules to build culture. Plan elaborate rituals and convince your followers to upload proof that they have been executed. Organize gatherings to concentrate your social energy and work toward the culmination of our designs.
