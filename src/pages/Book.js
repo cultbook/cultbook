@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
 
 import MagicLinkForm from "../components/MagicLinkForm"
 import ButtonLink from "../components/ButtonLink"
@@ -44,11 +45,14 @@ export default function LandingPage(){
           <Scene>
             "Of all that is written, I love only what a person hath written with his blood. Write with blood, and thou wilt find that blood is spirit."
           </Scene>
+          <Typography style={{color: '#DC143C', fontWeight: 'bold'}} variant="h4">
+            (If thou hast already signed of thecultbook, thou must write thy email in blood once more...)
+          </Typography>
           <MagicLinkForm onEmailSubmit={(email) => {
             setEmail(email)
             setSubmitted(true)
           }}/>
-          <ButtonLink size='large' to="/refuse">refuse</ButtonLink>
+          <ButtonLink size='large' to="/refuse">I refuse...</ButtonLink>
         </>
       )}
     </OutsideLayout>

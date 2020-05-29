@@ -25,7 +25,7 @@ export default function SolidPage(){
         <LoginButton/>
       </Grid>
       <Grid xs={12}>
-        <ButtonLink to="/">
+        <ButtonLink size='large' to="/">
           I'm in over my head
         </ButtonLink>
       </Grid>

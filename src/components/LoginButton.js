@@ -9,7 +9,7 @@ export default function LoginButton(){
     await popupLogIn()
   }
   return (
-    <Button onClick={login}>
+    <Button size='large' onClick={login}>
       Invoke The Spell of Identification
     </Button>
   )
