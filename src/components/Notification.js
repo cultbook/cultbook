@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 import { useWebId } from "@solid/react"
 
@@ -169,7 +169,7 @@ function ReportNotification({notification}){
       </Typography>
       {notification.object && (
         <Typography variant="h6">
-          Object: <Link to={notification.object}>{notification.object}</Link>
+          Object: <Link href={notification.object}>{notification.object}</Link>
         </Typography>
       )}
       <Typography variant="body1">
@@ -196,11 +196,14 @@ function notificationComponentForType(type){
 
 export default function Notification({uri, archiveContainerRef}){
   const classes = useStyles()
+  const [archiving, setArchiving] = useState(false)
   const [notification] = useNotification(uri)
   const archive = async (e) => {
     e.preventDefault()
     e.stopPropagation()
+    setArchiving(true)
     await moveDocument(uri, `${archiveContainerRef}/${uri.split("/").slice(-1)[0]}`)
+    setArchiving(false)
   }
   if (notification){
     const NotificationComponent = notificationComponentForType(notification.type)
@@ -209,11 +212,15 @@ export default function Notification({uri, archiveContainerRef}){
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} classes={{content: classes.expansionPanel}}>
           <Typography variant="h5">{notification && notification.name}</Typography>
           {archiveContainerRef && (
-            <Tooltip title="Archive" aria-label="copy to clipboard" className={classes.archive}>
-              <IconButton onClick={archive}>
-                <ArchiveIcon/>
-              </IconButton>
-            </Tooltip>
+            <Box className={classes.archive}>
+              {archiving ? (<Loader size="sm"/>) : (
+                <Tooltip title="Archive" aria-label="copy to clipboard">
+                  <IconButton onClick={archive}>
+                    <ArchiveIcon/>
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Box>
           )}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>

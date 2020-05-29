@@ -23,7 +23,7 @@ import Loader from "../components/Loader"
 import ProfileLink from "../components/ProfileLink"
 import { createPrivateCultResourceAcl } from "../utils/acl"
 import { loadImage } from "../utils/fetch"
-import { deleteDocument, documentExists } from "../services"
+import { deleteDocument, documentExists, sendReportToWWW } from "../services"
 import * as urls from "../urls"
 
 export function PerformanceByUri({uri}){
@@ -42,6 +42,11 @@ export function PerformanceInContext({uri, ritual, cult}){
 export default function Performance({performance, ritual, cult}){
   const webId = useWebId()
   const [imageSrc, loading, error, deleteImage] = useImage(performance && performance.object)
+  const [reported, setReported] = useState(false)
+  const reportImage = async () => {
+    await sendReportToWWW(webId, "an image has been reported", performance.object)
+    setReported(true)
+  }
   return loading ? (
     <Loader/>
   ) : (
@@ -67,6 +72,9 @@ export default function Performance({performance, ritual, cult}){
         </CardActionArea>
         <CardActions>
           {(webId === performance.actor) && <Button onClick={deleteImage}>Delete</Button>}
+        </CardActions>
+        <CardActions>
+          {reported ? (<Typography variant="button">Reported!</Typography>) : (<Button onClick={reportImage}>Report</Button>)}
         </CardActions>
       </Card>
     ) : (

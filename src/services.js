@@ -63,7 +63,7 @@ inv: a cb:InductedNotification;
 `)
 }
 
-export async function sendReportToWWW(webId, message) {
+export async function sendReportToWWW(webId, message, objectRef) {
   await postToInbox(wwwCultInbox, `
 @prefix inv: <>.
 @prefix cb: <https://thecultbook.com/ontology#>.
@@ -73,6 +73,7 @@ export async function sendReportToWWW(webId, message) {
 inv: a cb:Report;
     rdfs:label "We received a report";
     as:actor <${webId}>;
+    ${objectRef && `as:object <${objectRef}>;`}
     rdfs:comment """${message}""".
 `)
 }
