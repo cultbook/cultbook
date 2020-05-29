@@ -25,6 +25,7 @@ import { createPrivateCultResourceAcl } from "../utils/acl"
 import { loadImage } from "../utils/fetch"
 import { deleteDocument, documentExists, sendReportToWWW } from "../services"
 import * as urls from "../urls"
+import contentWarningSrc from "../content-warning.png"
 
 export function PerformanceByUri({uri}){
   const [performance] = usePerformance(uri)
@@ -41,19 +42,26 @@ export function PerformanceInContext({uri, ritual, cult}){
 
 export default function Performance({performance, ritual, cult}){
   const webId = useWebId()
+  const [ignoreContentWarning, setIgnoreContentWarning] = useState(false)
   const [imageSrc, loading, error, deleteImage] = useImage(performance && performance.object)
   const [reported, setReported] = useState(false)
   const reportImage = async () => {
     await sendReportToWWW(webId, "an image has been reported", performance.object)
     setReported(true)
   }
+  const displayImageSrc = performance && (
+    ((performance.contentWarning === 1) && !ignoreContentWarning) ? contentWarningSrc : imageSrc)
+  const clickCard = () => {
+    setIgnoreContentWarning(!ignoreContentWarning)
+  }
   return loading ? (
     <Loader/>
   ) : (
-    imageSrc ? (
+    displayImageSrc ? (
       <Card>
-        <CardActionArea>
-          <CardMedia component="img" src={imageSrc} title={performance.title}/>
+        <CardActionArea onClick={clickCard}>
+          <CardMedia component="img" src={displayImageSrc}
+                     title={performance.title}/>
           <CardContent>
             <Typography variant="h6">
               performed by <ProfileLink webId={performance.actor}/>&nbsp;

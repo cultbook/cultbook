@@ -45,10 +45,10 @@ export default function RitualPage({ritualRef}){
   const [cult] = useCultByRef(ritual && ritual.publicCultRef)
   const [ uploadsContainer ] = useDocument(ritual && ritual.uploadFolderVirtualDocument)
   const uploads = uploadsContainer && uploadsContainer.getSubject(ritual.uploadFolder).getAllRefs(ldp.contains)
-  const onUpload = async (response, altText, type) => {
+  const onUpload = async (response, altText, type, contentWarning) => {
     const fileUrl = new URL(response.headers.get("location"), response.url).toString()
     await createPrivateCultResourceAcl(fileUrl, ritual.cultRef, webId)
-    const addResponse = await ritual.addPerformance(webId, fileUrl, altText, type, ritual.asRef())
+    const addResponse = await ritual.addPerformance(webId, fileUrl, altText, type, ritual.asRef(), contentWarning)
     const performanceUrl = new URL(addResponse.headers.get("location"), addResponse.url).toString()
     passport.addPerformance(performanceUrl)
     await passport.save()
@@ -83,7 +83,7 @@ export default function RitualPage({ritualRef}){
         {uploads && (uploads.length > 0) && (
           <>
             {uploads.map(url => (
-              <Grid item xs={4}>
+              <Grid item xs={4} key={url}>
                 <PerformanceInContext uri={url} ritual={ritual} cult={cult} key={url} />
               </Grid>
             ))}

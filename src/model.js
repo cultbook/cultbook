@@ -36,6 +36,7 @@ export const cb = {
   notificationHtml: `${prefix}notificationHtml`,
   archive: `${prefix}archive`,
   backstory: `${prefix}backstory`,
+  contentWarning: `${prefix}contentWarning`,
   performedFor: `${prefix}performedFor`
 }
 
@@ -130,7 +131,7 @@ export class Ritual {
     return this._uploadFolderVirtualDocument
   }
 
-  async addPerformance(performerWebId, performanceArtifactRef, performanceName, type, ritualRef){
+  async addPerformance(performerWebId, performanceArtifactRef, performanceName, type, ritualRef, contentWarning){
     return postToInbox(this.uploadFolder, `
 @prefix inv: <>.
 @prefix dct: <http://purl.org/dc/terms/>.
@@ -141,6 +142,7 @@ inv: a cb:Performance;
     dct:title "${performanceName}";
     dct:format "${type}";
     cb:performedFor <${ritualRef}>;
+    cb:contentWarning ${contentWarning ? 1 : 0};
     as:actor <${performerWebId}>;
     as:object <${performanceArtifactRef}>.
 `)
@@ -674,6 +676,10 @@ export class Performance {
 
   get performedFor(){
     return this.subject.getRef(cb.performedFor)
+  }
+
+  get contentWarning(){
+    return this.subject.getInteger(cb.contentWarning)
   }
 }
 

@@ -10,6 +10,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import Loader from './Loader';
 
@@ -133,12 +135,13 @@ export default ({onClose, onUpload, uploadDirectory, ...props}) => {
   const [originalSrc, setOriginalSrc] = useState()
   const [previewSrc, setPreviewSrc] = useState()
   const [altText, setAltText] = useState("")
+  const [contentWarning, setContentWarning] = useState(false)
   const [croppedCanvas, setCroppedCanvas] = useState()
   const [editing, setEditing] = useState(false)
 
   const insert = async () => {
     const response = await uploadFromCanvas(croppedCanvas, uploadDirectory, file.type)
-    onUpload && onUpload(response, altText, file.type)
+    onUpload && onUpload(response, altText, file.type, contentWarning)
     onClose && onClose()
   }
 
@@ -174,6 +177,15 @@ export default ({onClose, onUpload, uploadDirectory, ...props}) => {
                        variant="filled" size="small"
                        className={classes.altTextField}
                        onChange={(e) => setAltText(e.target.value)}/>
+            <FormControlLabel
+              control={<Checkbox
+                         checked={contentWarning}
+                         onChange={(e) => setContentWarning(!!e.target.checked)}
+                         inputProps={{ 'aria-label': 'primary checkbox' }}
+                       />}
+              label="content warning?"
+            />
+
           </>
         )}
       </DialogContent>
