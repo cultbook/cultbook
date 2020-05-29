@@ -51,8 +51,8 @@ export default function MePage(){
       </Grid>
       <Grid item xs={12}>
         {profile && <EditableName entity={profile} schema={ProfileSchema} variant="h1"/>}
-        {profile && <EditableDescription entity={profile} schema={ProfileSchema} variant="h3"/>}
-        {profile && <EditableBackstory entity={profile} schema={ProfileSchema} variant="h3"/>}
+        {profile && <EditableDescription entity={profile} schema={ProfileSchema} variant="body1"/>}
+        {profile && <EditableBackstory entity={profile} schema={ProfileSchema} variant="body1"/>}
       </Grid>
       <Grid item xs={12}>
         <Typography variant="h5">
