@@ -569,14 +569,19 @@ export class Passport {
   }
 
   async getRules(){
-    return this.rules ? (
-      Promise.all(
+    const rules = this.rules ? (
+      await Promise.all(
         this.rules.map(async (ruleRef) => {
-          const doc = await td.fetchDocument(ruleRef)
-          return new Rule(doc, doc.getSubject(ruleRef), doc.save)
+          try {
+            const doc = await td.fetchDocument(ruleRef)
+            return new Rule(doc, doc.getSubject(ruleRef), doc.save)
+          } catch (e){
+            return null
+          }
         })
       )
     ) : []
+    return rules.filter(x => x)
   }
 
   isAttending(gathering) {
@@ -597,14 +602,19 @@ export class Passport {
   }
 
   async getGatherings(){
-    return this.rsvps ? (
-      Promise.all(
+    const gatherings = this.rsvps ? (
+      await Promise.all(
         this.rsvps.map(async (gatheringRef) => {
-          const doc = await td.fetchDocument(gatheringRef)
-          return new Gathering(doc, doc.getSubject(gatheringRef), doc.save)
+          try {
+            const doc = await td.fetchDocument(gatheringRef)
+            return new Gathering(doc, doc.getSubject(gatheringRef), doc.save)
+          } catch (e){
+            return null
+          }
         })
       )
     ) : []
+    return gatherings.filter(x => x)
   }
 
   addPerformance(performanceRef){
