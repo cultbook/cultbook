@@ -40,6 +40,9 @@ const useStyles = makeStyles(theme => ({
     position: "absolute",
     right: 0,
     bottom: "-6px"
+  },
+  textNotification: {
+    whiteSpace: "pre-wrap"
   }
 }))
 
@@ -60,6 +63,15 @@ function GenericNotification({notification}){
   return (
     <div>
       <Typography variant="h5">{notification && notification.description}</Typography>
+    </div>
+  )
+}
+
+function TextNotification({notification}){
+  const classes = useStyles()
+  return (
+    <div>
+      <Typography variant="body1" className={classes.textNotification}>{notification && notification.description}</Typography>
     </div>
   )
 }
@@ -206,6 +218,7 @@ const typesToNotificationComponents = {
   [cb.InductedNotification]: InductedNotification,
   [cb.Report]: ReportNotification,
   [cb.VideoNotification]: VideoNotification,
+  [cb.TextNotification]: TextNotification,
   [cb.AudioNotification]: AudioNotification
 }
 

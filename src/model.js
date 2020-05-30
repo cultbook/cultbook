@@ -21,6 +21,7 @@ export const cb = {
   VideoNotification: `${prefix}VideoNotification`,
   AudioNotification: `${prefix}AudioNotification`,
   InductedNotification: `${prefix}InductedNotification`,
+  TextNotification: `${prefix}TextNotification`,
   follows: `${prefix}follows`,
   convening: `${prefix}convening`,
   convenedBy: `${prefix}convenedBy`,

@@ -54,6 +54,7 @@ export default function NotificationDemos({children}) {
     "https://cultofwww.solid.thecultbook.com/public/contentReport.ttl",
     "https://cultofwww.solid.thecultbook.com/public/video.ttl",
     "https://cultofwww.solid.thecultbook.com/public/audio.ttl",
+    "https://cultofwww.solid.thecultbook.com/public/text.ttl",
   ]
   return (
     <DefaultLayout>
