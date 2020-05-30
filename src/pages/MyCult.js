@@ -271,6 +271,11 @@ function EditableCultGatherings({cult}){
             </Box>
             <Box>
               <TextField multiline name="location" type="text" placeholder="location" />
+              <Box>
+                <Typography variant="h6">suggested locations</Typography>
+                <Typography variant="body1">https://cultbook.topia.io</Typography>
+                <Typography variant="body1">#cultbook on Discord</Typography>
+              </Box>
             </Box>
             <Box>
               <Datepicker name="time" showTimeSelect inline openToDate={new Date()}
