@@ -56,11 +56,13 @@ export default function NotificationDemos({children}) {
     "https://cultofwww.solid.thecultbook.com/public/audio.ttl",
     "https://cultofwww.solid.thecultbook.com/public/text.ttl",
     "https://cultofwww.solid.thecultbook.com/public/markdown.ttl",
+    "https://cultofwww.solid.thecultbook.com/public/saturday-night-pre-presentation.ttl",
+    "https://cultofwww.solid.thecultbook.com/public/saturday-night-post-presentation.ttl",
   ]
   return (
     <DefaultLayout>
       <Grid item xs={12}>
-        <Notifications notifications={notifications} pageSize={3}/>
+        <Notifications notifications={notifications} pageSize={8}/>
       </Grid>
     </DefaultLayout>
   )
