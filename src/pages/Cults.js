@@ -193,10 +193,10 @@ export default function CultsPage({tab=0}){
       </Grid>
       <Grid item xs={12}>
         <Scene>
-          You pick up Thecultbook and start browsing. The words seem to shift under your eyes.
+          You pick up Thecultbook and start browsing. The words seem to shimmer in place.
           </Scene>
         <Scene>
-          Blood red words call out for you to touch them...
+          Blood red names call out for you to touch them...
         </Scene>
       </Grid>
       <Grid item xs={12}>
