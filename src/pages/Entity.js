@@ -41,6 +41,9 @@ function Rule({rule}){
       <Typography variant="h5">
         {rule.name}
       </Typography>
+      <Typography variant="h6">
+        {rule.description}
+      </Typography>
     </>
   )
 }
