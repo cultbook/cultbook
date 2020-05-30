@@ -42,7 +42,8 @@ const useStyles = makeStyles(theme => ({
     bottom: "-6px"
   },
   textNotification: {
-    whiteSpace: "pre-wrap"
+    whiteSpace: "pre-wrap",
+    textAlign: "left"
   }
 }))
 
