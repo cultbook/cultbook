@@ -14,6 +14,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import ArchiveIcon from '@material-ui/icons/Archive';
+import ReactMarkdown from "react-markdown";
 
 import { cb, useModel } from "../model"
 import { usePassport, useNotification, useProfileByWebId, useCultByRef } from "../data"
@@ -26,6 +27,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import * as urls from "../urls"
 import {moveDocument} from "../utils/fetch"
+
+
 
 const useStyles = makeStyles(theme => ({
   htmlNotificationIframe: {
@@ -73,6 +76,19 @@ function TextNotification({notification}){
   return (
     <div>
       <Typography variant="body1" className={classes.textNotification}>{notification && notification.description}</Typography>
+    </div>
+  )
+}
+
+function MarkdownNotification({notification}){
+  const classes = useStyles()
+  return (
+    <div>
+      <Typography variant="body1">
+        {notification && (
+          <ReactMarkdown source={notification.description} renderers={{link: (props) => <Link {...props}/>}}/>
+        )}
+      </Typography>
     </div>
   )
 }
@@ -219,8 +235,9 @@ const typesToNotificationComponents = {
   [cb.InductedNotification]: InductedNotification,
   [cb.Report]: ReportNotification,
   [cb.VideoNotification]: VideoNotification,
+  [cb.AudioNotification]: AudioNotification,
   [cb.TextNotification]: TextNotification,
-  [cb.AudioNotification]: AudioNotification
+  [cb.MarkdownNotification]: MarkdownNotification,
 }
 
 function notificationComponentForType(type){
