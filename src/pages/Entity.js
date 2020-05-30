@@ -88,7 +88,7 @@ export default function EntityPage({entityWebId}){
         )}
       </Grid>
       <Grid item xs={12}>
-        {cult && (
+        {cult && myPassport && (
           <>
             {(myPassport.isFollowing(cult) || (webId === cult.ownerWebId))? (
               <ButtonLink to={urls.cultByRef(cult.asRef())}>Enter Lair of {cult.name}</ButtonLink>
