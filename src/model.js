@@ -297,7 +297,13 @@ export class Cult {
   }
 
   get isFull(){
-    return (this.members.length >= 26)
+    if (this.ownerWebId === "https://51a86d9770acc77b55251bdc5dbacb1c.solid.thecultbook.com/profile/card#me"){
+      return (this.members.length >= 69)
+    } else if (this.ownerWebId === "https://cultofwww.solid.thecultbook.com/profile/card#me"){
+      return (this.members.length >= 10000)
+    } else {
+      return (this.members.length >= 26)
+    }
   }
 
   hasMember(webId){
