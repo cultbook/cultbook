@@ -101,7 +101,7 @@ function shuffle(a) {
   return a;
 }
 
-function KnownCults({passport, cultRefs, pageSize=13, random=false}){
+function KnownCults({passport, cultRefs, pageSize=6, random=false}){
   const [refresh, setRefresh] = useState(false)
   const classes = useStyles();
   const following = useMemo(
