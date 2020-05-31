@@ -63,6 +63,7 @@ export default function Performance({performance, ritual, cult}){
           <CardMedia component="img" src={displayImageSrc}
                      title={performance.title}/>
           <CardContent>
+            <Typography variant="caption">{performance.title}</Typography>
             <Typography variant="h6">
               performed by <ProfileLink webId={performance.actor}/>&nbsp;
               {ritual && (
