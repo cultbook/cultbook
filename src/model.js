@@ -518,7 +518,8 @@ export class Passport {
   }
 
   get veilRemoved(){
-    return (this.subject.getInteger(cb.veilRemoved) === 1)
+    return true
+    //return (this.subject.getInteger(cb.veilRemoved) === 1)
   }
 
   set veilRemoved(bool){
