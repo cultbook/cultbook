@@ -4,13 +4,13 @@ import Button from "./Button"
 import { useAuthContext } from "../context/auth"
 
 export default function LoginButton(){
-  const { logIn } = useAuthContext()
+  const { popupLogIn } = useAuthContext()
   async function login(){
-    await logIn()
+    await popupLogIn()
   }
   return (
-    <Button onClick={login}>
-      Join Us
+    <Button size='large' onClick={login}>
+      Invoke The Spell of Identification
     </Button>
   )
 }

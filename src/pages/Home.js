@@ -1,70 +1,111 @@
-import React, { useMemo, useState } from 'react'
+import React from 'react'
 
 import { useWebId } from "@solid/react"
-import { rdfs, foaf, vcard, ldp } from 'rdf-namespaces'
-import { Form, Formik } from 'formik';
-import { describeDocument } from "plandoc"
 
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
-import { as } from "../vocab"
-import { useModel, cb, Cult, Rule, Ritual } from "../model"
-import { useDocument, useCult, usePassport } from "../data"
-import LogoutButton from "../components/LogoutButton"
+import { useModel } from "../model"
+import { useCult, useProfile, usePassport } from "../data"
+import Loader from "../components/Loader"
 import Link from "../components/Link"
 import ButtonLink from '../components/ButtonLink'
-import { TextField } from "../components/form"
+import MyCultLink from "../components/MyCultLink"
+import Scene from "../components/Scene"
+import Stage from "../components/Stage"
+import NamePrompt from "../components/NamePrompt"
 import DefaultLayout from "../layouts/Default"
-import { AddFollowerSchema, CultSchema, RitualSchema, RuleSchema } from "../validations"
-import { inviteFollower, deleteNotification } from "../services"
 
 const useStyles = makeStyles(theme => ({
+  scene: {
+    maxWidth: "66vw",
+    margin: "auto"
+  },
 }))
 
-export default function HomePage(){
+function IdentifiedHomePage({cult, passport, profile}){
   const classes = useStyles();
-  const webId = useWebId()
-  const { inboxContainer, profileDocument, cultDocument, passportDocument } = useModel(webId)
-
-  const [ profileDoc ] = useDocument(profileDocument)
-  const [ inboxContainerDoc ] = useDocument(inboxContainer)
-
-  const inbox = inboxContainerDoc && inboxContainerDoc.getSubject(inboxContainerDoc.asRef())
-  const notifications = inbox && inbox.getAllRefs(ldp.contains)
-
-  const [ passport, savePassport ] = usePassport(passportDocument)
-  const following = passport && passport.getAllRefs(cb.follows)
 
   return (
-    <DefaultLayout>
-      <Grid item xs={12}>
-        <h2>
-          Welcome, {profileDoc && profileDoc.getSubject(webId).getString(foaf.name)}
-        </h2>
-      </Grid>
-      <Grid item xs={12}>
-        <ButtonLink to="/me">Me</ButtonLink>
-      </Grid>
-      <Grid item xs={12}>
-        <ButtonLink to="/me/cult">My Cult</ButtonLink>
-      </Grid>
-      <Grid item xs={12}>
-        {following && (
-          <>
-            <h2>Cults You Follow</h2>
-            <ul>
-              {following.map(cult => (
-              <li>{cult.toString()}</li>
-              ))}
-            </ul>
-          </>
+    <>
+      <Stage>
+        <Grid item xs={12}>
+          <Scene>
+            You seem to find yourself in a vast ancient chamber. You remain unsure of whether you are really here or whether your perceptions have been fully captured by some unknown power. You see a large mirror and a table covered with darkly iridescent cloth.
+          </Scene>
+          <Scene>
+            On the table is an ornately decorated book titled "Thecultbook."
+          </Scene>
+        </Grid>
+        {cult && !cult.created && (
+          <Grid item xs={12}>
+            <Scene>
+              You feel an odd compulsion to start a cult, but do not fully understand what that means...
+            </Scene>
+          </Grid>
         )}
-      </Grid>
-      <Grid item xs={12}>
-        <LogoutButton/>
-      </Grid>
+        <Grid item xs={12}>
+          <ButtonLink size='large' to="/me">Look in the Mirror</ButtonLink>
+        </Grid>
+        <Grid item xs={12}>
+          {cult && <MyCultLink prefix="attend to" size='large' cult={cult}/>}
+        </Grid>
+        <Grid item xs={12}>
+          <ButtonLink size='large' to="/thecultbook">Read Thecultbook</ButtonLink>
+        </Grid>
+        <Grid item xs={12}>
+          {(!profile.hasControlPermission) && "YOU DID NOT GIVE US ENOUGH CONTROL: YOUR EXPERIENCE MAY BE SUBOPTIMAL. CONSULT THE CULT OF WWW FOR GUIDANCE!"}
+        </Grid>
+        {passport && passport.veilRemoved && (
+          <Grid item xs={12}>
+            {cult && <Link href={cult.asRef()} target="_blank">View the source of {cult.name}</Link>}
+          </Grid>
+        )}
+      </Stage>
+    </>
+  )
+}
+
+function UnidentifiedHomePage({profile}){
+  const setName = async (name) => {
+    profile.name = name
+    await profile.save()
+  }
+  return (
+    <>
+      <Stage>
+        <Grid item xs={12}>
+          <Scene>
+            You sense a presence in the darkness. You feel an urge to identify yourself, but know somehow that this name, like all names, is impermanent.
+          </Scene>
+          <NamePrompt openPrompt="choose a name"
+                      title="what shall we call you?"
+                      prompt="you can change this later"
+                      onSubmit={setName}/>
+
+        </Grid>
+      </Stage>
+    </>
+  )
+}
+
+export default function HomePage(){
+  const webId = useWebId()
+  const { profileDocument, cultDocument, cultPrivateDocument, passportDocument } = useModel(webId)
+  const [ cult ] = useCult(cultDocument, cultPrivateDocument)
+  const [ passport ] = usePassport(passportDocument)
+  const [profile, profileLoading] = useProfile(profileDocument)
+  return (
+    <DefaultLayout>
+      {profileLoading ? (
+        <Loader/>
+      ) : (
+        (profile && profile.name) ? (
+          <IdentifiedHomePage cult={cult} passport={passport} profile={profile} />
+        ) : (
+          <UnidentifiedHomePage profile={profile}/>
+        )
+      )}
     </DefaultLayout>
   )
 }
